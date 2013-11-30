@@ -1,0 +1,157 @@
+* {
+	padding: 0;
+	margin: 0;
+	border-spacing: 0;
+	border: 0 solid;
+	font: 100% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+
+	transition: color .15s;
+}
+hr {
+	height: 2px;
+	background-color: $DECORDARK;
+}
+
+input {
+    border: 1px solid #999;
+    border-radius:3px;
+}
+select {
+	background:#ccc;
+	font-size:inherit;
+}
+input[type="submit"] {
+	background:#eee;
+}
+input[type="submit"][disabled] {
+	color:#aaa;
+}
+input[type="reset"] {
+	background:transparent;
+	border-color:$MAIN_BORDER;
+}
+
+
+
+.leftBar{
+	width:100%;
+	text-align:right;
+}
+
+.bigTxt {
+	font-weight: bold;
+}
+.smallTxt {
+	font-size: 80%;
+	color: #888;
+}
+
+.freezeIn {
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	display:none;
+}
+.freezeOut {
+}
+
+
+#workToolbar {
+	position:fixed;
+	left:0;
+	right:0;
+	top:0;
+	background-color:#a5a5a5;
+
+	transition: background 1s;
+}
+#workToolbar td {
+	white-space:nowrap;
+	border:0 solid #888;
+}
+
+
+#body {
+	background:$MAIN_BG;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	overflow:auto;
+	position:absolute;
+}
+#testEl {
+	height:100px;
+	width:100px;
+	top:-1000px;
+	left:-1000px;
+	overflow:scroll;
+	position:fixed;
+}
+.boardRoot {
+	top:0;
+	left:0;
+	height:0;
+	width:0;
+	overflow:hidden;
+	position:absolute;
+}
+.boardContext {
+	height:0;
+	width:0;
+	overflow:visible;
+	position:absolute;
+
+	transition: transform 1s;
+}
+.boardBG {
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	overflow:visible;
+	position:fixed;
+
+	transition: background 1s;
+}
+.boardCanvas {
+	position:relative;
+	top:0;
+	left:0;
+	width:110%;
+	height:110%;
+}
+.joint {
+	height:0;
+	width:0;
+	overflow:visible;
+	position:absolute;
+}
+.toolWidget {
+	background:$MAIN_BG;
+	padding:2px 0 2px 0;
+	border:1px solid $MAIN_BORDER;
+	margin:5px;
+	font-size:14px;
+	line-height:24px;
+	white-space:nowrap;
+}
+.toolWidgetOff {
+	padding:2px;
+	line-height:24px;
+}
+.toolActiveButton {
+	background:white;
+	padding:5px;
+	cursor:pointer;
+}
+
+#barLogo {
+	transition: background-color .5s;
+}
+
+#precss {
+	display:none;
+}

@@ -1,0 +1,24 @@
+.tool {
+	position:fixed;
+}
+
+.toolContext {
+	top:0;
+	left:0;
+	width:0;
+	height:0;
+	position:absolute;
+	overflow:hidden;
+
+	background:#eee;
+	padding:0;
+	border-radius:40px;
+	border:4px solid transparent;
+
+	transition-property: top, left, width, height, padding, border-color;
+	transition-duration: ${TOOL_TRANSITIONTIME}s;
+}
+
+.toolItem {
+	border: 1px dotted black;
+}

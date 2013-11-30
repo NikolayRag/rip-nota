@@ -1,0 +1,236 @@
+-1.	dbase
+	-1.1.	Notes/Data
+	-1.2.	User relations
+	-1.3.	uGroups and Rights Assignment
+-2.	server
+	-2.1.	request by name
+	-2.1.	request by implicit
+	-2.2.	request by id
+	-2.3.	substitution and implicits
+	-2.4.	core update
+	-2.5.	output format
+-3.	client (saving)
+	-3.1.	saving Notes
+	-3.2.	setting Note rights
+	-3.3.	Note/User interconectivity
+-4.	update
+	-4.1.	Ncore base data and format interpretation
+	-4.2.	Ucore base data and format interpretation
+	-4.3.	update loop
+	-4.4.	update routine
+-5.	ui
+	-5.1.	workfield organizing
+	-5.2.	workfield navigation
+	-5.3.	Note operations
+	-5.4.	Board operations
+	-5.5.	Tools
+	-5.6.	switching Boards
+	-5.7.	managing contacts
+	-5.8.	popup
+-6.	login
+	-6.1.	Registration
+	-6.2.	login
+	-6.3.	validation
+-7.	helpers
+	-7.1.	lazy action
+	-7.2.	Async
+	-7.3.	dictionary format
+	-7.4.	dictionary interface
+-8.	techniques
+	-8.1.	Ncore/Nroot/extenders logic
+	-8.2.	naming
+	-8.3.	context saving
+	-8.4.	user/server reactions
+-9.	subsystems
+	-9.1.	Uploader
+	-9.2.	Painter
+-a.	compatibility
+	-a.1.	client features
+-b. required settings
+----
+
+
+
+a.
+a.1.
+
+These are issues to be different-generated for different clients:
+-robot:	flat version
+
+-noscript:	RO flat
+
+-legacy:	upload
+-legacy:	interactivity(?)
+-legacy:	css3 styles
+-legacy:	Custom scrollbars
+-legacy:	img/svg
+
+-pads:	Board navigation
+-pads:	Board custom scrollbars
+
+
+b. required settings
+
+	-PHP 5.4.0
+		settings compared to php.ini-production:
+			- general
+				short_open_tag = On
+				zlib.output_compression = On
+				session.gc_maxlifetime = 2592000
+			- upload
+				post_max_size = 5000M
+				upload_max_filesize = 5000M
+				max_file_uploads = 20000
+			- fastCGI
+				cgi.force_redirect = 0
+				cgi.fix_pathinfo = 1
+				fastcgi.impersonate = 1
+				fastcgi.logging = 0
+			- extension
+				extension_dir = "ext"
+				extension=php_mbstring.dll
+				extension=php_pdo_mysql.dll
+			- locals
+				date.timezone = Europe(?)/City
+				session.save_path="\\\\srvname\temppath$"
+
+	-mySQL 5.1	
+
+	IIS6:
+		- fastCGI 1.5
+		
+		- Redirect 404 error to /index.php
+		
+		- To avoid timeout on time consuming downloading, set
+			fCGIext.ini: ActivityTimeout=xxx 
+
+		- All files and folders made direct unreadable except
+			.async/ .images/ .mini/ index.php sitemap robots.txt 
+
+		- Registry tune for UTF URL's:
+			HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\HTTP\Parameters\EnableNonUTF8 = 1 (dword)
+			HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\HTTP\Parameters\FavorUTF8 = 0 (dword)
+
+	apache:
+
+	  
+
+----------------------------------------------------
+
+
+Nota data object model v2:
+
+
+ ---GLOBAL instances---
+
+	SESSION:			logon data; URI handling
+		.user(=User):			current logged user
+
+	UPDATE:				bulk update cycle.
+							
+	UI:				UI elements; UI update routines
+
+	(Ncore)BOARD:			requested board holder and UI. Inherits Ncore. 
+		.rights[]:			assigned rights list
+	
+ ---normal class---
+
+	(Ncore)Note:			note visual ui. Inherits Ncore
+		
+  ---SQL-binded classes---
+	Ncore:				Note data holder, dbase related to "NOTE".
+						Can be assigned to several Note, Board and other UI, that transparently duplicates entry points.
+		.owner(=User):			board owner
+		.data[](=Ndata):		data leaf
+		
+	Ndata:			one data item, dbase related to "DATA"
+		.value(=?/Note):		data/link to other Note
+
+	User:				user template, dbase related to "USERS"
+		.contacts[](=User):		user related contactlist
+		.boards[](=Ncore):		users boardlist
+
+		
+--------
+Base connectivity
+
+1. Every board is a Note with Data leafs list
+ 1.1. and Data leafs, describing Data or other Notes placeholder and referencing them
+2. Note can be
+ 2.1. stored and read from base,
+ 2.2. substituted by Implicit (no access, not found),
+ 2.3. native Implicit (welcome screen, no user)
+3. Note is addressed by Base ID or literally
+ 3.1. Note addressed by name becomes and remains addressed by ID if possible (to hold renaming)
+
+
+--------
+Implicit Notes and addressing issues.
+
+	Normally, Note contents and meta is read and fully corresponds to base by ID.
+Impersonated Notes ID is holded during lifetime regardless to changing User name or Note name.
+Switching Notes rights off thus does not loose monitored ID, it will be restored with rights on.
+
+Requested Notes can be built on fly Implicitely, when it is cannot be read from base.
+Implicits can be Substituted or Native.
+
+	Substituted Note is treated as normal Note with some other content then in the base.
+This is issue if requested Note is currently unavailable: restricted or deleted.
+No other info about original Note is returned, except its ID and owners ID.
+Everything else (i.e. actual content) is built up new.
+
+	Native Implicits are built without referencing any stored and owned Note.
+They are pure at-point boards, as are welcome board, search results, no-user board and no-boards.
+Native implicits have no ID and updates at their own logic.
+Native implicits version is based on siblings timestamps.
+
+-
+
+Regular and substituted Notes are directly referenced by ID.
+While update, if Note becomes unavailable (deleted/restricted), its version is set to 0.
+At client, Notes with ver=0 are deleted if are laying on their parents, or repaint Substituted otherway.
+//check: "restricted off/on" note on "non-restricted" parents
+
+Native implicits holded at client with non-synchronised IDs (<0), same as newly-created Notes and RefNotes.
+They cannot be saved at all (but their siblings - can, if they are not native imps).
+Native imps are updated by sending neg-ID (to return it back) AND original request string to server.
+This make server to rebuild them each time requested if siblings timestamps (shown as version) is newer. 
+If Native Imp is becomes available in base, its returned with Normal/Subst with additionally specified ID.
+
+
+--------
+function naming.
+
+cb*:		callbacks for async
+down*:		callbacks for ui reaction
+update*:	ONLY update properties themself and redraw ui
+show*:		only show visual changes
+store*:		make changes saved to server
+
+1)update from server:
+
+cb*()
+	update*()
+		__update()
+		show*()
+
+1)user reaction or internal update:
+
+	down*()
+		__update()
+		store*()
+
+	
+
+--------
+saving "this" context in specific function calls.
+
+async call requires context to pe passed:
+
+	saveHttpPost("../.async/update.php", saveData, call, this.updateCB, this.errorCB);
+
+
+timer call is performed with storing "this" to scope:
+
+	var _this= this;
+	  setTimeout(function(){_this.coreCycle()},5000);

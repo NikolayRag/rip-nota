@@ -1,0 +1,119 @@
+/*
+	Global save class.
+
+	Holds all saves to server:
+		-notes and rights
+		-data
+//todo: -users
+		-requested user with boardlist
+		-all referenced boards from boardlists as breef (no data)
+		-all referenced contacts - from user contacts and from all notes and data
+*/
+SESSION.save= new function(){
+
+this.save= function(){
+	if (SESSION.asyncState()){
+		this.retryAfterCB= 1;
+		return;
+	}
+
+	var _this= this;
+	lazyRun(
+		function(){
+			_this.saveGo()
+		}
+		, TIMER_LENGTH.SAVE_DELAY
+		, this.lazyCtx
+	);
+
+ALERT(PROFILE.BREEF, 'SAVE attempt', '');
+}
+
+this.saveGo= function(){
+	this.retryAfterCB= 0;
+
+	var saveData= [];
+
+	for (var inote in Ncore.all){
+		var curNote= Ncore.all[inote];
+		var canSave= curNote.canSave();
+		if (canSave){
+			var id= curNote.PUB.id;
+
+			var noteBlock= [];
+			noteBlock[ASYNC_PLACE.SVN_CANSAVE]= canSave;
+			if (canSave &SAVE_MODE.MAIN){
+				noteBlock[ASYNC_PLACE.SVN_VER]= curNote.PUB.ver;
+				if (curNote.inherit()) noteBlock[ASYNC_PLACE.SVN_INHERIT]= curNote.inherit().PUB.id;
+				noteBlock[ASYNC_PLACE.SVN_NAME]= curNote.PUB.name;
+				noteBlock[ASYNC_PLACE.SVN_STYLE]= encodeURIComponent(curNote.PUB.style.makeString());
+			}
+			if (canSave &SAVE_MODE.RIGHTS)
+			  noteBlock[ASYNC_PLACE.SVN_RIGHTS]= curNote.PUB.rightsA.join(ASYGN.D_LIST);
+
+			saveData[ASYGN.NBREEF+id]= noteBlock.join(ASYGN.D_ITEM);
+		}
+
+		var dataForSave= curNote.dataForSave();
+		for (var idata in dataForSave){
+			var curData= dataForSave[idata];
+
+			var dataBlock= [];
+			dataBlock[ASYNC_PLACE.SVD_VER]= curData.ver;
+			dataBlock[ASYNC_PLACE.SVD_PLACE]= [curData.place.x,curData.place.y,curData.place.w,curData.place.h].join(ASYGN.D_LIST);
+			dataBlock[ASYNC_PLACE.SVD_DTYPE]= curData.dtype;
+			dataBlock[ASYNC_PLACE.SVD_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
+
+			saveData[ASYGN.NDATA+curData.id]= dataBlock.join(ASYGN.D_ITEM);
+		}
+	}
+
+//todo: suppress update while saving; and visa-versa
+	SESSION.async(ASYNC_MODE.SAVE, saveData, this, this.saveCB, this.saveCBErr);
+ALERT(PROFILE.GENERAL, 'SAVE', saveData);
+} 
+
+this.saveCB= function(_sData){
+ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
+
+	var sDataA= _sData.split(ASYGN.D_ITEM);
+	for (var i in sDataA){
+		var res= sDataA[i].split(ASYGN.D_LIST);
+
+		switch (res[0]){
+			case ASYGN.NBREEF:
+				var cNote= Ncore.all[res[1]];
+				if (cNote && res[2]>=0)
+				  cNote.saved(res[2] |0);
+				else
+				  console.error('Error saving Note ' +res[1] +': ' +(cNote? res[2] :'undefined'));
+				break;
+			case ASYGN.NDATA:
+				var cData= Ndata.all(res[1]);
+				if (cData && res[2]>=0)
+				  cData.saved(res[2] |0);
+				else
+				  console.error('Error saving Data ' +res[1] +': ' +(cData? res[2] :'undefined'));
+				break;
+		}
+	}
+
+//todo: check for accidentally unsaved
+
+	if (this.retryAfterCB)
+	  this.save();
+
+} 
+
+this.saveCBErr= function(_err,_txt){
+alert(_err +': ' +_txt);
+ALERT(PROFILE.GENERAL,'Save error',_err +': ' +_txt);
+	this.save();
+} 
+
+
+this.retryAfterCB= null;
+
+this.lazyCtx= {};
+
+}
