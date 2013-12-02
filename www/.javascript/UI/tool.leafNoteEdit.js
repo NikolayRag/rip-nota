@@ -142,7 +142,10 @@ ToolBoardLeafEdit.prototype.opCancel= function() {
 ToolBoardLeafEdit.prototype.opStyle= function() {
 	var _target= this.ndata.sibling();
 	UI.paletteW.pick(
-		function(_newStyle){_target.save({style:_newStyle})}
+		function(_newStyle){
+			UI.paletteW.hide();
+			_target.save({style:_newStyle})
+		}
 	);
 }
 
