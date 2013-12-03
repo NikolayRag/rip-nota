@@ -1,20 +1,26 @@
 /*
 	color picker
 
-	.pick(cb) shows Palette;
+	.show(cb) shows Palette;
 	on confirm, supplied cb(newStyle,hideCB) is called with:
 		newStyle:	new style object
 */
 UI.paletteW= new function(){
 
 this.style= new Style('#888');
+this.cbFunction= null;
 
-this.pick= function(_cbFunction){
-	if (!_cbFunction)
-	  return;
-
+this.show= function(_cbFn){
+	this.cbFunction= _cbFn;
 	this.DOMPalette.style.display= '';
+}
 
+this.hide= function(){
+	this.DOMPalette.style.display= 'none';
+}
+
+
+this.bindEvt= function(){
 	var _this= this;
 	this.DOMPaletteSample.onclick= function(){
 		_this.style= new Style(
@@ -28,18 +34,18 @@ this.pick= function(_cbFunction){
 	}
 
 	this.DOMPaletteApply.onclick= function(){
-		_cbFunction(_this.style);
+		if (_this.cbFunction)
+		  _this.cbFunction(_this.style);
 	}
 }
 
-this.hide= function(){
-	this.DOMPalette.style.display= 'none';
-}
 
 this.DOMPalette= DOM('colorPicker');
 this.DOMPaletteSample= DOM('colorSample');
 this.DOMPaletteApply= DOM('colorApply');
 
+//INIT
 this.DOMPaletteSample.style.background= this.style.noteBG.hex();
 
+this.bindEvt();
 }

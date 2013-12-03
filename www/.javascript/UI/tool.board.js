@@ -104,7 +104,7 @@ alert('new note at '
 
 ToolBoard.prototype.opStyle= function() {
 	var _target= this.board;
-	UI.paletteW.pick(
+	UI.paletteW.show(
 		function(_newStyle){_target.save({style:_newStyle})}
 	);
 }
