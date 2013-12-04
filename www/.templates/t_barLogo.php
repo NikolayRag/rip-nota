@@ -1,6 +1,7 @@
 
 <?=$NOPROFILE? '': "<!-- in Bar Logo -->\n"?>
-<div id='notaLogo' style='width:50px;height:50px;text-align:center'>
-	<object data='../.images/nota.xml' type='image/svg+xml' style='width:30px;height:30px;top:8px;position:relative'></object>
+<div id='notaLogo' class='logoPlate'>
+	<object data='../.images/nota.xml' type='image/svg+xml' style='width:100%;height:100%;position:relative;'></object>
+	<span class='logoCover'></span>
 </div>
 <?=$NOPROFILE? '': "<!-- out Bar Logo -->\n"?>

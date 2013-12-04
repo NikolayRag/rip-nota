@@ -1,10 +1,22 @@
+//todo: dynamically create instead of reuse
+//		- decide how to (re)use cover
+//		- check use of tipSet
+//		- as created with constructor, rearrange arguments
+//			ex:(_msg,{okCode:{},noCode:{},focusOn:'',isTip:bool})
+//		- formalize Bar logic
+//		- deal with previously focused elements
+
 UI.popW= new function(){
 
 this.tip= function(_tipMsg){
 	this.up(this.tipMsg);
 	this.DOMUpBar.style.display= 'none';
-	this.DOMUpWindow.style.left= (UI.mouseX>STYLE.TIP_PREPOSITION?UI.mouseX-STYLE.TIP_PREPOSITION:0) +'px';
-	this.DOMUpWindow.style.top= (UI.mouseY>STYLE.TIP_PREPOSITION?UI.mouseY-STYLE.TIP_PREPOSITION:0) +'px';
+	this.DOMUpWindow.style.left= (
+		UI.mouseX>STYLE.TIP_PREPOSITION?UI.mouseX-STYLE.TIP_PREPOSITION:0
+	) +'px';
+	this.DOMUpWindow.style.top= (
+		UI.mouseY>STYLE.TIP_PREPOSITION?UI.mouseY-STYLE.TIP_PREPOSITION:0
+	) +'px';
 
 	this.isTool= 1;
 	if (_tipMsg)
@@ -39,27 +51,28 @@ this.up= function(_src,_okCode,_notCode,_focusOn){
 	this.notCode= IS.fn(_notCode)? _notCode :undefined;
 	this.DOMOk.style.display= (!_okCode? 'none':'');
 
-	this.DOMUpCover.style.display= '';
 	this.DOMUpWindow.style.display= '';
 	this.DOMUpWindow.style.left= this.DOMUpCover.offsetWidth/2 -this.DOMUpWindow.offsetWidth/2 +'px';
 	this.DOMUpWindow.style.top= this.DOMUpCover.offsetHeight/2 -this.DOMUpWindow.offsetHeight/2 +'px';
     this.DOMUpBar.style.display= '';
+	this.DOMUpCover.style.display= '';
 
 	if (_focusOn){
 		DOM(_focusOn,this.DOMUpContent).focus();
 		return;
 	}
 
-	if (_okCode=='' || _okCode==undefined)
-	  this.DOMNo.focus();
-	else
+	if (_okCode)
 	  this.DOMOk.focus();
+	else
+	  this.DOMNo.focus();
 }
 
 this.down= function(_skipNotCode){
 	this.DOMUpCover.style.display='none';
 	this.DOMUpWindow.style.display= 'none';
-	if (!_skipNotCode && this.notCode!=undefined)
+
+	if (this.notCode && !_skipNotCode)
 	  this.notCode();
 	this.notCode= undefined;
 	this.focus.focus();
@@ -74,10 +87,17 @@ this.bindEvt= function(){
 	  function(_e){if(eKeyCode(_e)==27) _this.down();};
 	this.DOMUpWindow.onreset= //cancel
 	  function(){_this.down()};
+//reserve: switch on if still blinking
+//	this.DOMUpCover.onmouseover=
+//	  function(){_this.lockTool= 1};
+//	this.DOMUpCover.onmouseout=
+//	  function(){_this.lockTool= 0};
 	this.DOMUpCover.onmouseover= //tip mouseout to close
-	  function(){if (_this.isTool==1) setTimeout(
-	  	function(){_this.down();},TIMER_LENGTH.TIP_DELAY
-	  )};
+	  function(){
+	  	setTimeout(function(){
+	  		if (_this.isTool && !_this.lockTool) _this.down();
+	    }, TIMER_LENGTH.TIP_DELAY)
+	  };
 	this.DOMUpCover.onclick= //click outside popup to close
 	  function(){_this.down()};
 }
@@ -86,6 +106,7 @@ this.focus= null;
 this.notCode= null;
 this.okCode= null;
 this.isTool= 0;
+this.lockTool= 0;
 this.tipMsg= '';
 this.tipMsgTimeout= null;
 
