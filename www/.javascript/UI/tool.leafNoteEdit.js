@@ -54,13 +54,13 @@ ToolBoardLeafEdit.prototype.build= function(_parentEl){
 	var cRoot= {
 		root:ToolBoardLeafEdit.tmpl.cloneNode(true)
 	};
-	cRoot.context= DOM('toolContext',cRoot.root);
+	cRoot.context= DOM('toolBLeafEditContext',cRoot.root);
 
-	cRoot.tOuter= DOM('toolOuter',cRoot.root);
-	cRoot.tMove= DOM('toolMove',cRoot.root);
+	cRoot.tOuter= DOM('toolBLeafEditOuter',cRoot.root);
+	cRoot.tMove= DOM('toolBLeafEditMove',cRoot.root);
 
-	cRoot.tInner= DOM('toolInner',cRoot.root);
-	cRoot.tStyle= DOM('toolStyle',cRoot.root);
+	cRoot.tInner= DOM('toolBLeafEditInner',cRoot.root);
+	cRoot.tStyle= DOM('toolBLeafEditStyle',cRoot.root);
 	NOID(cRoot.root);
 
 	this.assignRights(cRoot);

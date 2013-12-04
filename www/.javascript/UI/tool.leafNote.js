@@ -19,7 +19,7 @@ ToolBoardLeaf.prototype.bindEvt= function(){
 ToolBoardLeaf.tmpl= DOM('toolBLeafTmpl')
 ToolBoardLeaf.prototype.build= function(_parentEl){
 	var cRoot= ToolBoardLeaf.tmpl.cloneNode(true);
-	var cContext= DOM('toolContext',cRoot);
+	var cContext= DOM('toolBLeafContext',cRoot);
 	NOID(cRoot);
 
 	cContext.elementText(cContext.elementText() +this.ndata.id);

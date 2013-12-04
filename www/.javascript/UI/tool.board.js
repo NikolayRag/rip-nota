@@ -31,10 +31,10 @@ ToolBoard.prototype.build= function(_parentEl){
 	var cRoot= {
 		root:ToolBoard.tmpl.cloneNode(true)
 	};
-	cRoot.context= DOM('toolContext',cRoot.root);
-	cRoot.tNew= DOM('toolNew',cRoot.root);
-	cRoot.tStyle= DOM('toolStyle',cRoot.root);
-	cRoot.setOwner= DOM('toolsetOwner',cRoot.root);
+	cRoot.context= DOM('toolBoardContext',cRoot.root);
+	cRoot.tNew= DOM('toolBoardNew',cRoot.root);
+	cRoot.tStyle= DOM('toolBoardStyle',cRoot.root);
+	cRoot.setOwner= DOM('toolBoardSetOwner',cRoot.root);
 	cRoot.rtsR= [0,DOM('rights1_R',cRoot.root),DOM('rights2_R',cRoot.root),0,DOM('rights4_R',cRoot.root)];
 	cRoot.rtsA= [0,DOM('rights1_A',cRoot.root),DOM('rights2_A',cRoot.root),0,DOM('rights4_A',cRoot.root)];
 	cRoot.rtsE= [0,DOM('rights1_E',cRoot.root),DOM('rights2_E',cRoot.root),0,DOM('rights4_E',cRoot.root)];

@@ -1,12 +1,12 @@
 
 <?=$NOPROFILE? '': "<!-- in template toolBLeafEdit -->\n"?>
 <div id='toolBLeafEditTmpl' class='tool'>
-	<span id='toolContext' class='toolContext'>
-		<span id='toolOuter'>
-			<span id='toolMove' class='toolItem'>move</span>
+	<span id='toolBLeafEditContext' class='toolContext'>
+		<span id='toolBLeafEditOuter'>
+			<span id='toolBLeafEditMove' class='toolItem'>move</span>
 		</span>
-		<span id='toolInner'>
-			<span id='toolStyle' class='toolItem'>style</span>
+		<span id='toolBLeafEditInner'>
+			<span id='toolBLeafEditStyle' class='toolItem'>style</span>
 		</span>
 	</span>
 </div>
