@@ -74,6 +74,8 @@ ALERT(PROFILE.GENERAL, 'SAVE', saveData);
 } 
 
 this.saveCB= function(_sData){
+console.log(_sData);
+
 ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 
 	var sDataA= _sData.split(ASYGN.D_ITEM);

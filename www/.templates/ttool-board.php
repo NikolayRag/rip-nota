@@ -3,7 +3,8 @@
 <div id='toolBoardTmpl' class='tool'>
 	<span id='toolContext' class='toolContext'>
 		<span id='toolOuter'>
-			<span id='toolNew' class='toolItem'>new</span>
+			<span id='toolNewNote' class='toolItem'>note</span>
+			<span id='toolNewData' class='toolItem'>data</span>
 		</span>
 		<span id='toolInner'>
 			<span id='toolStyle' class='toolItem'>style</span>

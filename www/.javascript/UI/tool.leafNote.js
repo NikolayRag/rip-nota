@@ -13,7 +13,7 @@ ToolBoardLeaf.prototype.bindEvt= function(){
 	var _this= this;
 
 	this.DOM.context.onmousedown= noBubbles;
-	this.DOM.context.onmouseup= function(){_this.opDefault()};
+	this.DOM.context.onmouseup= function(){_this.opInnerTool()};
 }
 
 ToolBoardLeaf.tmpl= DOM('toolBLeafTmpl')
@@ -59,7 +59,7 @@ ToolBoardLeaf.prototype.kill= function(){
 }
 
 
-ToolBoardLeaf.prototype.opDefault= function(){
+ToolBoardLeaf.prototype.opInnerTool= function(){
 	var _this= this;
 	setTimeout(function(){
 		_this.ndata.ui.toolShowEdit();
