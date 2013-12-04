@@ -11,7 +11,8 @@ var ToolBoard= function(_rootW,_board){
 
 ToolBoard.prototype.bindEvt= function(){
 	var _this= this;
-	this.DOM.tNew.onmouseup= function(){_this.opDefault()};
+	this.DOM.tNewNote.onmouseup= function(){_this.opNewNote()};
+	this.DOM.tNewData.onmouseup= function(){_this.opNewData()};
 	this.DOM.tStyle.onmouseup= function(_e){_this.opStyle(_e)};
 
 	this.DOM.rtsR[1].onclick=	function(){_this.opRights(this,1,0)};
@@ -41,10 +42,18 @@ ToolBoard.prototype.build= function(_parentEl){
 		rtsE: [0,DOM('rights1_E',cClone),DOM('rights2_E',cClone),0,DOM('rights4_E',cClone)]
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cRoot.context= DOM('toolBoardContext',cRoot.root);
 	cRoot.tNew= DOM('toolBoardNew',cRoot.root);
 	cRoot.tStyle= DOM('toolBoardStyle',cRoot.root);
 	cRoot.setOwner= DOM('toolBoardSetOwner',cRoot.root);
+=======
+	cRoot.context= DOM('toolContext',cRoot.root);
+	cRoot.tNewNote= DOM('toolNewNote',cRoot.root);
+	cRoot.tNewData= DOM('toolNewData',cRoot.root);
+	cRoot.tStyle= DOM('toolStyle',cRoot.root);
+	cRoot.setOwner= DOM('toolsetOwner',cRoot.root);
+>>>>>>> save-basic
 	cRoot.rtsR= [0,DOM('rights1_R',cRoot.root),DOM('rights2_R',cRoot.root),0,DOM('rights4_R',cRoot.root)];
 	cRoot.rtsA= [0,DOM('rights1_A',cRoot.root),DOM('rights2_A',cRoot.root),0,DOM('rights4_A',cRoot.root)];
 	cRoot.rtsE= [0,DOM('rights1_E',cRoot.root),DOM('rights2_E',cRoot.root),0,DOM('rights4_E',cRoot.root)];
@@ -103,10 +112,23 @@ ToolBoard.prototype.kill= function(){
 
 
 
-ToolBoard.prototype.opDefault= function(){
+ToolBoard.prototype.opNewNote= function(){
 	var _this= this;
 
 alert('new note at '
+	+(UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft)
+	+':' +(UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop)
+);
+
+	setTimeout(function(){
+		UI.toolSet.kill(_this)
+	},0);
+}
+
+ToolBoard.prototype.opNewData= function(){
+	var _this= this;
+
+alert('new data at '
 	+(UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft)
 	+':' +(UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop)
 );

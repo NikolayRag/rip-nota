@@ -1,9 +1,16 @@
 
 <?=$NOPROFILE? '': "<!-- in template toolBoard -->\n"?>
 <div id='toolBoardTmpl' class='tool'>
+<<<<<<< HEAD
 	<span id='toolBoardContext' class='toolContext'>
 		<span id='toolBoardOuter'>
 			<span id='toolBoardNew' class='toolItem'>new</span>
+=======
+	<span id='toolContext' class='toolContext'>
+		<span id='toolOuter'>
+			<span id='toolNewNote' class='toolItem'>note</span>
+			<span id='toolNewData' class='toolItem'>data</span>
+>>>>>>> save-basic
 		</span>
 <<<<<<< HEAD
 		<span id='toolBoardInner'>
