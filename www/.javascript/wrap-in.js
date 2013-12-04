@@ -35,12 +35,6 @@ var NOID= function(_root){
 
 ////Compatibility collection definition
 var IS= {};
-//todo: replace platform detection with feature flags
-IS.safari=
-  navigator.userAgent.toLowerCase().indexOf('safari') != -1;
-IS.gecko=
-  !IS.safari
-  &&navigator.userAgent.toLowerCase().indexOf('gecko') != -1;
 IS.dnd= (
 	'undefined'!==typeof File
 	&&(
@@ -52,13 +46,18 @@ IS.dnd= (
 	&&'undefined'===typeof FileList
 	&&'undefined'===typeof Blob
 )? 1:0;
+//todo: update url without reload
 IS.popurl=
   0;
+//todo: mouse or finger
 IS.hover=
   1;
 IS.scrollW=
   100 -DOM('testEl').clientWidth;
 
+IS.fn= function(_test){
+	return 'function' == typeof _test;
+}
 
 //cache stylesheets
 var STYLES= {};

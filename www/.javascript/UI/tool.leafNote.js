@@ -18,16 +18,25 @@ ToolBoardLeaf.prototype.bindEvt= function(){
 
 ToolBoardLeaf.tmpl= DOM('toolBLeafTmpl')
 ToolBoardLeaf.prototype.build= function(_parentEl){
+<<<<<<< HEAD
 	var cRoot= ToolBoardLeaf.tmpl.cloneNode(true);
 	var cContext= DOM('toolBLeafContext',cRoot);
 	NOID(cRoot);
+=======
+	var cClone= ToolBoardLeaf.tmpl.cloneNode(true);
+	var cRoot= {
+		root: cClone,
+		context: DOM('toolContext',cClone)
+	};
+	NOID(cClone);
+>>>>>>> ui-colorPicker
 
-	cContext.elementText(cContext.elementText() +this.ndata.id);
+	cRoot.context.elementText(cRoot.context.elementText() +this.ndata.id);
 
-	_parentEl.appendChild(cRoot);
+	_parentEl.appendChild(cClone);
 
-	cContext.focus();
-	var ctx= cContext.style;
+	cRoot.context.focus();
+	var ctx= cRoot.context.style;
 //+++classname
 	  ctx.top= '-30px';
 	  ctx.left= '-30px';
@@ -36,10 +45,7 @@ ToolBoardLeaf.prototype.build= function(_parentEl){
 	  ctx.padding= '14px';
 	  ctx.borderColor= '#aad';
 
-	return {
-		root:cRoot,
-		context:cContext
-	};
+	return cRoot;
 }
 
 ToolBoardLeaf.prototype.kill= function(){

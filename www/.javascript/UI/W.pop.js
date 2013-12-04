@@ -31,12 +31,12 @@ this.up= function(_src,_okCode,_notCode,_focusOn){
 	while (this.DOMUpContent.firstChild)
       this.DOMUpContent.removeChild(this.DOMUpContent.firstChild);
 	if (_src instanceof HTMLElement)
-	  this.DOMUpContent.appendChild(_src.cloneNode(true));
+	  this.DOMUpContent.appendChild(_src);
 	else
 	  this.DOMUpContent.elementText(_src,true);
 
-	this.okCode= _okCode;
-	this.notCode= _notCode;
+	this.okCode= IS.fn(_okCode)? _okCode :undefined;
+	this.notCode= IS.fn(_notCode)? _notCode :undefined;
 	this.DOMOk.style.display= (!_okCode? 'none':'');
 
 	this.DOMUpCover.style.display= '';

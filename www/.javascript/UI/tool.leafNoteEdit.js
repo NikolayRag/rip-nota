@@ -51,7 +51,9 @@ ToolBoardLeafEdit.prototype.opMouseUp= function(){
 
 ToolBoardLeafEdit.tmpl= DOM('toolBLeafEditTmpl')
 ToolBoardLeafEdit.prototype.build= function(_parentEl){
+	var cClone= ToolBoardLeafEdit.tmpl.cloneNode(true);
 	var cRoot= {
+<<<<<<< HEAD
 		root:ToolBoardLeafEdit.tmpl.cloneNode(true)
 	};
 	cRoot.context= DOM('toolBLeafEditContext',cRoot.root);
@@ -62,10 +64,24 @@ ToolBoardLeafEdit.prototype.build= function(_parentEl){
 	cRoot.tInner= DOM('toolBLeafEditInner',cRoot.root);
 	cRoot.tStyle= DOM('toolBLeafEditStyle',cRoot.root);
 	NOID(cRoot.root);
+=======
+		root: cClone,
+		context: DOM('toolContext',cClone),
 
+		tOuter: DOM('toolOuter',cClone),
+		tMove: DOM('toolMove',cClone),
+
+		tInner: DOM('toolInner',cClone),
+		tStyleSample: DOM('toolStyleSample',cClone),
+		tStyle: DOM('toolStyle',cClone)
+	};
+	NOID(cClone);
+>>>>>>> ui-colorPicker
+
+	cRoot.tStyleSample.appendChild(UI.paletteW.show());
 	this.assignRights(cRoot);
 	
-	_parentEl.appendChild(cRoot.root);
+	_parentEl.appendChild(cClone);
 
 	cRoot.context.focus();
 	var ctx= cRoot.context.style;
@@ -140,10 +156,10 @@ ToolBoardLeafEdit.prototype.opCancel= function() {
 
 
 ToolBoardLeafEdit.prototype.opStyle= function() {
-	var _target= this.ndata.sibling();
-	UI.paletteW.pick(
-		function(_newStyle){_target.save({style:_newStyle})}
-	);
+	var dTarget= this.ndata.sibling();
+//popup, if need
+//UI.paletteW.show(1,function(_style){dTarget.save({style:_style})});
+	dTarget.save({style:UI.paletteW.style})
 }
 
 

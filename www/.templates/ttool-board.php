@@ -5,8 +5,14 @@
 		<span id='toolBoardOuter'>
 			<span id='toolBoardNew' class='toolItem'>new</span>
 		</span>
+<<<<<<< HEAD
 		<span id='toolBoardInner'>
 			<span id='toolBoardStyle' class='toolItem'>style</span>
+=======
+		<span id='toolInner'>
+			<span id='toolStyleSample' class='toolItem'></span>
+			<span id='toolStyle' class='toolItem'>style</span>
+>>>>>>> ui-colorPicker
 		</span>
 	</span>
 
