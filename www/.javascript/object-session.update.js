@@ -191,19 +191,19 @@ this.updateCB= function(_bData){
 	var splitData= _bData.split(ASYGN.D_UNIT);
 	var ctxNote= undefined; //context for storing Ndata to within cycle
 
-	var checkTime= __PROFILE.profileTime();
-	var checkSize= DIC._got +': ' +formatMeasures(_bData.length,1024,.1,'b');
+	var profTime= __PROFILE.profileTime();
+	var profSize= DIC._got +': ' +formatMeasures(_bData.length,1024,.1,'b');
 	var profTimeA= splitData[splitData.length>1?splitData.length-2:0].split(ASYGN.D_ITEM);
 	var profTimeMsg= profTimeA[0]=='t'?
-	  (profTimeA[2]*1000 +':' +DIC.popStateProfTimeServ +', ' +(checkTime-profTimeA[2]*1000) +':' +DIC.popStateProfTimeTransfer)
+	  (profTimeA[2]*1000 +':' +DIC.popStateProfTimeServ +', ' +(profTime-profTimeA[2]*1000) +':' +DIC.popStateProfTimeTransfer)
 	  : '';
 
 var ALERTFLAG= 1;
 if (ALERTFLAG) {	//profile request +CBtime +responce
 	ALERT(PROFILE.VERBOSE, 'Request', this.saveData);
-	ALERT(PROFILE.VERBOSE, 'Reloaded in', checkTime/1000 +(profTimeMsg!=''? 's (' +profTimeMsg +')' :''));
+	ALERT(PROFILE.VERBOSE, 'Reloaded in', profTime/1000 +(profTimeMsg!=''? 's (' +profTimeMsg +')' :''));
 	ALERT(PROFILE.VERBOSE, 'FPS', UI.fps);
-	ALERT(PROFILE.VERBOSE, checkSize +': ', splitData.join("\n"));
+	ALERT(PROFILE.VERBOSE, profSize +': ', splitData.join("\n"));
 //	ALERTFLAG= 0; //do once
 }
 
@@ -291,7 +291,7 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 ALERT();
 
 	//no errors, fuckup is canceled and error state is reset
-	var profBreef= checkSize +' ' +DIC._in.toLowerCase() +' ' +checkTime/1000 +'s' +((profTimeMsg!=''? profTimeMsg +'<br> ' :'') +__PROFILE.profileTime() +'ms: ' +DIC._proccessed).decorateHTML(STR.IDENT) +'FPS: ' +UI.fps;
+	var profBreef= profSize +' ' +DIC._in.toLowerCase() +' ' +profTime/1000 +'s' +((profTimeMsg!=''? profTimeMsg +'<br> ' :'') +__PROFILE.profileTime() +'ms: ' +DIC._proccessed).decorateHTML(STR.IDENT) +'FPS: ' +UI.fps;
 	this.setState(UPDATE_STATE.NORMAL,profBreef);
 }
 
