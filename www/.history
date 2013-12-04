@@ -199,6 +199,10 @@ b1.9:
 +sql:	users table, stamp become db internal timestamp;
 		+ lastlogin moved to loglogon table
 +seq:	added site-specific constants; see init.php
++palette:	introduced functionality
++palette:	.show(pop,cb) made shown with pop.up();
+			else used embedded
++pop:	dont clone supplied element to enable appending events outside
 
 
 Minor:
@@ -280,7 +284,10 @@ Minor:
             + added test animation on background
 +log:		added remote port logging in addition to ip
 +pop:		accept DOM element with hierarchy as content
-
++palette:	.pick() renamed to .show()
++logon:		make adequate for use without cloning in pop.up();
+			cleanup entered confirmation before pass to pop.up()
++JS:		removed platform detection strings
 
 Refactor:
 +Board ui:		cache clientHeight/Width()
@@ -363,7 +370,7 @@ Refactor:
 +wrap:			DOCUMENT.body replaced with DOCUMENT.bodyEl everywhere
 +note-ui:		bg separated
 +ui:			performance variable moved to constant PERF.LEVEL
-
++Palette:		Colorpicker renamed to Palette 
 
 
 Fix:

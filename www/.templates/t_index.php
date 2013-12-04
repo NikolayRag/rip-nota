@@ -19,6 +19,7 @@
 <iframe name='loadForm' style='display:none'></iframe>
 <div id='templates' style='display:none'>
 	<? include('.templates/tdyn_register.php'); ?>
+	<? include('.templates/tdyn_widPalette.php'); ?>
 	<? include('.templates/ttool-boardLeaf.php'); ?>
 	<? include('.templates/ttool-boardLeafEdit.php'); ?>
 	<? include('.templates/ttool-board.php'); ?>
@@ -42,7 +43,6 @@
 </tr></table>
 
 <? include('.templates/t_widContactlist.php'); ?>
-<? include('.templates/t_widColorpicker.php'); ?>
 <? include('.templates/t_widPopup.php'); ?>
 
 <script type='text/javascript'>

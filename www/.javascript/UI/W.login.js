@@ -14,11 +14,12 @@ this.validatePass= function(){
 }
 
 this.registerCheck= function(){
-	DOM('regUname',this.DOMRegTmpl).elementText(this.DOMUname.value);
+	this.DOMRegUName.elementText(this.DOMUname.value);
+	this.DOMRegPass.value= '';
 	var _this= this;
-	UI.popW.up(this.DOMRegTmpl,
+	UI.popW.up(this.DOMReg,
 		function(){
-			if (DOM('regPass',UI.popW.DOMUpContent).value==_this.DOMPass.value)
+			if (_this.DOMRegPass.value==_this.DOMPass.value)
 			  _this.login(1);
 			else
 			  setTimeout(function(){UI.popW.up(DIC.errrPrePassMismatch)},0);
@@ -102,7 +103,9 @@ this.DOMUnameCover= DOM('logUnameCover');
 this.DOMPass= DOM('logPass');
 this.DOMPassCover= DOM('logPassCover');
 //
-this.DOMRegTmpl= DOM('regTmpl');
+this.DOMReg= DOM('regTmpl');
+this.DOMRegUName= DOM('regUname',this.DOMReg);
+this.DOMRegPass= DOM('regPass',this.DOMReg);
 
 this.bindEvt();
 

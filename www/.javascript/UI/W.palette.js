@@ -1,22 +1,26 @@
 /*
 	color picker
 
-	.show(cb) shows Palette;
-	on confirm, supplied cb(newStyle,hideCB) is called with:
-		newStyle:	new style object
+	.show((bool)isPop,(fn)cb) shows Palette;
+	If isPop, palette is shown with pop.up() and cb(style) is
+	 passed as okCode.
+	Else Palette is only inited and its instance is returned to
+	 parent elsewhere.
 */
 UI.paletteW= new function(){
 
-this.style= new Style('#888');
-this.cbFunction= null;
+this.show= function(_isPop,_cb){
+	this.DOMPaletteSample.style.background= this.style.noteBG.hex();
 
-this.show= function(_cbFn){
-	this.cbFunction= _cbFn;
-	this.DOMPalette.style.display= '';
-}
+	var _this= this;
 
-this.hide= function(){
-	this.DOMPalette.style.display= 'none';
+	var okCode= function(){
+		  _cb(_this.style)
+	};
+	if (_isPop)
+	  UI.popW.up(this.DOMPalette, IS.fn(_cb)? okCode :undefined);
+
+	return this.DOMPalette;
 }
 
 
@@ -33,19 +37,14 @@ this.bindEvt= function(){
 		_this.DOMPaletteSample.style.background= _this.style.noteBG.hex();
 	}
 
-	this.DOMPaletteApply.onclick= function(){
-		if (_this.cbFunction)
-		  _this.cbFunction(_this.style);
-	}
 }
 
 
-this.DOMPalette= DOM('colorPicker');
-this.DOMPaletteSample= DOM('colorSample');
-this.DOMPaletteApply= DOM('colorApply');
+this.style= new Style('#888');
 
-//INIT
-this.DOMPaletteSample.style.background= this.style.noteBG.hex();
+
+this.DOMPalette= DOM('palette');
+this.DOMPaletteSample= DOM('paletteSample');
 
 this.bindEvt();
 }

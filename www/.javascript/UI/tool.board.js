@@ -28,24 +28,27 @@ ToolBoard.prototype.bindEvt= function(){
 
 ToolBoard.tmpl= DOM('toolBoardTmpl')
 ToolBoard.prototype.build= function(_parentEl){
+	var cClone= ToolBoard.tmpl.cloneNode(true);
 	var cRoot= {
-		root:ToolBoard.tmpl.cloneNode(true)
+		root: cClone,
+		context: DOM('toolContext',cClone),
+		tNew: DOM('toolNew',cClone),
+		tStyleSample: DOM('toolStyleSample',cClone),
+		tStyle: DOM('toolStyle',cClone),
+		setOwner: DOM('toolsetOwner',cClone),
+		rtsR: [0,DOM('rights1_R',cClone),DOM('rights2_R',cClone),0,DOM('rights4_R',cClone)],
+		rtsA: [0,DOM('rights1_A',cClone),DOM('rights2_A',cClone),0,DOM('rights4_A',cClone)],
+		rtsE: [0,DOM('rights1_E',cClone),DOM('rights2_E',cClone),0,DOM('rights4_E',cClone)]
 	};
-	cRoot.context= DOM('toolContext',cRoot.root);
-	cRoot.tNew= DOM('toolNew',cRoot.root);
-	cRoot.tStyle= DOM('toolStyle',cRoot.root);
-	cRoot.setOwner= DOM('toolsetOwner',cRoot.root);
-	cRoot.rtsR= [0,DOM('rights1_R',cRoot.root),DOM('rights2_R',cRoot.root),0,DOM('rights4_R',cRoot.root)];
-	cRoot.rtsA= [0,DOM('rights1_A',cRoot.root),DOM('rights2_A',cRoot.root),0,DOM('rights4_A',cRoot.root)];
-	cRoot.rtsE= [0,DOM('rights1_E',cRoot.root),DOM('rights2_E',cRoot.root),0,DOM('rights4_E',cRoot.root)];
-	NOID(cRoot.root);
+	NOID(cClone);
 
+	cRoot.tStyleSample.appendChild(UI.paletteW.show());
 	this.assignRights(cRoot);
 
 	for (var i in this.board.PUB.rightsA)
 	  this.draw1rt(i,this.board.PUB.rightsA[i],cRoot);
 
-	_parentEl.appendChild(cRoot.root);
+	_parentEl.appendChild(cClone);
 
 	cRoot.context.focus();
 	var ctx= cRoot.context.style;
@@ -103,10 +106,10 @@ alert('new note at '
 }
 
 ToolBoard.prototype.opStyle= function() {
-	var _target= this.board;
-	UI.paletteW.show(
-		function(_newStyle){_target.save({style:_newStyle})}
-	);
+	var dTarget= this.board;
+//popup if need
+	//UI.paletteW.show(1,function(_newStyle){dTarget.save({style:_newStyle})});
+	dTarget.save({style:UI.paletteW.style})
 }
 
 ToolBoard.prototype.opRights= function(_el,_grp,_rt){

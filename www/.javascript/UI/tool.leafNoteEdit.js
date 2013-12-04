@@ -51,21 +51,24 @@ ToolBoardLeafEdit.prototype.opMouseUp= function(){
 
 ToolBoardLeafEdit.tmpl= DOM('toolBLeafEditTmpl')
 ToolBoardLeafEdit.prototype.build= function(_parentEl){
+	var cClone= ToolBoardLeafEdit.tmpl.cloneNode(true);
 	var cRoot= {
-		root:ToolBoardLeafEdit.tmpl.cloneNode(true)
+		root: cClone,
+		context: DOM('toolContext',cClone),
+
+		tOuter: DOM('toolOuter',cClone),
+		tMove: DOM('toolMove',cClone),
+
+		tInner: DOM('toolInner',cClone),
+		tStyleSample: DOM('toolStyleSample',cClone),
+		tStyle: DOM('toolStyle',cClone)
 	};
-	cRoot.context= DOM('toolContext',cRoot.root);
+	NOID(cClone);
 
-	cRoot.tOuter= DOM('toolOuter',cRoot.root);
-	cRoot.tMove= DOM('toolMove',cRoot.root);
-
-	cRoot.tInner= DOM('toolInner',cRoot.root);
-	cRoot.tStyle= DOM('toolStyle',cRoot.root);
-	NOID(cRoot.root);
-
+	cRoot.tStyleSample.appendChild(UI.paletteW.show());
 	this.assignRights(cRoot);
 	
-	_parentEl.appendChild(cRoot.root);
+	_parentEl.appendChild(cClone);
 
 	cRoot.context.focus();
 	var ctx= cRoot.context.style;
@@ -140,13 +143,10 @@ ToolBoardLeafEdit.prototype.opCancel= function() {
 
 
 ToolBoardLeafEdit.prototype.opStyle= function() {
-	var _target= this.ndata.sibling();
-	UI.paletteW.show(
-		function(_newStyle){
-			UI.paletteW.hide();
-			_target.save({style:_newStyle})
-		}
-	);
+	var dTarget= this.ndata.sibling();
+//popup, if need
+//UI.paletteW.show(1,function(_style){dTarget.save({style:_style})});
+	dTarget.save({style:UI.paletteW.style})
 }
 
 

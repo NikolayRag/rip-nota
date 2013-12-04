@@ -6,6 +6,7 @@
 			<span id='toolNew' class='toolItem'>new</span>
 		</span>
 		<span id='toolInner'>
+			<span id='toolStyleSample' class='toolItem'></span>
 			<span id='toolStyle' class='toolItem'>style</span>
 		</span>
 	</span>
