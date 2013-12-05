@@ -1,25 +1,14 @@
 
 <?=$NOPROFILE? '': "<!-- in template toolBoard -->\n"?>
 <div id='toolBoardTmpl' class='tool'>
-<<<<<<< HEAD
 	<span id='toolBoardContext' class='toolContext'>
 		<span id='toolBoardOuter'>
-			<span id='toolBoardNew' class='toolItem'>new</span>
-=======
-	<span id='toolContext' class='toolContext'>
-		<span id='toolOuter'>
-			<span id='toolNewNote' class='toolItem'>note</span>
-			<span id='toolNewData' class='toolItem'>data</span>
->>>>>>> save-basic
+			<span id='toolBoardNewNote' class='toolItem'>Note</span>
+			<span id='toolBoardNewData' class='toolItem'>data</span>
 		</span>
-<<<<<<< HEAD
 		<span id='toolBoardInner'>
+			<span id='toolBoardStyleSample' class='toolItem'></span>
 			<span id='toolBoardStyle' class='toolItem'>style</span>
-=======
-		<span id='toolInner'>
-			<span id='toolStyleSample' class='toolItem'></span>
-			<span id='toolStyle' class='toolItem'>style</span>
->>>>>>> ui-colorPicker
 		</span>
 	</span>
 

@@ -371,7 +371,7 @@ Refactor:
 +note-ui:		bg separated
 +ui:			performance variable moved to constant PERF.LEVEL
 +Palette:		Colorpicker renamed to Palette 
-
++update:		var checkTime/Name renamed to prof*
 
 Fix:
 +class-color:	Short-tag constructor make dark colors. Fixed.
@@ -405,7 +405,7 @@ Fix:
 +unit:			fixed forRedraw assignment
 +update:		update suppressed for active version greater than db
 -logo:			offscreen logo doesn't update; periodically reset doesnt fix
--pop:			poptip blinks
++pop:			poptip blinks removed
 +ui:			initial mouseXY set to null to avoid tool activity before any pointer movement
 +class-color:	short hash parsing didnt reach values of 255;
 +note:			shadow generation properly uses initial offset
@@ -438,7 +438,7 @@ Fix:
 +logon:			validation for blank username was calling server; should not.
 +php:			fixed for apache: correct filename cases; correct absolute paths
 +php:			added UTF8 to PDO
-
++css:			Nota BG overlay border radius
 
 Spike:
 +ie:	window[''] moved to document;

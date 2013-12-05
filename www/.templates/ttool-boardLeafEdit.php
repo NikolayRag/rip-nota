@@ -5,14 +5,9 @@
 		<span id='toolBLeafEditOuter'>
 			<span id='toolBLeafEditMove' class='toolItem'>move</span>
 		</span>
-<<<<<<< HEAD
 		<span id='toolBLeafEditInner'>
+			<span id='toolBLeafEditStyleSample' class='toolItem'></span>
 			<span id='toolBLeafEditStyle' class='toolItem'>style</span>
-=======
-		<span id='toolInner'>
-			<span id='toolStyleSample' class='toolItem'></span>
-			<span id='toolStyle' class='toolItem'>style</span>
->>>>>>> ui-colorPicker
 		</span>
 	</span>
 </div>

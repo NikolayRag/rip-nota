@@ -53,30 +53,17 @@ ToolBoardLeafEdit.tmpl= DOM('toolBLeafEditTmpl')
 ToolBoardLeafEdit.prototype.build= function(_parentEl){
 	var cClone= ToolBoardLeafEdit.tmpl.cloneNode(true);
 	var cRoot= {
-<<<<<<< HEAD
-		root:ToolBoardLeafEdit.tmpl.cloneNode(true)
-	};
-	cRoot.context= DOM('toolBLeafEditContext',cRoot.root);
-
-	cRoot.tOuter= DOM('toolBLeafEditOuter',cRoot.root);
-	cRoot.tMove= DOM('toolBLeafEditMove',cRoot.root);
-
-	cRoot.tInner= DOM('toolBLeafEditInner',cRoot.root);
-	cRoot.tStyle= DOM('toolBLeafEditStyle',cRoot.root);
-	NOID(cRoot.root);
-=======
 		root: cClone,
-		context: DOM('toolContext',cClone),
+		context: DOM('toolBLeafEditContext',cClone),
 
-		tOuter: DOM('toolOuter',cClone),
-		tMove: DOM('toolMove',cClone),
+		tOuter: DOM('toolBLeafEditOuter',cClone),
+		tMove: DOM('toolBLeafEditMove',cClone),
 
-		tInner: DOM('toolInner',cClone),
-		tStyleSample: DOM('toolStyleSample',cClone),
-		tStyle: DOM('toolStyle',cClone)
+		tInner: DOM('toolBLeafEditInner',cClone),
+		tStyleSample: DOM('toolBLeafEditStyleSample',cClone),
+		tStyle: DOM('toolBLeafEditStyle',cClone)
 	};
 	NOID(cClone);
->>>>>>> ui-colorPicker
 
 	cRoot.tStyleSample.appendChild(UI.paletteW.show());
 	this.assignRights(cRoot);

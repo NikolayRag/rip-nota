@@ -18,18 +18,12 @@ ToolBoardLeaf.prototype.bindEvt= function(){
 
 ToolBoardLeaf.tmpl= DOM('toolBLeafTmpl')
 ToolBoardLeaf.prototype.build= function(_parentEl){
-<<<<<<< HEAD
-	var cRoot= ToolBoardLeaf.tmpl.cloneNode(true);
-	var cContext= DOM('toolBLeafContext',cRoot);
-	NOID(cRoot);
-=======
 	var cClone= ToolBoardLeaf.tmpl.cloneNode(true);
 	var cRoot= {
 		root: cClone,
-		context: DOM('toolContext',cClone)
+		context: DOM('toolBLeafContext',cClone)
 	};
 	NOID(cClone);
->>>>>>> ui-colorPicker
 
 	cRoot.context.elementText(cRoot.context.elementText() +this.ndata.id);
 
