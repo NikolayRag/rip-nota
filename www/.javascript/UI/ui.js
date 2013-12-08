@@ -27,7 +27,14 @@ var UI= new function(){
 //UI.updated;
 //todo: should be called only when Board is changed or it changes implicit state
 this.drawWindow= function(){
-	this.DOMToolbar.style.display= (this.embed? 'none' : '');
+	this.DOM.toolbar.style.display= (this.embed? 'none' : '');
+
+
+	var _owner= SESSION.owner();
+	if (_owner && _owner.forRedraw){
+		UI.youW.DOM.bar.style.display= (!_owner.id? 'none': '');
+		UI.loginW.DOM.bar.style.display= (_owner.id? 'none' : '');
+	}
 }
 
 
@@ -75,7 +82,7 @@ this.drawState= function(_state, _msgVerb){
 this.style= function(){
 	var style= SESSION.board.PUB.style;
 
-	this.DOMToolbar.style.backgroundColor= style.mainDark.hex('');
+	this.DOM.toolbar.style.backgroundColor= style.mainDark.hex('');
 	
 //todo: style out everything else
 }
@@ -83,7 +90,7 @@ this.style= function(){
 
 
 this.freeze= function(_mode){
-	this.DOMBody.style.cursor= _mode?STYLE.CURSOR_MOVE:'';
+	this.DOM.body.style.cursor= _mode?STYLE.CURSOR_MOVE:'';
 
 //	STYLES.freezein.display= _mode?'':'none'; //cover with lids globally
 //	STYLES.freezeout.display= _mode?'none':''; //hide globally
@@ -123,7 +130,7 @@ this.mouseContext= function(_e,_that,_fnDown,_fnMove,_fnUp){
 
 	var _this= this;
 	if (_fnMove)
-	  this.DOMBody.onmousemove=	function(_e2){
+	  this.DOM.body.onmousemove=	function(_e2){
 		_e2= _e2||WINDOW.event;
 		_this._fpsTick+= 1;
 
@@ -137,7 +144,7 @@ this.mouseContext= function(_e,_that,_fnDown,_fnMove,_fnUp){
 
 		_fnMove.call(_that,_e2)
 	  };
-	  this.DOMBody.onmouseup= function(_e2){
+	  this.DOM.body.onmouseup= function(_e2){
 		_this.mouseContextRelease(_e2);
 		if (_fnUp)
 		  _fnUp.call(_that,_e2||WINDOW.event);
@@ -152,10 +159,10 @@ this.mouseContext= function(_e,_that,_fnDown,_fnMove,_fnUp){
 
 ////private
 this.mouseContextRelease= function(_e){
-	this.DOMBody.onmousedown=
-	 this.DOMBody.onmouseup=
+	this.DOM.body.onmousedown=
+	 this.DOM.body.onmouseup=
 	 null;
-	this.DOMBody.onmousemove= this.mouseContextNop;
+	this.DOM.body.onmousemove= this.mouseContextNop;
 
 	this.mouseButton= -1;
 	this.freeze(0);
@@ -169,7 +176,7 @@ this.mouseContextNop= function(_e){
 
 
 this.bindEvt= function(){
-	this.DOMBody.onmousemove= this.mouseContextNop;
+	this.DOM.body.onmousemove= this.mouseContextNop;
 }
 
 this.bindDeep= function(_scrollFn, _resizeFn){
@@ -193,11 +200,12 @@ this._fpsTick= 0; //self profiling
 this.fps= 0;
 
 
-////bind
-this.DOMBody= DOCUMENT.bodyEl;
-this.DOMToolbar= DOM('workToolbar');
-//
-this.DOMWorkField= DOM('workField');
+this.DOM= {
+	body: DOCUMENT.bodyEl,
+	toolbar: DOM('workToolbar'),
+
+	workField: DOM('workField')
+};
 
 
 this.bindEvt();

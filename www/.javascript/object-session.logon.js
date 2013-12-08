@@ -51,10 +51,10 @@ this.loginCB= function(_res){
 	var fReg= 0;
 	switch (resA[0] |0) {
 		case SESSION_STATES.VALIDATE:
-			UI.loginW.DOMSubmit.value= (responce==1) ?DIC.labLogIn :DIC.labLogRegister;
+			UI.loginW.DOM.submit.value= (responce==1) ?DIC.labLogIn :DIC.labLogRegister;
 			return;
 		case SESSION_STATES.STAY:
-			UI.youW.DOMStayLab.flash(CSS.GREENLIGHT);
+			UI.youW.DOM.stayLab.flash(CSS.GREENLIGHT);
 			SESSION.cookieSet(responce,AUTHORIZE.COOKIENAME);
 			return;
 		case SESSION_STATES.LOGOUT:

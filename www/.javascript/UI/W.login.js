@@ -2,24 +2,24 @@ UI.loginW= new function(){
 
 //minimal validation, to unload server abit
 this.validateUname= function(){
-	var username= this.DOMUname.value.trim();
+	var username= this.DOM.uname.value.trim();
 	if (username.length>1)
 	  return username;
 }
 
 this.validatePass= function(){
-	var password= this.DOMPass.value;
+	var password= this.DOM.pass.value;
 	if (password.length>0)
 	  return password;
 }
 
 this.registerCheck= function(){
-	this.DOMRegUName.elementText(this.DOMUname.value);
-	this.DOMRegPass.value= '';
+	this.DOM.regUName.elementText(this.DOM.uname.value);
+	this.DOM.regPass.value= '';
 	var _this= this;
-	UI.popW.up(this.DOMReg,
+	UI.popW.up(this.DOM.reg,
 		function(){
-			if (_this.DOMRegPass.value==_this.DOMPass.value)
+			if (_this.DOM.regPass.value==_this.DOM.pass.value)
 			  _this.login(1);
 			else
 			  setTimeout(function(){UI.popW.up(DIC.errrPrePassMismatch)},0);
@@ -57,9 +57,9 @@ this.validateLogin= function(){
 	this.validateTimeout= setTimeout(function(){
 		var username= _this.validateUname();
 		var password= _this.validatePass();
-		_this.DOMUnameCover.style.color= password? CSS.FIELD_REQUIRED_HILITE:'';
-		_this.DOMPassCover.style.color= username? CSS.FIELD_REQUIRED_HILITE:'';
-		_this.DOMSubmit.disabled= (!username || !password)? 'disabled':'';
+		_this.DOM.unameCover.style.color= password? CSS.FIELD_REQUIRED_HILITE:'';
+		_this.DOM.passCover.style.color= username? CSS.FIELD_REQUIRED_HILITE:'';
+		_this.DOM.submit.disabled= (!username || !password)? 'disabled':'';
 		SESSION.logon.login(SESSION_STATES.VALIDATE,username);
 		_this.validateTimeout= undefined;
 	},TIMER_LENGTH.VALIDATE_DELAY);
@@ -68,44 +68,47 @@ this.validateLogin= function(){
 
 this.bindEvt= function(){
 	var _this= this;
-	this.DOMForm.onsubmit= function(){
+	this.DOM.form.onsubmit= function(){
 		_this.login();
 		return false;
 	};
 
-	this.DOMUname.onkeypress= this.DOMUname.onkeyup= function(_e){
+	this.DOM.uname.onkeypress= this.DOM.uname.onkeyup= function(_e){
 		_e= _e||WINDOW.event;
-	 	_this.DOMUnameCover.style.display= (eKeyCode(_e)>=28 || this.value!='')? 'none' :'';
+	 	_this.DOM.unameCover.style.display= (eKeyCode(_e)>=28 || this.value!='')? 'none' :'';
 
 		_this.validateLogin();
 	};
-	this.DOMUnameCover.onclick= function(){_this.DOMUname.focus()};
+	this.DOM.unameCover.onclick= function(){_this.DOM.uname.focus()};
 	
-	this.DOMPass.onkeypress= this.DOMPass.onkeyup= function(_e){
+	this.DOM.pass.onkeypress= this.DOM.pass.onkeyup= function(_e){
 		_e= _e||WINDOW.event;
-	 	_this.DOMPassCover.style.display= (eKeyCode(_e)>=28 || this.value!='')? 'none' :'';
+	 	_this.DOM.passCover.style.display= (eKeyCode(_e)>=28 || this.value!='')? 'none' :'';
 
 		_this.validateLogin();
 	};
-	this.DOMPassCover.onclick= function(){_this.DOMPass.focus()};
+	this.DOM.passCover.onclick= function(){_this.DOM.pass.focus()};
 
-	setTimeout(function(){_this.DOMUname.onkeypress(); _this.DOMPass.onkeypress();},TIMER_LENGTH.LOGPASS_FIX_DELAY);
+	setTimeout(function(){_this.DOM.uname.onkeypress(); _this.DOM.pass.onkeypress();},TIMER_LENGTH.LOGPASS_FIX_DELAY);
 }
 
 
 ////DOM
-this.DOMBar= DOM('barLogon');
-//
-this.DOMForm= DOM('logForm');
-this.DOMSubmit= DOM('logSubmit');
-this.DOMUname= DOM('logUname');
-this.DOMUnameCover= DOM('logUnameCover');
-this.DOMPass= DOM('logPass');
-this.DOMPassCover= DOM('logPassCover');
-//
-this.DOMReg= DOM('regTmpl');
-this.DOMRegUName= DOM('regUname',this.DOMReg);
-this.DOMRegPass= DOM('regPass',this.DOMReg);
+this.DOM= {
+	bar: DOM('barLogon'),
+
+	form: DOM('logForm'),
+	submit: DOM('logSubmit'),
+	uname: DOM('logUname'),
+	unameCover: DOM('logUnameCover'),
+	pass: DOM('logPass'),
+	passCover: DOM('logPassCover'),
+
+	reg: DOM('regTmpl')
+};
+
+this.DOM.regUName= DOM('regUname', this.DOM.reg);
+this.DOM.regPass= DOM('regPass', this.DOM.reg);
 
 this.bindEvt();
 
