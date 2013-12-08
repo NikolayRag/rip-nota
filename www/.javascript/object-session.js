@@ -64,6 +64,8 @@ this.asyncStatusString= function(_code){
 }
 
 this.asyncInit= function(){
+	this.httpRequest= null;
+
 	if (WINDOW.XMLHttpRequest) { // Mozilla, Safari, ...
 		this.httpRequest= new XMLHttpRequest();
 		if (this.httpRequest.overrideMimeType)
@@ -76,7 +78,7 @@ this.asyncInit= function(){
 		}
 	}
 
-	return this.httpRequest;
+	return true;
 }
 /*
 _saveMode:	request identifier; see ASYNC_MODE
@@ -86,25 +88,29 @@ _cbOk:		normal callback
 _cbErr:		error callback
 */
 this.async= function(_saveMode,_saveData,_that,_cbOk,_cbError) {
-	//todo: manage queue
-	if (this.inAsync)
-	  return;
+	if (this.inAsync){
+		this.asyncQueue.push(arguments);
+		return;
+	}
 	if (!this.httpRequest && !this.asyncInit())
 	  UI.popW.up(DIC.errrAsyncNA);
 
+	this.inAsync= true;
+
 	var _this= this;
 	this.httpRequest.onreadystatechange = function() {
-		_this.inAsync= false;
-
-		var thisReq= this;
-		if (thisReq.readyState != 4)
+		if (this.readyState != 4)
 		  return;
 
-		if (thisReq.status == 200)
-		  return _cbOk.call(_that, thisReq.responseText);
+		if (this.status == 200)
+		  _cbOk.call(_that, this.responseText);
+		else if (_cbError)
+		  _cbError.call(_that, _this.asyncStatusString(this.status), this.responseText);
 
-		if (_cbError)
-		  _cbError.call(_that, _this.asyncStatusString(thisReq.status), thisReq.responseText);
+		_this.inAsync= false;
+
+		if (_this.asyncQueue.length)
+		  _this.async.apply(_this,_this.asyncQueue.shift());
 	};
 
 	var saveData= [[ASYGN.MODE,_saveMode].join('=')];
@@ -114,17 +120,9 @@ this.async= function(_saveMode,_saveData,_that,_cbOk,_cbError) {
 	this.httpRequest.open('POST', '/', true)
 	this.httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	this.httpRequest.send(saveData.join('&'));
-	return true;
+	return this.httpRequest;
 }
 
-this.asyncStop= function(){
-	if (this.httpRequest)
-	  this.httpRequest.abort();
-}
-
-this.asyncState= function(){
-	return this.inAsync;
-}
 
 
 
@@ -222,6 +220,7 @@ this.owner= function(_newid, _name){
 }
 
 this.inAsync= false;
+this.asyncQueue= [];
 this.httpRequest= null;
 //todo: make use of .updated in contacts and UI.update
 this.ownerId= null;

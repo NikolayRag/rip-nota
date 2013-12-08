@@ -12,11 +12,6 @@
 SESSION.save= new function(){
 
 this.save= function(){
-	if (SESSION.asyncState()){
-		this.retryAfterCB= 1;
-		return;
-	}
-
 	var _this= this;
 	lazyRun(
 		function(){
@@ -30,8 +25,6 @@ ALERT(PROFILE.BREEF, 'SAVE attempt', '');
 }
 
 this.saveGo= function(){
-	this.retryAfterCB= 0;
-
 	var saveData= [];
 
 	for (var inote in Ncore.all){
@@ -78,6 +71,8 @@ console.log(_sData);
 
 ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 
+//todo: reset timestamp HERE
+//todo: handle errors
 	var sDataA= _sData.split(ASYGN.D_ITEM);
 	for (var i in sDataA){
 		var res= sDataA[i].split(ASYGN.D_LIST);
@@ -102,9 +97,6 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 
 //todo: check for accidentally unsaved
 
-	if (this.retryAfterCB)
-	  this.save();
-
 } 
 
 this.saveCBErr= function(_err,_txt){
@@ -113,8 +105,6 @@ ALERT(PROFILE.GENERAL,'Save error',_err +': ' +_txt);
 	this.save();
 } 
 
-
-this.retryAfterCB= null;
 
 this.lazyCtx= {};
 

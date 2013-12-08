@@ -31,7 +31,9 @@ this.setState= function(_newState, _msgVerb){
 
 			clearTimeout(this.timeOut);
 			var _this= this;
-			  this.timeOut= setTimeout( function(){_this.setState(UPDATE_STATE.ERROR,DIC.popStateVDelayed);}, TIMER_LENGTH.UPDATE_DELAY_ERROR); 
+			  this.timeOut= setTimeout( function(){
+			  	_this.setState(UPDATE_STATE.ERROR,DIC.popStateVDelayed);
+			  }, TIMER_LENGTH.UPDATE_DELAY_ERROR); 
 
 			this.update();
 			if (this.updateState != UPDATE_STATE.NORMAL) //no visual updates 
@@ -41,14 +43,16 @@ this.setState= function(_newState, _msgVerb){
 			clearTimeout(this.timeOut);
 
 			//Server error, non-critical: async was not returned in timeout (or explicitely set by returning error, see updateCBErr())
-			SESSION.asyncStop();
+			this.HTTPReq && this.HTTPReq.abort();
 			break;
 
 		case UPDATE_STATE.STEADY:
 			//UPDATE_STATE_STOP is silently charged
 			clearTimeout(this.timeOut);
 			var _this= this;
-			  this.timeOut= setTimeout( function(){_this.setState(UPDATE_STATE.STOP,DIC.popStateVDelayed)}, TIMER_LENGTH.UPDATE_DELAY_STOP);
+			  this.timeOut= setTimeout( function(){
+			  	_this.setState(UPDATE_STATE.STOP,DIC.popStateVDelayed);
+			  }, TIMER_LENGTH.UPDATE_DELAY_STOP);
 			return;
 		case UPDATE_STATE.STOP:
 			//board update callback was hang, CRITICAL
@@ -96,8 +100,8 @@ __PROFILE.profileTime(); //profile
 	}
 */
 	this.saveData= saveData;
-//todo: suppress save while updating; and visa-versa
-	SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
+
+	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
 }
 
 this.updateCBErr= function(_err,_txt){
@@ -115,15 +119,16 @@ this.updateCBErr= function(_err,_txt){
 //todo: make flexible pulse, based on update complexity and response time/timeout
 this.coreCycle= function(_state){
 	if (!(this.active= (this.active && _state))){
-		SESSION.asyncStop();
+		this.HTTPReq && this.HTTPReq.abort();
 		return;
 	}
 
 	var _this= this;
-	  setTimeout(function(){_this.coreCycle(_this.active)}, this.pulse);
+	  setTimeout(function(){
+	  	_this.coreCycle(_this.active)
+	  }, this.pulse);
 
-	if (!SESSION.asyncState()) //to not send over
-	  this.setState(UPDATE_STATE.UPDATE);
+	this.setState(UPDATE_STATE.UPDATE);
 } 
 
 
@@ -354,6 +359,7 @@ this.respondU= function(_unit){
 
 this.pulse= TIMER_LENGTH.UPDATE_PULSE;
 this.active= true;
+this.HTTPReq= null;
 
 this.updateState= UPDATE_STATE.NORMAL;
 this.timeOut= null;
