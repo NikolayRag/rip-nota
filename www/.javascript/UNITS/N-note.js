@@ -56,5 +56,5 @@ Note.prototype.doSaved= function(){
 	  }
 */
 
-	SESSION.board.dataContext(this.PUB.id).ui.setState(this.PUB.forSave || rootData.forSave);
+	rootData.ui.setState(this.PUB.forSave || rootData.forSave);
 }

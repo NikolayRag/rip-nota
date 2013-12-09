@@ -86,7 +86,8 @@ $CONSTANTS= array(
 		'INIT'=>	-1,
 		'SECURITY_ERR'=>	-2,
 		'SQL_ERR'=>	-3,
-		'VERSION_ERR'=>	-4
+		'VERSION_ERR'=>	-4,
+		'DB_ERR'=> -5
 	),
 
 	'ASYGN'=> array(
@@ -147,9 +148,10 @@ $CONSTANTS= array(
 		'SVN_RIGHTS'=> 5,
 
 		'SVD_VER'=> 0,
-		'SVD_PLACE'=> 1,
-		'SVD_DTYPE'=> 2,
-		'SVD_DATA'=> 3
+		'SVD_PARENT'=> 1,
+		'SVD_PLACE'=> 2,
+		'SVD_DTYPE'=> 3,
+		'SVD_DATA'=> 4
 	),
 
 
@@ -232,7 +234,7 @@ $CONSTANTS= array(
 		'IMAGEBG'=> 1,
 		'GRADIENTS'=> 2,
 
-		'LEVEL'=> 1|2
+		'LEVEL'=> 0|2
 	),
 
 	'STYLE'=> array(

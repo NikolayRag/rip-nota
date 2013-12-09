@@ -28,11 +28,12 @@ Board.prototype.doDraw= function(_force){
 
 	//update Data at its own condition
 	var curDI= 0;
-	this.PUB.ndata.forEach(function(cData){
+	for(var iD in this.PUB.ndata){
+		var cData= this.PUB.ndata[iD];
 		_force= _force || cData.forRedraw;
 		if (cData.draw(this.leafTemplates,curDI))
 		  curDI++;
-	}.bind(this));
+	}
 
 	if (!_force && !this.PUB.forRedraw)
 	  return;

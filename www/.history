@@ -23,8 +23,7 @@ index.php: include(".include/HTMLRenameId.php");
 -ui:	feature: hint-based positioning and sizing
 -Units: make parent Unit class for all units to mantain flat lists;
 		((Ncore<-Nroot), Ndata, Ucore) turn to (Unit<-(N, D, U))
-+php:   make constants export to wrap-c-auto.js at compacting
-+php:   move compactHTML to compact.php/kiCompackHTML()
+-noDe:	make cached key-object arrays, which key changes when objects ID changes
 
 Fix:
 -upload:	blobs dont work with anon
@@ -203,6 +202,21 @@ b1.9:
 +palette:	.show(pop,cb) made shown with pop.up();
 			else used embedded
 +pop:	dont clone supplied element to enable appending events outside
++save:	Note inline Data save support
++async:	concurrent calls queued
+		+ .asyncState() depricated
+		+ .asyncStop() depricated
++save:	supports creating nData
+		+Ncore:	.setData() corrected to handle auto-decrement creation;
+		+js:	SESSION.save sends new nData's parent
+		+sql:	nData save statement to SQLTSave.php
+		+php:	handle savind nData
+		+nData:	.setId() added
+		+nData:	draw ui (unsaved state) at very creation
+		+nData:	redraw ui (saved state) after save
+		+nData:	base64 decoding moved out to SESSION.update
+-nData:	introduce locked/unlocked ui
+
 
 
 Minor:
@@ -288,6 +302,11 @@ Minor:
 +logon:		make adequate for use without cloning in pop.up();
 			cleanup entered confirmation before pass to pop.up()
 +JS:		removed platform detection strings
++Note:		.dataContext() made dynamic;
+			.dataCtx removed
++php:		make constants export to wrap-c-auto.js at compacting
++php:		move compactHTML to compact.php/kiCompackHTML()
+
 
 Refactor:
 +Board ui:		cache clientHeight/Width()
@@ -372,6 +391,8 @@ Refactor:
 +ui:			performance variable moved to constant PERF.LEVEL
 +Palette:		Colorpicker renamed to Palette 
 +update:		var checkTime/Name renamed to prof*
++js:			all .DOM* rename to .DOM.* (collect into object)
+
 
 Fix:
 +class-color:	Short-tag constructor make dark colors. Fixed.
@@ -406,6 +427,8 @@ Fix:
 +update:		update suppressed for active version greater than db
 -logo:			offscreen logo doesn't update; periodically reset doesnt fix
 +pop:			poptip blinks removed
+				+ futher fixup
+				+ yet more fixup
 +ui:			initial mouseXY set to null to avoid tool activity before any pointer movement
 +class-color:	short hash parsing didnt reach values of 255;
 +note:			shadow generation properly uses initial offset
@@ -439,12 +462,16 @@ Fix:
 +php:			fixed for apache: correct filename cases; correct absolute paths
 +php:			added UTF8 to PDO
 +css:			Nota BG overlay border radius
++logo:			didn't animate; DOM issue
++async:			concurrent call screwup fixed
+
+
 
 Spike:
 +ie:	window[''] moved to document;
 +ie:	String.trim() added;
 +ie:	Array.forEach() added;
-+Ndata:	Ndata.all() should be phased
++Ndata:	Ndata.all(); should be phased
 
 
 

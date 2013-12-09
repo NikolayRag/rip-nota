@@ -25,10 +25,8 @@
 			
 
 */
-var /**
- * @return {undefined}
- */
-	Ncore= function(_id,_referer){
+
+var Ncore= function(_id,_referer){
 	var _this= this;
 
 	if (!(_this instanceof Ncore) && !Ncore.all[_id]) //static call
@@ -82,7 +80,6 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 
 	//private
 	_this.referers= []; //all who refers to this ncore
-	_this.dataCtx= []; //array of Data that refers to specific Note
 
 	Ncore.all[_id]= _this;
 //todo: do also something with data Ndata additional storage properties
@@ -132,7 +129,7 @@ Ncore.prototype.link= function(_ref){
 		break;
 	  }
 	if (!flag)
-	  this.referers[this.referers.length]= _ref;
+	  this.referers.push(_ref);
 if (this.referers.length!=1) ALERT(PROFILE.VERBOSE,'instances for ' +this.PUB.id +':', this.referers.length);
 }
 
@@ -269,8 +266,9 @@ Ncore.prototype.save= function(_vals){
 }
 
 Ncore.prototype.saved= function(_res){
-	if (this.PUB.ver==-1){ //CREATED
+	if (this.PUB.ver==CORE_VERSION.INIT){ //CREATED
 //todo:
+	  this.PUB.ver= 1;
 	} else
 	  this.PUB.ver= _res;
 
@@ -288,7 +286,18 @@ Ncore.prototype.canSave= function(){
 }
 
 
+//todo: make ndata a collection object
 Ncore.prototype.dataSet= function(_id,_ver,_dtype,_content,_editor,_stamp,_place){
+//todo: Data core should be same as Note core
+	_id= _id |0;
+	if (!_id){ //get new auto-decrement id
+		_id= 0;
+		for (var iD in this.PUB.ndata) //get smallest
+		  if (iD<_id)
+		    _id= iD|0; //fuckup: _id becomes string as index<1
+		_id-= 1;
+	}
+
 	var curData= this.PUB.ndata[_id];
 	if (!curData)
 	  curData= this.PUB.ndata[_id]= new Ndata(this,_id);
@@ -297,14 +306,18 @@ Ncore.prototype.dataSet= function(_id,_ver,_dtype,_content,_editor,_stamp,_place
 	  return;
 
 	curData.set(_ver,_dtype,_content,_editor,_stamp,_place);
-	if (_dtype==DATA_TYPE.NOTE)
-	  this.dataCtx[_content |0]= curData;
+
+	return curData;
 }
 
-//fetch Data that refers specified Note
+//fetch Data that refers specified Note(_id)
 //check: for multi-ref
 Ncore.prototype.dataContext= function(_id){
-	return this.dataCtx[_id];
+	for (var iD in this.PUB.ndata){
+		var testData= this.PUB.ndata[iD];
+		if (testData.dtype==DATA_TYPE.NOTE && testData.content==_id)
+		  return testData;
+	}
 }
 
 Ncore.prototype.dataForSave= function(){

@@ -339,6 +339,9 @@ if (!_unit.oldId && _unit.id>0 && Ncore(_unit.id)) _unit.oldId= _unit.id;
 
 
 this.respondD= function(_unit,_ctxNote){
+	if (_unit.dtype==DATA_TYPE.TEXT)
+	  _unit.content= _unit.content.base64_decode();
+
 	_ctxNote.dataSet(_unit.id,_unit.ver,_unit.dtype,_unit.content,_unit.editor,_unit.stamp,_unit.place);
 }
 

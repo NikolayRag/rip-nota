@@ -5,13 +5,13 @@
 	Data atom for notes.
 	One Data belongs exactly to one Note, so there's no existence check logic
 */
-var Ndata= function(_root,_id)//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
+var Ndata= function(_root,_id)
 {
 	var _this= this;
 
 	_this.id= _id;
 	_this.ver= CORE_VERSION.INIT;
-	_this.place= null;
+	_this.place= {x:null,y:null,w:null,h:null};
 	_this.dtype= null;
 	_this.content= null;
 	_this.editorId= null;
@@ -25,9 +25,8 @@ var Ndata= function(_root,_id)//noinspection UnterminatedStatementJS,Unterminate
 ALERT(PROFILE.BREEF,"Data new", 'id: ' +_id);
 }
 
-//spike: replace uses of all() after; Bruteforce is evil
-Ndata.all= function(_id)//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
+//spike: replace with all[] later; Bruteforce is evil
+Ndata.all= function(_id){
 	for (var iN in Ncore.all){
 		var allD= Ncore.all[iN].PUB.ndata;
 		for (var iD in allD)
@@ -36,14 +35,13 @@ Ndata.all= function(_id)//noinspection UnterminatedStatementJS,UnterminatedState
 	}
 }
 
-Ndata.prototype.set= function(_ver,_dtype,_content,_editor,_stamp,_place)//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
+Ndata.prototype.set= function(_ver,_dtype,_content,_editor,_stamp,_place){
 	if (_ver!=undefined)
 	  this.ver= _ver |0;
 	if (_dtype!=undefined)
 	  this.dtype= _dtype |0;
 	if (_content!=undefined)
-	  this.content= this.dtype==DATA_TYPE.TEXT? _content.base64_decode() : _content;
+	  this.content= _content;
 	if (_editor!=undefined)
 	  this.editorId= _editor |0;
 	if (_stamp!=undefined)
@@ -61,29 +59,46 @@ if (!this.forRedraw) ALERT(PROFILE.VERBOSE, "Data "+ this.id +"("+ this.rootNote
 	this.forRedraw= this.forRedraw || (arguments.length>0);
 }
 
-Ndata.prototype.sibling= function()//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
+//change .id
+//replaces parent's .data[_id]
+//todo: meke sure killing existing parent's .data[_id] will not make garbage
+Ndata.prototype.setId= function(_id){
+	if (!_id || _id==this.id)
+	  return;
+
+ALERT(PROFILE.BREEF, "Ndata "+ this.id +' re-id ', 'id: '+ _id);
+
+var parentCollection= this.rootNote.PUB.ndata;
+	delete parentCollection[this.id];
+
+	_id= _id |0;
+	this.id= _id; //change id
+
+//todo: should reuse instead of deleting
+	if (parentCollection[_id]) //wipe duplicating Ncore
+	  parentCollection[_id].kill();
+	parentCollection[_id]= this; //fill in existent Ncore
+}
+
+Ndata.prototype.sibling= function(){
 	if (this.dtype!=DATA_TYPE.NOTE)
 	  return undefined;
 	
 	return Ncore(this.content |0);
 }
 
-Ndata.prototype.editor= function()//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
+Ndata.prototype.editor= function(){
 	return Ucore(this.editorId);
 }
 
 
-Ndata.prototype.draw= function(_uiTemplateA,_curDI)//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
-	_curDI= _curDI ||0;
+Ndata.prototype.draw= function(_uiTemplateA,_curDI){
 	if (!this.ui){
 		var newTemplate= _uiTemplateA[this.dtype]?
 		  _uiTemplateA[this.dtype]
 		  : _uiTemplateA[DATA_TYPE.UNKNOWN];
 
-		this.ui= new newTemplate(this,this.rootNote.PUB.ui.DOM.context,_curDI);
+		this.ui= new newTemplate(this,this.rootNote.PUB.ui.DOM.context,_curDI||0);
 	}
 
 	if (this.forRedraw)
@@ -97,35 +112,36 @@ Ndata.prototype.draw= function(_uiTemplateA,_curDI)//noinspection UnterminatedSt
 
 //in reverse for Note, saving Data assumes visual changes are ALREADY made
 //todo: mantain list of .forSave==1 data
-Ndata.prototype.save= function(_vals)//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
+Ndata.prototype.save= function(_vals){
 	if (!Object.props(_vals))
 	  return;
 
-	if (_vals.content!=undefined)
-	  this.content= _vals.content;
+	if (_vals.content!=undefined){
+		this.dtype= DATA_TYPE.TEXT;
+		this.content= _vals.content;
+	}
 	if (_vals.place!=undefined) 
 	  this.place= {
 	  	x:_vals.place.x,
 	  	y:_vals.place.y,
 //todo: remove (autosize)
-	  	w:this.place.w,
-	  	h:this.place.h
+	  	w:this.place.w ||300,
+	  	h:this.place.h ||100
 	  };
 
 	this.editorId= SESSION.owner().id;
 	this.stamp= new Date();
 	this.forSave= SAVE_STATES.UNSAVED;
 
-	this.ui.setState(this.forSave);
+	this.ui && this.ui.setState(this.forSave);
 
 	SESSION.save.save();
 }
 
-Ndata.prototype.saved= function(_res)//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
-	if (this.ver==-1){ //CREATED
-//todo:
+Ndata.prototype.saved= function(_res){
+	if (this.ver==CORE_VERSION.INIT){ //CREATED
+	  this.ver= 1;
+	  this.setId(_res);
 	} else
 	  this.ver= _res;
 
@@ -146,7 +162,6 @@ Ndata.prototype.saved= function(_res)//noinspection UnterminatedStatementJS,Unte
 }
 
 //todo: check for being edited
-Ndata.prototype.canSave= function()//noinspection UnterminatedStatementJS,UnterminatedStatementJS,UnterminatedStatementJS
-{
+Ndata.prototype.canSave= function(){
 	return(this.forSave);
 }

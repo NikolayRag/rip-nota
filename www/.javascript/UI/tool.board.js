@@ -110,15 +110,25 @@ alert('new note at '
 ToolBoard.prototype.opNewData= function(){
 	var _this= this;
 
-alert('new data at '
-	+(UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft)
-	+':' +(UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop)
-);
+	var newPlace= {
+		x: UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft,
+		y: UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop
+//depricated
+		,w:300,h:100
+	}
+
+	var newData= this.board.dataSet(undefined,undefined,DATA_TYPE.TEXT,undefined,undefined,undefined,[newPlace.x,newPlace.y,newPlace.w,newPlace.h]);
+	this.board.draw();
+//todo: make in-place (confirm save)
+	newData.save({content:'test',place:newPlace});
+	newData.ui && newData.ui.draw();
+
 
 	setTimeout(function(){
 		UI.toolSet.kill(_this)
 	},0);
 }
+
 
 ToolBoard.prototype.opStyle= function() {
 	var dTarget= this.board;

@@ -12,11 +12,8 @@
 SESSION.save= new function(){
 
 this.save= function(){
-	var _this= this;
 	lazyRun(
-		function(){
-			_this.saveGo()
-		}
+		this.saveGo.bind(this)
 		, TIMER_LENGTH.SAVE_DELAY
 		, this.lazyCtx
 	);
@@ -27,12 +24,11 @@ ALERT(PROFILE.BREEF, 'SAVE attempt', '');
 this.saveGo= function(){
 	var saveData= [];
 
-	for (var inote in Ncore.all){
-		var curNote= Ncore.all[inote];
+	Ncore.all.forEach(function(curNote){
 		var canSave= curNote.canSave();
-		if (canSave){
-			var id= curNote.PUB.id;
+		var nId= curNote.PUB.id;
 
+		if (canSave){
 			var noteBlock= [];
 			noteBlock[ASYNC_PLACE.SVN_CANSAVE]= canSave;
 			if (canSave &SAVE_MODE.MAIN){
@@ -44,22 +40,20 @@ this.saveGo= function(){
 			if (canSave &SAVE_MODE.RIGHTS)
 			  noteBlock[ASYNC_PLACE.SVN_RIGHTS]= curNote.PUB.rightsA.join(ASYGN.D_LIST);
 
-			saveData[ASYGN.NBREEF+id]= noteBlock.join(ASYGN.D_ITEM);
+			saveData[ASYGN.NBREEF+nId]= noteBlock.join(ASYGN.D_ITEM);
 		}
 
-		var dataForSave= curNote.dataForSave();
-		for (var idata in dataForSave){
-			var curData= dataForSave[idata];
-
+		curNote.dataForSave().forEach(function(curData){
 			var dataBlock= [];
 			dataBlock[ASYNC_PLACE.SVD_VER]= curData.ver;
+			if (curData.id<0) dataBlock[ASYNC_PLACE.SVD_PARENT]= nId;
 			dataBlock[ASYNC_PLACE.SVD_PLACE]= [curData.place.x,curData.place.y,curData.place.w,curData.place.h].join(ASYGN.D_LIST);
 			dataBlock[ASYNC_PLACE.SVD_DTYPE]= curData.dtype;
 			dataBlock[ASYNC_PLACE.SVD_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
 
 			saveData[ASYGN.NDATA+curData.id]= dataBlock.join(ASYGN.D_ITEM);
-		}
-	}
+		});
+	});
 
 //todo: suppress update while saving; and visa-versa
 	SESSION.async(ASYNC_MODE.SAVE, saveData, this, this.saveCB, this.saveCBErr);
@@ -67,8 +61,6 @@ ALERT(PROFILE.GENERAL, 'SAVE', saveData);
 } 
 
 this.saveCB= function(_sData){
-console.log(_sData);
-
 ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 
 //todo: reset timestamp HERE
@@ -83,14 +75,14 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 				if (cNote && res[2]>=0)
 				  cNote.saved(res[2] |0);
 				else
-				  console.error('Error saving Note ' +res[1] +': ' +(cNote? res[2] :'undefined'));
+				  console.log('Error saving Note ' +res[1] +': ' +(cNote? res[2] :'undefined'));
 				break;
 			case ASYGN.NDATA:
 				var cData= Ndata.all(res[1]);
 				if (cData && res[2]>=0)
 				  cData.saved(res[2] |0);
 				else
-				  console.error('Error saving Data ' +res[1] +': ' +(cData? res[2] :'undefined'));
+				  console.log('Error saving Data ' +res[1] +': ' +(cData? res[2] :'undefined'));
 				break;
 		}
 	}
