@@ -93,7 +93,6 @@ ToolBoard.prototype.kill= function(){
 }
 
 
-
 ToolBoard.prototype.opNewNote= function(){
 	var _this= this;
 

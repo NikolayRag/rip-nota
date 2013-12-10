@@ -2,7 +2,10 @@
 	position:absolute;
 	text-align:center;
 
-	transition: top 1s, left 1s;
+border:1px solid;
+
+	opacity:0;
+	transition: border .15s, opacity .2s;
 }
 .elInlineHil {
 	position:absolute;
@@ -28,6 +31,7 @@
 	position: absolute;
 	overflow:visible;
 
+	opacity:0;
 	border:1px transparent solid;
 	border-radius: 7px;
 

@@ -466,7 +466,7 @@ Fix:
 +css:			Nota BG overlay border radius
 +logo:			didn't animate; DOM issue
 +async:			concurrent call screwup fixed
-
++ndata:			opacity transition didnt work at creation
 
 
 Spike:
