@@ -54,7 +54,9 @@ function kiMiniCss($_renameA=false){
 	 file_get_contents(".css/w-login.css").
 	 file_get_contents(".css/tool.css");
 
-	$outCss= str_replace(Array(' {',': ',"\t","\n",chr(13)), Array('{',':'), $outCss);
+	global 	$NOPROFILE;
+	if ($NOPROFILE)
+	  $outCss= str_replace(Array(' {',': ',"\t","\n",chr(13)), Array('{',':'), $outCss);
 
 	//subst $var and ${var} variables with $CSS->var value
 	global $CSS;
