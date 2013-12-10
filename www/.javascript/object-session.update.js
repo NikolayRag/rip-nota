@@ -277,17 +277,19 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 
 	SESSION.board.draw(); //prior to leafs
 
-	Ncore.all.forEach(function(note){
-		if (note.PUB!=SESSION.board.PUB)
-		  note.draw();
-	});
+	for (var nI in Ncore.all){
+		var curNote= Ncore.all[nI];
+		if (curNote.PUB!=SESSION.board.PUB)
+		  curNote.draw();
+	}
 
 	//reset redraw flag for Users
-	Ucore.all.forEach(function(curUcore){
+	for (var nU in Ucore.all){
+		var curUcore= Ucore.all[nU];
 		curUcore.forRedraw= 0;
 		curUcore.forRedrawBoards= 0;
 		curUcore.forRedrawContacts= 0;
-	});
+	}
 
 
 //todo:

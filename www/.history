@@ -306,6 +306,8 @@ Minor:
 			.dataCtx removed
 +php:		make constants export to wrap-c-auto.js at compacting
 +php:		move compactHTML to compact.php/kiCompackHTML()
++js:		forEach avoided to use with Ncore and Ndata enum
+
 
 
 Refactor:

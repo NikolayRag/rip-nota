@@ -30,6 +30,7 @@ Board.prototype.doDraw= function(_force){
 	var curDI= 0;
 	for(var iD in this.PUB.ndata){
 		var cData= this.PUB.ndata[iD];
+
 		_force= _force || cData.forRedraw;
 		if (cData.draw(this.leafTemplates,curDI))
 		  curDI++;

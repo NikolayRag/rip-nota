@@ -24,7 +24,9 @@ ALERT(PROFILE.BREEF, 'SAVE attempt', '');
 this.saveGo= function(){
 	var saveData= [];
 
-	Ncore.all.forEach(function(curNote){
+	for(var iN in Ncore.all){
+		var curNote= Ncore.all[iN];
+
 		var canSave= curNote.canSave();
 		var nId= curNote.PUB.id;
 
@@ -43,7 +45,10 @@ this.saveGo= function(){
 			saveData[ASYGN.NBREEF+nId]= noteBlock.join(ASYGN.D_ITEM);
 		}
 
-		curNote.dataForSave().forEach(function(curData){
+		var allData= curNote.dataForSave()
+		for (var iD in allData){
+			var curData= allData[iD];
+
 			var dataBlock= [];
 			dataBlock[ASYNC_PLACE.SVD_VER]= curData.ver;
 			if (curData.id<0) dataBlock[ASYNC_PLACE.SVD_PARENT]= nId;
@@ -52,8 +57,8 @@ this.saveGo= function(){
 			dataBlock[ASYNC_PLACE.SVD_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
 
 			saveData[ASYGN.NDATA+curData.id]= dataBlock.join(ASYGN.D_ITEM);
-		});
-	});
+		}
+	}
 
 //todo: suppress update while saving; and visa-versa
 	SESSION.async(ASYNC_MODE.SAVE, saveData, this, this.saveCB, this.saveCBErr);
