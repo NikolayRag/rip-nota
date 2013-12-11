@@ -215,8 +215,8 @@ b1.9:
 		+nData:	draw ui (unsaved state) at very creation
 		+nData:	redraw ui (saved state) after save
 		+nData:	base64 decoding moved out to SESSION.update
--nData:	introduce locked/unlocked ui
-
+-nData:	introduce locked/unlocked ui (editmode)
++tool:	Note/Leaf 'new Data' option
 
 
 Minor:
@@ -461,12 +461,16 @@ Fix:
 				- check .httpRequest within concurence calls 
 +board:			initial canvas painting made more reliable
 +logon:			validation for blank username was calling server; should not.
-+php:			fixed for apache: correct filename cases; correct absolute paths
++php:			fixed for apache: correct filename cases;
+				correct absolute paths
 +php:			added UTF8 to PDO
 +css:			Nota BG overlay border radius
 +logo:			didn't animate; DOM issue
 +async:			concurrent call screwup fixed
-+ndata:			opacity transition didnt work at creation
++ndata ui:			opacity transition didnt work at creation
++nData:			create new blank-id nData uses global negative
+				id pool; elseway different Data's save is ruined
++Ncore:			same as nData, uses global negative ID for new
 
 
 Spike:

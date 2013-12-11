@@ -18,6 +18,7 @@ ToolBoardLeafEdit.prototype.bindEvt= function(){
 	var _this= this;
 	this.DOM.tStyle.onmouseup= function(_e){_this.opStyle(_e)};
 	this.DOM.tMove.onmousedown= function(_e){UI.mouseContext(_e,_this,_this.mouseDown,_this.mouseMove,_this.opMouseUp)};
+	this.DOM.tNewData.onmouseup= function(){_this.opNewData()};
 
 //	this.DOM.context.onmousedown= function(e){noBubbles(e)};
 //	this.DOM.context.onmouseup= function(){_this.opEditAccept()};
@@ -58,6 +59,7 @@ ToolBoardLeafEdit.prototype.build= function(_parentEl){
 
 		tOuter: DOM('toolBLeafEditOuter',cClone),
 		tMove: DOM('toolBLeafEditMove',cClone),
+		tNewData: DOM('toolBLeafNewData',cClone),
 
 		tInner: DOM('toolBLeafEditInner',cClone),
 		tStyleSample: DOM('toolBLeafEditStyleSample',cClone),
@@ -141,6 +143,29 @@ ToolBoardLeafEdit.prototype.opCancel= function() {
 	this.opDefault();
 }
 
+
+ToolBoardLeafEdit.prototype.opNewData= function(){
+	var _this= this;
+	var dTarget= this.ndata.sibling();
+
+	var newPlace= {
+		x: UI.mouseX +DOCUMENT.scrollLeftF() -dTarget.PUB.ui.DOM.context.offsetLeft,
+		y: UI.mouseY +DOCUMENT.scrollTopF() -dTarget.PUB.ui.DOM.context.offsetTop
+//depricated
+		,w:300,h:100
+	}
+
+	var newData= dTarget.dataSet(undefined,undefined,DATA_TYPE.TEXT,undefined,undefined,undefined,[newPlace.x,newPlace.y,newPlace.w,newPlace.h]);
+	dTarget.draw();
+//todo: make in-place (confirm save)
+	newData.save({content:'test',place:newPlace});
+	newData.ui && newData.ui.draw();
+
+
+	setTimeout(function(){
+		UI.toolSet.kill(_this)
+	},0);
+}
 
 ToolBoardLeafEdit.prototype.opStyle= function() {
 	var dTarget= this.ndata.sibling();

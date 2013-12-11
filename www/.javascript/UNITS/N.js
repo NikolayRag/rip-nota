@@ -33,13 +33,8 @@ var Ncore= function(_id,_referer){
 	  return undefined;
 
 	_id= _id |0;
-	if (!_id){ //get new auto-decrement id
-		_id= 0;
-		for (var ni in Ncore.all) //get smallest
-		  if (ni<_id)
-		    _id= ni|0; //fuckup: _id becomes string as index<1
-		_id-= 1;
-	}
+	if (!_id) //get new auto-decrement id
+	  _id= Ncore.newId--;
 
 
 	var oldN= Ncore.all[_id];
@@ -88,6 +83,9 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 
 
 ////static
+
+Ncore.newId= -1;
+
 /*
 	global notes array.
 	Positive indices holds normal and Subst Notes.
@@ -290,13 +288,8 @@ Ncore.prototype.canSave= function(){
 Ncore.prototype.dataSet= function(_id,_ver,_dtype,_content,_editor,_stamp,_place){
 //todo: Data core should be same as Note core
 	_id= _id |0;
-	if (!_id){ //get new auto-decrement id
-		_id= 0;
-		for (var iD in this.PUB.ndata) //get smallest
-		  if (iD<_id)
-		    _id= iD|0; //fuckup: _id becomes string as index<1
-		_id-= 1;
-	}
+	if (!_id) //get new auto-decrement id
+	  _id= Ndata.newId--;
 
 	var curData= this.PUB.ndata[_id];
 	if (!curData)

@@ -4,6 +4,7 @@
 	<span id='toolBLeafEditContext' class='toolContext'>
 		<span id='toolBLeafEditOuter'>
 			<span id='toolBLeafEditMove' class='toolItem'>move</span>
+			<span id='toolBLeafNewData' class='toolItem'>data</span>
 		</span>
 		<span id='toolBLeafEditInner'>
 			<span id='toolBLeafEditStyleSample' class='toolItem'></span>

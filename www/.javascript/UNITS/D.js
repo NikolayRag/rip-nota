@@ -25,6 +25,8 @@ var Ndata= function(_root,_id)
 ALERT(PROFILE.BREEF,"Data new", 'id: ' +_id);
 }
 
+Ndata.newId= -1;
+
 //spike: replace with all[] later; Bruteforce is evil
 Ndata.all= function(_id){
 	for (var iN in Ncore.all){
