@@ -6,11 +6,12 @@ this.logout= function(){
 
 //todo: feature: if staying after being logged in for a while, ask pass again 
 this.stayLogged= function(_tryStay){
+	var _this= this;
 	if (_tryStay){ //confirm staying
 		UI.popW.up(
 			DIC.popStayConfirm
 			,function(){SESSION.logon.login(SESSION_STATES.STAY)}
-			,function(){UI.youW.DOMStay.checked= 0}
+			,function(){_this.DOM.stay.checked= 0}
 		);
 	} else //instant off
 	  SESSION.logon.login(SESSION_STATES.LEAVE);
@@ -23,10 +24,7 @@ this.draw= function(){
 	if (!_owner || !_owner.forRedraw)
 	  return;
 
-	this.DOMBar.style.display= (!_owner.id? 'none': '');
-	  this.DOMSelf.elementText(_owner.uname);
-
-	UI.loginW.DOMBar.style.display= (_owner.id? 'none' : '');
+	this.DOM.self.elementText(_owner.uname);
 
 	//contactsNum - off
 //todo: move contact board to contact object
@@ -105,31 +103,31 @@ UI.cListAddBlock= function(relation,blockName){
 
 this.bindEvt= function(){
 	var _this= this;
-	this.DOMOut.onclick= function(e){
+	this.DOM.out.onclick= function(e){
 		_this.logout();
 	};
-	this.DOMStay.onchange= function(){
+	this.DOM.stay.onchange= function(){
 		_this.stayLogged(this.checked);
 	};
 
 
 //todo:
-	//this.DOMSelf.onClick=?
+	//this.DOM.self.onClick=?
 }
 
 
 this.validateTimeout= null;
 
 
-////DOM
-this.DOMBar= DOM('barUser');
-//
-this.DOMSelf= DOM('barUserSelf');
-this.DOMOut= DOM('youOut');
-//
-this.DOMStay= DOM('youStay');
-this.DOMStayLab= DOM('youStayLab');
+this.DOM= {
+	bar: DOM('barUser'),
 
+	self: DOM('barUserSelf'),
+	out: DOM('youOut'),
+
+	stay: DOM('youStay'),
+	stayLab: DOM('youStayLab')
+};
 
 this.bindEvt();
 

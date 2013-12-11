@@ -136,6 +136,9 @@ BoardUI.prototype.canvasMove= function() {
 		,frameGapW= DOCUMENT.scrollWidthF()-DOCUMENT.clientWidthF()
 		,frameGapH= DOCUMENT.scrollHeightF()-DOCUMENT.clientHeightF();
 
+	if (canvasGapW<=0 || canvasGapH<=0)
+	  return;
+
 //	Moving range is canvasGap, but no more than frameGap/2
 	this.DOM.canvas.style.left= -DOCUMENT.scrollLeftF() *Math.min(canvasGapW/frameGapW,.5) +'px';
 	this.DOM.canvas.style.top= -DOCUMENT.scrollTopF() *Math.min(canvasGapH/frameGapH,.5) +'px';

@@ -7,7 +7,7 @@ var Board= function(_id){
 	thisNote.doDraw= Board.prototype.doDraw;
 	thisNote.doSaved= Board.prototype.doSaved;
 
-	thisNote.PUB.ui= new BoardUI(thisNote,UI.DOMWorkField);
+	thisNote.PUB.ui= new BoardUI(thisNote,UI.DOM.workField);
 	thisNote.leafTemplates= [ //see DATA_TYPE constant enumeration
 		DataUIBoardUnknown,
 		DataUIBoardEl,

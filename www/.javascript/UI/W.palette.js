@@ -10,7 +10,7 @@
 UI.paletteW= new function(){
 
 this.show= function(_isPop,_cb){
-	this.DOMPaletteSample.style.background= this.style.noteBG.hex();
+	this.DOM.paletteSample.style.background= this.style.noteBG.hex();
 
 	var _this= this;
 
@@ -18,15 +18,15 @@ this.show= function(_isPop,_cb){
 		  _cb(_this.style)
 	};
 	if (_isPop)
-	  UI.popW.up(this.DOMPalette, IS.fn(_cb)? okCode :undefined);
+	  UI.popW.up(this.DOM.palette, IS.fn(_cb)? okCode :undefined);
 
-	return this.DOMPalette;
+	return this.DOM.palette;
 }
 
 
 this.bindEvt= function(){
 	var _this= this;
-	this.DOMPaletteSample.onclick= function(){
+	this.DOM.paletteSample.onclick= function(){
 		_this.style= new Style(
 			new Color([
 				Math.random()*255,
@@ -34,7 +34,7 @@ this.bindEvt= function(){
 				Math.random()*255
 			]).hex()
 		);
-		_this.DOMPaletteSample.style.background= _this.style.noteBG.hex();
+		_this.DOM.paletteSample.style.background= _this.style.noteBG.hex();
 	}
 
 }
@@ -43,8 +43,10 @@ this.bindEvt= function(){
 this.style= new Style('#888');
 
 
-this.DOMPalette= DOM('palette');
-this.DOMPaletteSample= DOM('paletteSample');
+this.DOM= {
+	palette: DOM('palette'),
+	paletteSample: DOM('paletteSample')
+};
 
 this.bindEvt();
 }

@@ -5,7 +5,7 @@ UI.ownerW.boardlistW= new function(){
 this.draw= function(_noteIn){
 	var boardListA= _noteIn.owner().boards();
 	
-	var bs= this.DOMSwitch;
+	var bs= this.DOM.selector;
 	while (bs.childNodes.length>0)
 	  bs.removeChild(bs.childNodes[0])
 	for (var iN in boardListA){
@@ -28,13 +28,15 @@ this.draw= function(_noteIn){
 
 
 this.bindEvt= function(){
-	this.DOMSwitch.onchange= function(){
+	this.DOM.selector.onchange= function(){
 		SESSION.reload(SESSION.board.PUB.reqWho, this.children[this.selectedIndex].elementText());
 	};
 }
 
 ////DOM
-this.DOMSwitch= DOM('boardSwitch');
+this.DOM= {
+	selector: DOM('boardSwitch')
+};
 
 this.bindEvt();
 
