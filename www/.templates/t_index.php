@@ -19,7 +19,8 @@
 <iframe name='loadForm' style='display:none'></iframe>
 <div id='templates' style='display:none'>
 	<? include('.templates/tdyn_register.php'); ?>
-	<? include('.templates/tdyn_widPalette.php'); ?>
+	<? include('.templates/tdyn_palette.php'); ?>
+	<? include('.templates/tdyn_pin.php'); ?>
 	<? include('.templates/ttool-boardLeaf.php'); ?>
 	<? include('.templates/ttool-boardLeafEdit.php'); ?>
 	<? include('.templates/ttool-board.php'); ?>

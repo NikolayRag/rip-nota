@@ -109,7 +109,9 @@ this.bindEvt= function(){
 	this.DOM.stay.onchange= function(){
 		_this.stayLogged(this.checked);
 	};
-
+	this.DOM.stayLab.onclick= function(){
+		_this.DOM.stay.click();
+	};
 
 //todo:
 	//this.DOM.self.onClick=?
