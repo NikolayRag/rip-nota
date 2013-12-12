@@ -394,6 +394,8 @@ Refactor:
 +Palette:		Colorpicker renamed to Palette 
 +update:		var checkTime/Name renamed to prof*
 +js:			all .DOM* rename to .DOM.* (collect into object)
++el-inline:		text Hilite/Shadow replaced with css text-shadow:
+
 
 
 Fix:
