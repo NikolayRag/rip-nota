@@ -7,24 +7,12 @@ border:1px solid;
 	opacity:0;
 	transition: border .15s, opacity .2s;
 }
-.elInlineHil {
-	position:absolute;
-	top:1px;
-	left:1px;
-	color:#fff;
-	font-size:20pt;
-}
-.elInlineSh {
-	position:absolute;
-	top:-1px;
-	left:-1px;
-	color:#777;
-	font-size:20pt;
-}
 .elInlineTxt {
 	position:absolute;
 	font-size:20pt;
 	color:#ccc;
+
+	text-shadow: -1px -1px 0px #888, 1px 1px 0px #FFF;
 }
 
 .note {

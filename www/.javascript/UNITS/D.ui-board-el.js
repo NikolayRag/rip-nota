@@ -10,8 +10,6 @@ var DataUIBoardEl= function(_ndata,_context,_curDI){
 }
 
 DataUIBoardEl.prototype.draw= function () {
-	this.DOM.hilite.elementText(this.ndata.content);
-	this.DOM.shadow.elementText(this.ndata.content);
 	this.DOM.content.elementText(this.ndata.content);
 
 	this.place();
@@ -38,8 +36,6 @@ DataUIBoardEl.prototype.place= function(){
 DataUIBoardEl.tmpl= DOM('elInlineTmpl');
 DataUIBoardEl.prototype.build= function(_parentEl,_curDI){
 	var cRoot= DataUIBoardEl.tmpl.cloneNode(true);
-	var cHilite= DOM('elInlineHil',cRoot);
-	var cShadow= DOM('elInlineSh',cRoot);
 	var cText= DOM('elInlineTxt',cRoot);
 	NOID(cRoot);
 
@@ -51,8 +47,6 @@ DataUIBoardEl.prototype.build= function(_parentEl,_curDI){
 
 	return {
 		root:cRoot,
-		hilite:cHilite,
-		shadow:cShadow,
 		content:cText
 	};
 }
