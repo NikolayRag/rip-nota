@@ -4,24 +4,12 @@
 
 	transition: top 1s, left 1s;
 }
-.elInlineHil {
-	position:absolute;
-	top:1px;
-	left:1px;
-	color:#fff;
-	font-size:20pt;
-}
-.elInlineSh {
-	position:absolute;
-	top:-1px;
-	left:-1px;
-	color:#777;
-	font-size:20pt;
-}
 .elInlineTxt {
 	position:absolute;
 	font-size:20pt;
 	color:#ccc;
+
+	text-shadow: -1px -1px 0px #888, 1px 1px 0px #FFF;
 }
 
 .note {
