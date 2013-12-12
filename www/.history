@@ -395,7 +395,11 @@ Refactor:
 +update:		var checkTime/Name renamed to prof*
 +js:			all .DOM* rename to .DOM.* (collect into object)
 +el-inline:		text Hilite/Shadow replaced with css text-shadow:
-
++template:		tdyn_pin.php dedicated out of t_barUser.php
+				+ tdyn_widPalette renamed to tdyn_palette
+				+ menu class mostly unused
+				+ youStayLab reorganized
+				+ barBoardOwner centered
 
 
 Fix:
