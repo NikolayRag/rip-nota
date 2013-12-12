@@ -471,6 +471,8 @@ Fix:
 +nData:			create new blank-id nData uses global negative
 				id pool; elseway different Data's save is ruined
 +Ncore:			same as nData, uses global negative ID for new
++web:			apache: 404 avoided; ModRewrite used
+
 
 
 Spike:
