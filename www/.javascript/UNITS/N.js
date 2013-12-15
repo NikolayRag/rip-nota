@@ -170,39 +170,39 @@ ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +' re-id ', 'id: '+ _id);
 
 	_rightsA is supplied only for owner as array or "group=[right]" strings and is parsed into existing rights group.
 */
-Ncore.prototype.set= function(_name,_ver,_style,_rights,_rightsA,_inherit,_stamp,_owner,_editor){
-	if ((_ver |0)<=this.PUB.ver) //inconsistent
+Ncore.prototype.set= function(_setA){ //{name: , ver: , style: , rights: , rightsA: , inherit: , stamp: , owner: , editor: }
+	if ((_setA.ver |0)<=this.PUB.ver) //inconsistent
 	  return;
 
-	this.PUB.complete= this.PUB.complete || (arguments.length==8); //initial suggestion
+	this.PUB.complete= this.PUB.complete || (Object.keys(_setA).length==9); //initial suggestion
 
-	if (_name!=undefined)
-	  this.PUB.name= _name;
-	if (_ver!=undefined)
-	  this.PUB.ver= _ver |0;
-	if (_style!=undefined)
-	  this.PUB.style= new Style(_style);
-	if (_inherit!=undefined)
-	  this.PUB.inheritId= _inherit |0;
-	if (_stamp!=undefined)
-	  this.PUB.stamp= _stamp;
-	if (_owner!=undefined)
-	  this.PUB.ownerId= _owner |0;
-	if (_editor!=undefined)
-	  this.PUB.editorId= _editor |0;
+	if (_setA.name!=undefined)
+	  this.PUB.name= _setA.name;
+	if (_setA.ver!=undefined)
+	  this.PUB.ver= _setA.ver |0;
+	if (_setA.style!=undefined)
+	  this.PUB.style= new Style(_setA.style);
+	if (_setA.inherit!=undefined)
+	  this.PUB.inheritId= _setA.inherit |0;
+	if (_setA.stamp!=undefined)
+	  this.PUB.stamp= _setA.stamp;
+	if (_setA.owner!=undefined)
+	  this.PUB.ownerId= _setA.owner |0;
+	if (_setA.editor!=undefined)
+	  this.PUB.editorId= _setA.editor |0;
 
-	if (_rights!=undefined)
-	  this.PUB.rights= this.PUB.inheritId==NOTA_RIGHTS.INHERITED? NOTA_RIGHTS.INIT : (_rights |0);
-//fix: _rightsA!='' due to getting here '' instead of []
-	if (_rightsA!=undefined && _rightsA!='')
-	  for (var rt in _rightsA){
-		var rtA= _rightsA[rt].split("=");
+	if (_setA.rights!=undefined)
+	  this.PUB.rights= this.PUB.inheritId==NOTA_RIGHTS.INHERITED? NOTA_RIGHTS.INIT : (_setA.rights |0);
+//fix: _setA.rightsA!='' due to getting here '' instead of []
+	if (_setA.rightsA!=undefined && _setA.rightsA!='')
+	  for (var rt in _setA.rightsA){
+		var rtA= _setA.rightsA[rt].split("=");
 		this.PUB.rightsA[rtA[0] |0]= rtA[1]!=''? (rtA[1] |0) : undefined;
 	  }
 
-if (!this.PUB.forRedraw) ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +"("+ this.PUB.inheritId +") set ", 'ver: ' +_ver);
+if (!this.PUB.forRedraw) ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +"("+ this.PUB.inheritId +") set ", 'ver: ' +_setA.ver);
 	  
-	this.PUB.forRedraw= this.PUB.forRedraw || (arguments.length>0);
+	this.PUB.forRedraw= this.PUB.forRedraw || (Object.keys(_setA).length>0);
 }
 
 
@@ -281,7 +281,7 @@ Ncore.prototype.canSave= function(){
 
 
 //todo: make ndata a collection object
-Ncore.prototype.dataSet= function(_id,_ver,_dtype,_content,_editor,_stamp,_place){
+Ncore.prototype.dataSet= function(_id, _setA){ //{ver: , dtype: , content: , editor: , stamp: , place: }
 //todo: Data core should be same as Note core
 	_id= _id |0;
 	if (!_id) //get new auto-decrement id
@@ -291,10 +291,10 @@ Ncore.prototype.dataSet= function(_id,_ver,_dtype,_content,_editor,_stamp,_place
 	if (!curData)
 	  curData= this.PUB.ndata[_id]= new Ndata(this,_id);
 
-	if (_ver<=curData.ver) //inconsistent
+	if (_setA.ver<=curData.ver) //inconsistent
 	  return;
 
-	curData.set(_ver,_dtype,_content,_editor,_stamp,_place);
+	curData.set(_setA);
 
 	return curData;
 }
@@ -342,8 +342,8 @@ var Nroot= function(_id){
 /*
 	!!!transparent public functions
 */
-Nroot.prototype.set= function(_name,_ver,_style,_rights,_rightsA,_inherit,_stamp,_owner,_editor){
-	return this.Ncore.set(_name,_ver,_style,_rights,_rightsA,_inherit,_stamp,_owner,_editor);
+Nroot.prototype.set= function(_setA){
+	return this.Ncore.set(_setA);
 }
 
 Nroot.prototype.setId= function(_id){
@@ -371,8 +371,8 @@ Nroot.prototype.save= function(_val){
 }
 
 
-Nroot.prototype.dataSet= function(_id,_ver,_dtype,_content,_owner,_stamp,_place){
-	return this.Ncore.dataSet(_id,_ver,_dtype,_content,_owner,_stamp,_place);
+Nroot.prototype.dataSet= function(_id, _setA){
+	return this.Ncore.dataSet(_id, _setA);
 }
 Nroot.prototype.dataContext= function(_id){
 	return this.Ncore.dataContext(_id);

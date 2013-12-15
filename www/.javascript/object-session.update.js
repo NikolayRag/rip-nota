@@ -220,45 +220,51 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 		//class proccessing
 		switch (sign) {
 			case ASYGN.NFULL: case ASYGN.NBREEF:
-			 	ctxNote= this.respondN({
-					sign: sign,
-				 	oldId: splitDStr[ASYNC_PLACE.UPN_OLDID] |0,
-					id: splitDStr[ASYNC_PLACE.UPN_ID] |0,
-					ver: splitDStr[ASYNC_PLACE.UPN_VER] |0,
-					name: splitDStr[ASYNC_PLACE.UPN_NAME],
-					style: splitDStr[ASYNC_PLACE.UPN_STYLE],
-					owner: splitDStr[ASYNC_PLACE.UPN_OWNER] |0,
-					editor: splitDStr[ASYNC_PLACE.UPN_EDITOR] |0,
-					rights: splitDStr[ASYNC_PLACE.UPN_RIGHTS] |0,
-					rightGrpA: splitDStr[ASYNC_PLACE.UPN_RIGHTGRPA].split(ASYGN.D_LIST),
-					inherit: splitDStr[ASYNC_PLACE.UPN_INHERIT] |0,
-					stamp: new Date(new Date()-(splitDStr[ASYNC_PLACE.UPN_STAMP] |0)*1000)
-				});
+			 	ctxNote= this.respondN(
+					sign,
+				 	splitDStr[ASYNC_PLACE.UPN_OLDID] |0,
+					splitDStr[ASYNC_PLACE.UPN_ID] |0,
+					{
+						ver: splitDStr[ASYNC_PLACE.UPN_VER] |0,
+						name: splitDStr[ASYNC_PLACE.UPN_NAME],
+						style: splitDStr[ASYNC_PLACE.UPN_STYLE],
+						owner: splitDStr[ASYNC_PLACE.UPN_OWNER] |0,
+						editor: splitDStr[ASYNC_PLACE.UPN_EDITOR] |0,
+						rights: splitDStr[ASYNC_PLACE.UPN_RIGHTS] |0,
+						rightA: splitDStr[ASYNC_PLACE.UPN_RIGHTGRPA].split(ASYGN.D_LIST),
+						inherit: splitDStr[ASYNC_PLACE.UPN_INHERIT] |0,
+						stamp: new Date(new Date()-(splitDStr[ASYNC_PLACE.UPN_STAMP] |0)*1000)
+					}
+				);
 				break;
 			case ASYGN.NDATA:
 				if (ctxNote)
-				  this.respondD({
-					id: splitDStr[ASYNC_PLACE.UPD_ID] |0,
-					ver: splitDStr[ASYNC_PLACE.UPD_VER] |0,
-					dtype: splitDStr[ASYNC_PLACE.UPD_DTYPE] |0,
-					content: splitDStr[ASYNC_PLACE.UPD_DATA],
-					editor: splitDStr[ASYNC_PLACE.UPD_EDITOR] |0,
-					stamp: new Date(new Date()-(splitDStr[ASYNC_PLACE.UPD_STAMP] |0)*1000),
-					place: splitDStr[ASYNC_PLACE.UPD_PLACE].split(ASYGN.D_LIST)
-				  },ctxNote);
+				  this.respondD(
+					splitDStr[ASYNC_PLACE.UPD_ID] |0,
+					{
+						ver: splitDStr[ASYNC_PLACE.UPD_VER] |0,
+						dtype: splitDStr[ASYNC_PLACE.UPD_DTYPE] |0,
+						content: splitDStr[ASYNC_PLACE.UPD_DATA],
+						editor: splitDStr[ASYNC_PLACE.UPD_EDITOR] |0,
+						stamp: new Date(new Date()-(splitDStr[ASYNC_PLACE.UPD_STAMP] |0)*1000),
+						place: splitDStr[ASYNC_PLACE.UPD_PLACE].split(ASYGN.D_LIST)
+				  	},
+				  ctxNote);
 				break;
 			case ASYGN.USER: case ASYGN.YOU:
 	  			ctxNote= undefined;
-				this.respondU({
-					sign: sign,
-					id: splitDStr[ASYNC_PLACE.UPU_ID] |0,
-					ver: splitDStr[ASYNC_PLACE.UPU_VER] |0,
-					name: splitDStr[ASYNC_PLACE.UPU_NAME],
-					relation: splitDStr[ASYNC_PLACE.UPU_RELATION] |0,
-					groupId: splitDStr[ASYNC_PLACE.UPU_GROUPID] |0,
-					boardList: splitDStr[ASYNC_PLACE.UPU_BOARDLIST].split(ASYGN.D_LIST),
-					contactsList: splitDStr[ASYNC_PLACE.UPU_CONTACTSLIST].split(ASYGN.D_LIST)
-				});
+				this.respondU(
+					sign,
+					splitDStr[ASYNC_PLACE.UPU_ID] |0,
+					{
+						ver: splitDStr[ASYNC_PLACE.UPU_VER] |0,
+						uname: splitDStr[ASYNC_PLACE.UPU_NAME],
+						relation: splitDStr[ASYNC_PLACE.UPU_RELATION] |0,
+						groupId: splitDStr[ASYNC_PLACE.UPU_GROUPID] |0,
+						boardList: splitDStr[ASYNC_PLACE.UPU_BOARDLIST].split(ASYGN.D_LIST),
+						contactsList: splitDStr[ASYNC_PLACE.UPU_CONTACTSLIST].split(ASYGN.D_LIST)
+					}
+				);
 				break;
 		}
 	}	
@@ -304,58 +310,58 @@ ALERT();
 
 
 
-this.respondN= function(_unit){
+this.respondN= function(_sign, _oldId, _id, _unit){
 //todo: plug; remove after incrementals implemented
-if (!_unit.oldId && _unit.id>0 && Ncore(_unit.id)) _unit.oldId= _unit.id;
+if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
 
 	//use existing or CREATE appropriate. Board assumed to exist
 	var ctxNote;
-	if (_unit.oldId)
-	  ctxNote= new Ncore(_unit.oldId); //only fetch
+	if (_oldId)
+	  ctxNote= new Ncore(_oldId); //only fetch
 	else {
-		if (_unit.sign==ASYGN.NFULL){
-		  ctxNote= new Note(_unit.id);
+		if (_sign==ASYGN.NFULL){
+		  ctxNote= new Note(_id);
 		} else
-		  ctxNote= new Nroot(_unit.id);
+		  ctxNote= new Nroot(_id);
 	}
 
 	//resolve ID for found named request
-	if (ctxNote.PUB.id != _unit.id)
-	  ctxNote.setId(_unit.id);
+	if (ctxNote.PUB.id != _id)
+	  ctxNote.setId(_id);
 
 //todo:	proper reaction to inadequate server version
 
 //todo: remove when incremental update implemented
 	//no difference for real Note
 	if (
-		_unit.id<0
+		_id<0
 		|| _unit.ver>=ctxNote.PUB.ver
 		|| _unit.rights!=ctxNote.PUB.rights
 		|| _unit.inherit!=ctxNote.PUB.inheritId
 	)
 	//set grabbed; _name,_ver,_style,_rights,_rightA,_inherit,_stamp,_owner; _in.ver=0 for deletion
-	  ctxNote.set(_unit.name,_unit.ver,_unit.style,_unit.rights,_unit.rightGrpA,_unit.inherit,_unit.stamp,_unit.owner,_unit.editor);
+	  ctxNote.set(_unit);
 
 	return ctxNote;
 }
 
 
-this.respondD= function(_unit,_ctxNote){
+this.respondD= function(_id, _unit, _ctxNote){
 	if (_unit.dtype==DATA_TYPE.TEXT)
 	  _unit.content= _unit.content.base64_decode();
 
-	_ctxNote.dataSet(_unit.id,_unit.ver,_unit.dtype,_unit.content,_unit.editor,_unit.stamp,_unit.place);
+	_ctxNote.dataSet(_id, _unit);
 }
 
 
-this.respondU= function(_unit){
-	var curUser= new Ucore(_unit.id);
+this.respondU= function(_sign, _id, _unit){
+	var curUser= new Ucore(_id);
 	if (_unit.ver<=curUser.ver)
 	  return;
 	
-	curUser.set(_unit.name,_unit.ver,_unit.relation,_unit.groupId,_unit.boardList,_unit.contactsList);
+	curUser.set(_unit);
 
-	if (_unit.sign == ASYGN.YOU && _unit.id != SESSION.owner().id){
+	if (_sign == ASYGN.YOU && _id != SESSION.owner().id){
 //todo: proper user relogon reaction
 		alert(DIC.errrUserOutdated);
 		SESSION.reload(SESSION.reqWho, SESSION.reqWhat);

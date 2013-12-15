@@ -37,28 +37,28 @@ Ndata.all= function(_id){
 	}
 }
 
-Ndata.prototype.set= function(_ver,_dtype,_content,_editor,_stamp,_place){
-	if (_ver!=undefined)
-	  this.ver= _ver |0;
-	if (_dtype!=undefined)
-	  this.dtype= _dtype |0;
-	if (_content!=undefined)
-	  this.content= _content;
-	if (_editor!=undefined)
-	  this.editorId= _editor |0;
-	if (_stamp!=undefined)
-	  this.stamp= _stamp;
-	if (_place!=undefined)
+Ndata.prototype.set= function(_setA){ //{ver: , dtype: , content: , editor: , stamp: , place: }
+ 	if (_setA.ver!=undefined)
+	  this.ver= _setA.ver |0;
+	if (_setA.dtype!=undefined)
+	  this.dtype= _setA.dtype |0;
+	if (_setA.content!=undefined)
+	  this.content= _setA.content;
+	if (_setA.editor!=undefined)
+	  this.editorId= _setA.editor |0;
+	if (_setA.stamp!=undefined)
+	  this.stamp= _setA.stamp;
+	if (_setA.place!=undefined)
 	  this.place= {
-	  	x:_place[0] |0,
-	  	y:_place[1] |0,
-	  	w:_place[2] |0,
-	  	h:_place[3] |0
+	  	x:_setA.place[0] |0,
+	  	y:_setA.place[1] |0,
+	  	w:_setA.place[2] |0,
+	  	h:_setA.place[3] |0
 	  };
 
-if (!this.forRedraw) ALERT(PROFILE.VERBOSE, "Data "+ this.id +"("+ this.rootNote.PUB.id +") set ", 'ver: ' +_ver +(_dtype==DATA_TYPE.NOTE? ('; link: ') : ('; data: ') +_content));
+if (!this.forRedraw) ALERT(PROFILE.VERBOSE, "Data "+ this.id +"("+ this.rootNote.PUB.id +") set ", 'ver: ' +_setA.ver +(_setA.dtype==DATA_TYPE.NOTE? ('; link: ') : ('; data: ') +_setA.content));
 	  
-	this.forRedraw= this.forRedraw || (arguments.length>0);
+	this.forRedraw= this.forRedraw || (Object.keys(_setA).length>0);
 }
 
 //change .id

@@ -155,7 +155,10 @@ ToolBoardLeafEdit.prototype.opNewData= function(){
 		,w:300,h:100
 	}
 
-	var newData= dTarget.dataSet(undefined,undefined,DATA_TYPE.TEXT,undefined,undefined,undefined,[newPlace.x,newPlace.y,newPlace.w,newPlace.h]);
+	var newData= dTarget.dataSet(0,{
+		dtype:DATA_TYPE.TEXT,
+		place:[newPlace.x,newPlace.y,newPlace.w,newPlace.h]
+	});
 	dTarget.draw();
 //todo: make in-place (confirm save)
 	newData.save({content:'test',place:newPlace});

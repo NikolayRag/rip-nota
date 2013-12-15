@@ -54,27 +54,29 @@ Ucore.prototype.kill= function(){
 
 
 //incoming update
-Ucore.prototype.set= function(_uname,_ver,_relation,_groupId,_bList,_cList){
-	this.complete= this.complete || (arguments.length==6); //initial suggestion
+Ucore.prototype.set= function(_setA){ //{groupId: , relation: , ver: , uname: , bList: , cList: }
 
-	if (_groupId!=undefined)
-	  this.groupId= _groupId;
-	if (_relation!=undefined)
-	  this.relation= _relation;
-	if (_ver!=undefined)
-	  this.ver= _ver;
-	if (_uname!=undefined)
-	  this.uname= _uname;
-	if (_bList!=undefined && _bList!=this.boardIds){
-		this.boardIds= _bList;
+	this.complete= this.complete || (Object.keys(_setA).length==6); //initial suggestion
+
+//todo: maybe change to comparing with key existance, not to being undefined
+	if (_setA.groupId!=undefined)
+	  this.groupId= _setA.groupId;
+	if (_setA.relation!=undefined)
+	  this.relation= _setA.relation;
+	if (_setA.ver!=undefined)
+	  this.ver= _setA.ver;
+	if (_setA.uname!=undefined)
+	  this.uname= _setA.uname;
+	if (_setA.boardList!=undefined && _setA.boardList!=this.boardIds){
+		this.boardIds= _setA.boardList;
 		this.forRedrawBoards= 1;
 	}
-	if (_cList!=undefined && _cList!=this.contactIds){
-		this.contactIds= _cList;
+	if (_setA.contactsList!=undefined && _setA.contactsList!=this.contactIds){
+		this.contactIds= _setA.contactsList;
 		this.forRedrawContacts= 1;
 	}
 
-	this.forRedraw= this.forRedraw || (arguments.length>0);
+	this.forRedraw= this.forRedraw || (Object.keys(_setA).length>0);
 //todo: update sets redraw to 0
 
 ALERT(PROFILE.BREEF,

@@ -216,7 +216,7 @@ this.owner= function(_newid, _name){
 
 	var newUser= new Ucore(_newid)
 	this.ownerId= newUser.id;
-	newUser.set(_name);
+	newUser.set({uname:_name});
 }
 
 this.reqWho= '';

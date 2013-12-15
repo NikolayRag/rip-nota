@@ -401,6 +401,8 @@ Refactor:
 				+ youStayLab reorganized
 				+ barBoardOwner centered
 +js:			+ .reqWho, .reqWhat, .reqFilter moved out of Ncore to SESSION.
++Unit:			+ .set() arguments reorganized;
+				object collections used
 
 
 

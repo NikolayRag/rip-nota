@@ -116,7 +116,10 @@ ToolBoard.prototype.opNewData= function(){
 		,w:300,h:100
 	}
 
-	var newData= this.board.dataSet(undefined,undefined,DATA_TYPE.TEXT,undefined,undefined,undefined,[newPlace.x,newPlace.y,newPlace.w,newPlace.h]);
+	var newData= this.board.dataSet(0,{
+		dtype:DATA_TYPE.TEXT,
+		place:[newPlace.x,newPlace.y,newPlace.w,newPlace.h]
+	});
 	this.board.draw();
 //todo: make in-place (confirm save)
 	newData.save({content:'test',place:newPlace});
