@@ -400,6 +400,8 @@ Refactor:
 				+ menu class mostly unused
 				+ youStayLab reorganized
 				+ barBoardOwner centered
++js:			+ .reqWho, .reqWhat, .reqFilter moved out of Ncore to SESSION.
+
 
 
 Fix:

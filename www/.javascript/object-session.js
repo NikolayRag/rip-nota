@@ -219,6 +219,10 @@ this.owner= function(_newid, _name){
 	newUser.set(_name);
 }
 
+this.reqWho= '';
+this.reqWhat= '';
+this.reqFilter= '';
+
 this.inAsync= false;
 this.asyncQueue= [];
 this.httpRequest= null;

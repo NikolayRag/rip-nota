@@ -18,9 +18,10 @@ var argsA= DOCUMENT['argsA'];
 SESSION.owner(argsA[ARGS_PLACE.USERID], argsA[ARGS_PLACE.USERNAME]);
 
 SESSION.board= new Board(argsA[ARGS_PLACE.REQNOTEID]);
-  SESSION.board.PUB.reqWho= argsA[ARGS_PLACE.REQWHO];
-  SESSION.board.PUB.reqWhat= argsA[ARGS_PLACE.REQWHAT];
-  SESSION.board.PUB.reqFilter= argsA[ARGS_PLACE.REQFILTER];
+
+SESSION.reqWho= argsA[ARGS_PLACE.REQWHO];
+SESSION.reqWhat= argsA[ARGS_PLACE.REQWHAT];
+SESSION.reqFilter= argsA[ARGS_PLACE.REQFILTER];
 
 UI.embed= argsA[ARGS_PLACE.EMBED];
 

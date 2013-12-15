@@ -29,7 +29,7 @@ this.draw= function(_noteIn){
 
 this.bindEvt= function(){
 	this.DOM.selector.onchange= function(){
-		SESSION.reload(SESSION.board.PUB.reqWho, this.children[this.selectedIndex].elementText());
+		SESSION.reload(SESSION.reqWho, this.children[this.selectedIndex].elementText());
 	};
 }
 

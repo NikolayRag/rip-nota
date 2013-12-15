@@ -48,11 +48,7 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 
 	//Public shared container
 	_this.PUB= {
-		reqWho: '',
-		reqWhat: '',
-		reqFilter: '',
-
-	//dbase data
+		//dbase data
 		id:			_id,
 		ver:		CORE_VERSION.INIT,
 		name:		'',
@@ -66,7 +62,7 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 
 		ndata:		[], //[id]= Ndata;
 
-	//operating
+		//operating
 		complete: 0,
 		forRedraw: 0,
 		forSave: 0,

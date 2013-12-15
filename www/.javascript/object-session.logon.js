@@ -32,6 +32,7 @@ this.login= function(_mode,_username,_password) {
 	SESSION.async(asyncMode, saveData, this, this.loginCB, function(_err,_txt){
 ALERT(PROFILE.GENERAL, 'Login error: ' +saveData, _err +': ' +_txt);
 //todo: expand
+		console.log('Login error: ' +_err +': ' +_txt);
 		UI.popW.up('Login server unavailable');
 	});
 };
@@ -72,7 +73,7 @@ this.loginCB= function(_res){
 				if (fReg)
 				  SESSION.reload();
 				else
-				  SESSION.reload(SESSION.board.PUB.reqWho,SESSION.board.PUB.reqWhat);
+				  SESSION.reload(SESSION.reqWho, SESSION.reqWhat);
 			} else {
 				var logErrsA= [
 					DIC.logErrRegister,

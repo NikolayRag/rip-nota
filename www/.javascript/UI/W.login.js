@@ -74,7 +74,6 @@ this.bindEvt= function(){
 	};
 
 	this.DOM.uname.onkeypress= this.DOM.uname.onkeyup= function(_e){
-		_e= _e||WINDOW.event;
 	 	_this.DOM.unameCover.style.display= (eKeyCode(_e)>=28 || this.value!='')? 'none' :'';
 
 		_this.validateLogin();
@@ -82,7 +81,6 @@ this.bindEvt= function(){
 	this.DOM.unameCover.onclick= function(){_this.DOM.uname.focus()};
 	
 	this.DOM.pass.onkeypress= this.DOM.pass.onkeyup= function(_e){
-		_e= _e||WINDOW.event;
 	 	_this.DOM.passCover.style.display= (eKeyCode(_e)>=28 || this.value!='')? 'none' :'';
 
 		_this.validateLogin();

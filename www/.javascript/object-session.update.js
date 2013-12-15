@@ -81,9 +81,9 @@ __PROFILE.profileTime(); //profile
 	var saveData= [];
 	saveData['rId']= _board.PUB.id; //lock onto original id
 	if (_board.PUB.id<0){
-		saveData['rWho']= _board.PUB.reqWho;
-		saveData['rWhat']= _board.PUB.reqWhat;
-		saveData['rFilter']= _board.PUB.reqFilter;
+		saveData['rWho']= SESSION.reqWho;
+		saveData['rWhat']= SESSION.reqWhat;
+		saveData['rFilter']= SESSION.reqFilter;
 //		saveData+= "&bWhoVer=" +this.board.owner.ver;
 	}
 /*
@@ -99,7 +99,7 @@ __PROFILE.profileTime(); //profile
 		saveData+="&vc"+i+"=" +(bn.ndata.length-1);
 	}
 */
-	this.saveData= saveData;
+	this.saveData= saveData; //cache for report
 
 	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
 }
@@ -358,7 +358,7 @@ this.respondU= function(_unit){
 	if (_unit.sign == ASYGN.YOU && _unit.id != SESSION.owner().id){
 //todo: proper user relogon reaction
 		alert(DIC.errrUserOutdated);
-		SESSION.reload(SESSION.board.PUB.reqWho, SESSION.board.PUB.reqWhat);
+		SESSION.reload(SESSION.reqWho, SESSION.reqWhat);
 	}
 }
 
