@@ -115,7 +115,7 @@ Ndata.prototype.draw= function(_uiTemplateA,_curDI){
 //in reverse for Note, saving Data assumes visual changes are ALREADY made
 //todo: mantain list of .forSave==1 data
 Ndata.prototype.save= function(_vals){
-	if (!Object.props(_vals))
+	if (!Object.keys(_vals).length)
 	  return;
 
 	if (_vals.content!=undefined){

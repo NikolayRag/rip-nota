@@ -1,14 +1,4 @@
 
-////object extenders
-
-Object.props= function(_obj){
-	var count = 0;
-	for (var k in _obj)
-	  if (_obj.hasOwnProperty(k))
-	    count++;
-	return count;
-}
-
 //String additions
 
 if(!Array.prototype.forEach)

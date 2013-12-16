@@ -66,7 +66,8 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 		complete: 0,
 		forRedraw: 0,
 		forSave: 0,
-		forSaveRts: 0
+		forSaveRts: 0,
+		saveCB: null
 	};
 
 	//private
@@ -229,8 +230,11 @@ Ncore.prototype.inherit= function(){
 }
 
 //todo: mantain list of .forSave==1 notes
-Ncore.prototype.save= function(_vals){
-	if (!Object.props(_vals))
+Ncore.prototype.save= function(_vals, _immediate, _okCB){
+	if (IS.fn(_okCB))
+	  this.saveCB= _okCB;
+
+	if (!Object.keys(_vals).length)
 	  return;
 
 	if (_vals.rights){
@@ -256,18 +260,28 @@ Ncore.prototype.save= function(_vals){
 	  if (this.referers[ir])
 		this.referers[ir].doSaved();
 
-	SESSION.save.save();
+	SESSION.save.save(_immediate);
 }
 
 Ncore.prototype.saved= function(_res){
 	if (this.PUB.ver==CORE_VERSION.INIT){ //CREATED
-//todo:
-	  this.PUB.ver= 1;
+		this.PUB.ver= 1;
+		this.PUB.ownerId= SESSION.owner().id;
+		this.PUB.rights= NOTA_RIGHTS.OWN;
+		this.setId(_res);
 	} else
 	  this.PUB.ver= _res;
 
-	this.PUB.forSave= 0;
+//todo: hold case when Ncore is changed to save WHILE IN save
+	this.PUB.forSave=
+	  this.PUB.forSaveRts=
+	  0;
 
+	if (this.saveCB)
+	  this.saveCB(_res);
+	this.saveCB= null;
+
+	SESSION.board.draw();
 	for (var ir in this.referers)
 	  if (this.referers[ir])
 		this.referers[ir].doSaved();

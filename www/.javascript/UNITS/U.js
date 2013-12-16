@@ -31,8 +31,8 @@ var /**
 	_this.uname= '';
 	_this.relation= USER_RELATION.UNAVAILABLE;
 	_this.groupId= 0; //relative to You
-	_this.boardIds= undefined; //for logged user and board owner.
-	_this.contactIds= undefined; //contactlist, basically for logged user.
+	_this.boardIds= []; //for logged user and board owner.
+	_this.contactIds= []; //contactlist, basically for logged user.
 
 	//operating
 	_this.complete= 0; //all base data is filled
@@ -92,9 +92,6 @@ ALERT(PROFILE.BREEF,
 
 
 Ucore.prototype.boards= function(){
-	if (!this.boardIds || !this.boardIds.length)
-	  return [];
-	
 	var outBoards= [];
 	var curN;
 	for (var bId in this.boardIds)
@@ -105,9 +102,6 @@ Ucore.prototype.boards= function(){
 
 
 Ucore.prototype.contacts= function(){
-	if (!this.contactIds || !this.contactIds.length)
-	  return [];
-	
 	var outContacts= [];
 	var curU;
 	for (var cId in this.contactIds)

@@ -94,7 +94,7 @@ function svFetchData($_dataA,$_notesA){
 
 
 function svFetchNotes($_notesA){
-	global $SAVE_RES;
+	global $SAVE_RES, $NOTA_RIGHTS;
 
 	//read Notes
 	$noteIdA= Array();
@@ -127,6 +127,12 @@ function svFetchNotes($_notesA){
 			$curNote->version= $dbNote->version+1;
 			$curNote->ownerId= $dbNote->ownerId;
 			$curNote->inherit= $dbNote->inherit;
+		} else {
+			$curNote->rights=
+			  $curNote->inherit>0
+//todo: check if ancestors are fetched for new Note
+			  ? $rNoteA[$curNote->inherit]->rights
+			  : $NOTA_RIGHTS->OWN;
 		}
 
 	//modify Note's references
@@ -144,14 +150,13 @@ function svSaveNotes($_notesA){
 
 	foreach($_notesA as $curNote){
 		if ($curNote->forSave &$SAVE_MODE->MAIN){
-
 			if ($curNote->rights<=$NOTA_RIGHTS->RO){ //no rights
 				$curNote->saveRes= $SAVE_RES->SECURITY_ERR;
 				continue;
 			}
 
 			if ($curNote->version==$CORE_VERSION->INIT){ //create
-				$sqRes= 0; //todo: creation
+				$sqRes= $DB->apply('saveNoteAdd',$USER->id,$curNote->name,$curNote->style,$curNote->inherit,$USER->id);
 				$curNote->saveRes= $DB->lastInsertId();
 			} else { //update
 				$sqRes= $DB->apply('saveNoteUpdate',$curNote->id,$curNote->version,$curNote->isDeleted,$curNote->ownerId,$curNote->name,$curNote->style,$curNote->inherit,$USER->id);

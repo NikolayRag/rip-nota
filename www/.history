@@ -217,6 +217,13 @@ b1.9:
 		+nData:	base64 decoding moved out to SESSION.update
 -nData:	introduce locked/unlocked ui (editmode)
 +tool:	Note/Leaf 'new Data' option
++save:	added creation of top-level Notes
+		+ SESSION.save accepts immediate save
+		+ Ncore stores CB for successfull save
+		+ Ncore save reaction; toplevel
+		- inherited Notes
+		- Ncore save reaction; inherited
+		- organize saving rights for new Notes (delay right save?)
 
 
 Minor:
@@ -403,6 +410,7 @@ Refactor:
 +js:			+ .reqWho, .reqWhat, .reqFilter moved out of Ncore to SESSION.
 +Unit:			+ .set() arguments reorganized;
 				object collections used
++wrap:			Object.props() removed
 
 
 

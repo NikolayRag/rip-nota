@@ -11,10 +11,10 @@
 */
 SESSION.save= new function(){
 
-this.save= function(){
+this.save= function(_immediate){
 	lazyRun(
 		this.saveGo.bind(this)
-		, TIMER_LENGTH.SAVE_DELAY
+		, (_immediate?0:1)*TIMER_LENGTH.SAVE_DELAY
 		, this.lazyCtx
 	);
 
@@ -35,7 +35,7 @@ this.saveGo= function(){
 			noteBlock[ASYNC_PLACE.SVN_CANSAVE]= canSave;
 			if (canSave &SAVE_MODE.MAIN){
 				noteBlock[ASYNC_PLACE.SVN_VER]= curNote.PUB.ver;
-				if (curNote.inherit()) noteBlock[ASYNC_PLACE.SVN_INHERIT]= curNote.inherit().PUB.id;
+				noteBlock[ASYNC_PLACE.SVN_INHERIT]= curNote.inherit()? curNote.inherit().PUB.id :0;
 				noteBlock[ASYNC_PLACE.SVN_NAME]= curNote.PUB.name;
 				noteBlock[ASYNC_PLACE.SVN_STYLE]= encodeURIComponent(curNote.PUB.style.makeString());
 			}

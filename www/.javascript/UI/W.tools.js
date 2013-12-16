@@ -1,7 +1,34 @@
-//boardTool
-//todo: ON
-//DOM/todo.boardCreate.onblur=	function(){if (this.value=='') {this.value='New...';this.style.color='#888';}};
-//DOM/todo.boardCreate.onfocus=	function(){this.value= '';this.style.color='#000'};
-//todo: NOT UNAME, replace
-//DOM/todo.boardCreate.onchange=	function(){SESSION.reload(SESSION.owner().uname,this.value)};
-//DOM/todo.boardStylize.onclick=	function(e){uiStilyze()};
+//todo: change to tools context
+UI.boardToolsW= new function(){
+
+this.bindEvt= function(){
+	var _this= this;
+
+	this.DOM.boardCreate.onchange= function(){
+		//validate
+		var newName= this.value;
+		for(var iN in Ncore.all)
+			if (Ncore.all[iN].PUB.name == newName)
+//todo: ask to switch
+		    	return;
+
+		//create
+		var newNote= new Ncore();
+		newNote.save({name:newName, style:new Style()},	1, function(_res){
+			SESSION.owner().set({boardList:SESSION.owner().boardIds.concat([_res])});
+			SESSION.reload(SESSION.reqWho,newName)
+		});
+	};
+
+}
+
+this.DOM= {
+	bar: DOM('barBoardTools'),
+
+	boardCreate: DOM('boardCreate')
+};
+
+this.bindEvt();
+
+
+}
