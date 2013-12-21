@@ -82,7 +82,7 @@ BoardUI.prototype.canvasSet= function(){
 
 	var canvasImgRepaint= function(_img){
 		var cctx= canvas.getContext('2d');
-		cctx.globalAlpha= .05;
+		cctx.globalAlpha= 0.05;
 		cctx.drawImage(_img,0,0,canvas.width,canvas.height);
 		_img.isLoaded= true;
 	}

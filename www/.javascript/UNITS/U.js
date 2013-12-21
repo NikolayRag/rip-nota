@@ -39,7 +39,7 @@ var /**
 	_this.forRedraw= 0;
 	_this.forRedrawBoards= 0;
 	_this.forRedrawContacts= 0;
-	_this.forSave= 0;
+	_this.forSave= SAVE_STATES.IDLE;
 
 	Ucore.all[_id]= _this;
 ALERT(PROFILE.GENERAL, "Nuser new", 'id: ' +_id, 1);

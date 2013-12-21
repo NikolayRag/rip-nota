@@ -96,10 +96,29 @@ ToolBoard.prototype.kill= function(){
 ToolBoard.prototype.opNewNote= function(){
 	var _this= this;
 
-alert('new note at '
-	+(UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft)
-	+':' +(UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop)
-);
+	var newPlace= {
+		x: UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft,
+		y: UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop
+//depricated
+		,w:300,h:100
+	}
+
+
+	var newNote= new Ncore();
+	newNote.save({inherit:this.board.PUB.id});
+
+	var newData= this.board.dataSet(0,{
+		dtype:DATA_TYPE.NOTE,
+		place:[newPlace.x,newPlace.y,newPlace.w,newPlace.h]
+	});
+//	this.board.draw();
+//todo: make in-place (confirm save)
+	newData.save({content:newNote.PUB.id,place:newPlace});
+//	newData.ui && newData.ui.draw();
+
+
+
+
 
 	setTimeout(function(){
 		UI.toolSet.kill(_this)

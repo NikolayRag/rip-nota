@@ -61,7 +61,7 @@ DataUIBoardNote.prototype.setState= function(_state){
 	this.signStamp();
 
 //todo: state must remain after data saved if sibling is unsaved
-	this.DOM.mark.style.display= _state==SAVE_STATES.UNSAVED? '': 'none';
+	this.DOM.mark.style.display= _state? '': 'none';
 }
 
 
@@ -128,7 +128,7 @@ DataUIBoardNote.prototype.shadow= function () {
 		for (var io in sibPUB.ndata) break;
 		var sibData= sibPUB.ndata[io];
 
-		var sFract= ((new Date()-sibData.stamp)/(TIMER_LENGTH.MONTH*1000));
+		var sFract= !sibData? 1: ((new Date()-sibData.stamp)/(TIMER_LENGTH.MONTH*1000));
 		sFract= sFract>1? 1 : sFract;
 		sFract= Math.pow(sFract,STYLE.NOTESHADOW_DECAY_EXP);
 
@@ -152,7 +152,7 @@ DataUIBoardNote.prototype.sign= function () {
 	if (sibPUB.style.main.a){
 //todo: manage ref for restricted note
 		if (sibPUB.rights==NOTA_RIGHTS.INIT) {
-			this.DOM.ref.elementText(sibData.ndata);
+			this.DOM.ref.elementText(SESSION.owner().name);
 			this.DOM.ref.style.display= '';
 			return;
 		}
@@ -191,9 +191,9 @@ DataUIBoardNote.prototype.signStamp= function(){
 
 	var okSign= sibData && sib.inherit() && sibData.editorId!=sib.inherit().PUB.ownerId;
 
-	var stamp= stampDiff(sibData.stamp,TIMER_LENGTH.MONTH*2);
+	var stamp= stampDiff(sibData? sibData.stamp :sibPUB.stamp,TIMER_LENGTH.MONTH*2);
 	this.DOM.stamp.elementText(
-		(okSign!=''? ', ': '') +stamp.stamp
+		((okSign && okSign!='')? ', ': '') +stamp.stamp
 	);
 	this.DOM.stamp.style.display=
 	  stamp.stamp!=''? '':'none';

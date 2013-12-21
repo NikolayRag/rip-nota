@@ -79,17 +79,21 @@ UI.cListAddBlock= function(relation,blockName){
 			var _tmpe= _tmpBin.appendChild(DOCUMENT.createElement("div"));
 			  _tmpe.className= "toolWidget"; //contactItemUser
 			var _tmpx= _tmpe.appendChild(DOCUMENT.createElement("a"));
-			  _tmpx.innerHTML= addUser.name+ (addUser.relation!=0 ?"..." :"");
+			  _tmpx.innerHTML= addUser.name+ (addUser.relation!=USER_RELATION.NORMAL ?"..." :"");
 			  _tmpx.href= "/" +addUser.name;
 
-			if (addUser.relation==-1 || addUser.relation==2) {
+			if (addUser.relation==USER_RELATION.NEUTRAL || addUser.relation==USER_RELATION.IN) {
 				_tmpx= _tmpe.appendChild(DOCUMENT.createElement("span")); //
 				  _tmpx.className= "knobAdd";
 				  _tmpx.innerHTML= "+";
 				  _tmpx.onclick= function(){contactMake(addUser.id,1)};
 			}
 
-			if (addUser.relation>=0){
+			if (
+				addUser.relation==USER_RELATION.NORMAL
+				|| addUser.relation==USER_RELATION.IN
+				|| addUser.relation==USER_RELATION.OUT
+			){
 				_tmpx= _tmpe.appendChild(DOCUMENT.createElement("span")); //
 				  _tmpx.className= "knobDel";
 				  _tmpx.innerHTML= "-";

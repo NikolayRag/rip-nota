@@ -30,6 +30,8 @@ Fix:
 -ui:	top edge of board is always hidden under toolbar. Add exact space only for showing full board
 -GLOB:	check right changing when new version of note/data is created by different user
 
+
+
 b1.9:
 -GLOB:	document spots at .techdocs
 -js:	finalize Update sequence
@@ -221,9 +223,12 @@ b1.9:
 		+ SESSION.save accepts immediate save
 		+ Ncore stores CB for successfull save
 		+ Ncore save reaction; toplevel
-		- inherited Notes
+		+ inherited Notes
 		- Ncore save reaction; inherited
-		- organize saving rights for new Notes (delay right save?)
++save:	procceed cyclically Data/Note from most defined to ensure
+		all new-references are linked
+-save:	saving rights is dedicated
+
 
 
 Minor:
@@ -314,6 +319,7 @@ Minor:
 +php:		make constants export to wrap-c-auto.js at compacting
 +php:		move compactHTML to compact.php/kiCompackHTML()
 +js:		forEach avoided to use with Ncore and Ndata enum
+-update:	update boardlist as need
 
 
 
@@ -411,7 +417,12 @@ Refactor:
 +Unit:			+ .set() arguments reorganized;
 				object collections used
 +wrap:			Object.props() removed
-
++constants:		SAVE_STATES renamed
++save:			SAVE_MODE depricated
+				+js: rights are sent as independent block
+				+ ASYGN.NRIGHTS introduced
+				+ ASYNC_PLACE.SVR_RIGHTS renamed to .SVR_RIGHTS
++constants:		USER_RELATION used widely
 
 
 Fix:
@@ -478,7 +489,8 @@ Fix:
 				.asyncStop() dont destroy .httpRequest
 				- check .httpRequest within concurence calls 
 +board:			initial canvas painting made more reliable
-+logon:			validation for blank username was calling server; should not.
++logon:			validation for blank username was calling server;
+				should not.
 +php:			fixed for apache: correct filename cases;
 				correct absolute paths
 +php:			added UTF8 to PDO
@@ -490,6 +502,9 @@ Fix:
 				id pool; elseway different Data's save is ruined
 +Ncore:			same as nData, uses global negative ID for new
 +web:			apache: 404 avoided; ModRewrite used
+-update:		php: Ndata db inconsistence (if ref unit not exist);
+				returne Ndata with dtype=0 and errormsg
+-Ndata:			reliable state/stamp update
 
 
 

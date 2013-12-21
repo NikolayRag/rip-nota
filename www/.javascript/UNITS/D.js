@@ -20,7 +20,7 @@ var Ndata= function(_root,_id)
 	_this.rootNote= _root;
 	_this.ui= null;
 	_this.forRedraw= 0;
-	_this.forSave= 0;
+	_this.forSave= SAVE_STATES.IDLE;
 
 ALERT(PROFILE.BREEF,"Data new", 'id: ' +_id);
 }
@@ -115,13 +115,14 @@ Ndata.prototype.draw= function(_uiTemplateA,_curDI){
 //in reverse for Note, saving Data assumes visual changes are ALREADY made
 //todo: mantain list of .forSave==1 data
 Ndata.prototype.save= function(_vals){
+//todo: use .set()
+
 	if (!Object.keys(_vals).length)
 	  return;
 
-	if (_vals.content!=undefined){
-		this.dtype= DATA_TYPE.TEXT;
-		this.content= _vals.content;
-	}
+	if (_vals.content!=undefined)
+	  this.content= _vals.content;
+
 	if (_vals.place!=undefined) 
 	  this.place= {
 	  	x:_vals.place.x,
@@ -133,7 +134,7 @@ Ndata.prototype.save= function(_vals){
 
 	this.editorId= SESSION.owner().id;
 	this.stamp= new Date();
-	this.forSave= SAVE_STATES.UNSAVED;
+	this.forSave= SAVE_STATES.READY;
 
 	this.ui && this.ui.setState(this.forSave);
 
@@ -147,7 +148,7 @@ Ndata.prototype.saved= function(_res){
 	} else
 	  this.ver= _res;
 
-	this.forSave= 0;
+	this.forSave= SAVE_STATES.IDLE;
 
 //todo: will be simplified after dedication of Unit
 	//affect container
@@ -164,6 +165,9 @@ Ndata.prototype.saved= function(_res){
 }
 
 //todo: check for being edited
-Ndata.prototype.canSave= function(){
-	return(this.forSave);
+Ndata.prototype.canSave= function(_enum){
+	var curState= this.forSave;
+	if (_enum && curState==SAVE_STATES.READY)
+		this.forSave= SAVE_STATES.HOLD;
+	return(curState);
 }

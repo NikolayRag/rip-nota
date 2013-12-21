@@ -8,7 +8,7 @@ include('sqTmpl/SQLTSave.php');
 
 
 function svParseInput($_postIn, $notesA, $dataA) {
-	global $ASYNC_PLACE, $ASYGN, $SAVE_RES, $CORE_VERSION, $USER;
+	global $ASYNC_PLACE, $ASYGN, $SAVE_RES, $SAVE_STATES, $CORE_VERSION, $USER;
 	foreach ($_postIn as $entityId=> $entityData){
 		$entityIdSplit= array();
 		if (!preg_match("/^($ASYGN->NBREEF|$ASYGN->NDATA)(-?\\d+)\$/", $entityId, $entityIdSplit))
@@ -25,8 +25,8 @@ function svParseInput($_postIn, $notesA, $dataA) {
 					0, arrGet($entityDataA,$ASYNC_PLACE->SVN_VER, $CORE_VERSION->INIT),
 					arrGet($entityDataA,$ASYNC_PLACE->SVN_STYLE,'')
 				 );
-				$curNote->forSave= arrGet($entityDataA,$ASYNC_PLACE->SVN_CANSAVE,0);
-				$curNote->rightGrps= explode($ASYGN->D_LIST,arrGet($entityDataA,$ASYNC_PLACE->SVN_RIGHTS,''));
+				$curNote->forSave= $SAVE_STATES->READY;
+//				$curNote->rightGrps= explode($ASYGN->D_LIST,arrGet($entityDataA,$ASYNC_PLACE->SVR_RIGHTS,''));
 				$notesA->add($curId,$curNote);
 				break;
 			case $ASYGN->NDATA:
@@ -38,7 +38,7 @@ function svParseInput($_postIn, $notesA, $dataA) {
 					arrGet($entityDataA,$ASYNC_PLACE->SVD_VER, $CORE_VERSION->INIT),
 					0, arrGet($entityDataA,$ASYNC_PLACE->SVD_PLACE,'')
 				);
-				$curData->forSave= 1;
+				$curData->forSave= $SAVE_STATES->READY;
 				if ($curData->version==$CORE_VERSION->INIT)
 				  $curData->rootNote = arrGet($entityDataA,$ASYNC_PLACE->SVD_PARENT,0);
 				$dataA->add($curId,$curData);
@@ -50,7 +50,7 @@ function svParseInput($_postIn, $notesA, $dataA) {
 
 
 function svFetchData($_dataA,$_notesA){
-	global $SAVE_RES;
+	global $SAVE_RES, $SAVE_STATES;
 
 	//read existent Data from db
 	$dataIdA= Array();
@@ -64,7 +64,7 @@ function svFetchData($_dataA,$_notesA){
 			//db-unexistent Data
 			if (!array_key_exists($curData->id, $rDataA)){
 				$curData->saveRes= $SAVE_RES->DB_ERR;
-				$curData->forSave= 0;
+				$curData->forSave= $SAVE_STATES->IDLE;
 				continue;
 			}	
 
@@ -73,7 +73,7 @@ function svFetchData($_dataA,$_notesA){
 			//misversion
 			if ($curData->version>$dbData->version){
 				$curData->saveRes= $SAVE_RES->VERSION_ERR;
-				$curData->forSave= 0;
+				$curData->forSave= $SAVE_STATES->IDLE;
 				continue;
 			}
 
@@ -85,7 +85,7 @@ function svFetchData($_dataA,$_notesA){
 		$_notesA->add($curData->rootNote,new Note($curData->rootNote));
 
 
-		//creation mod: Parent Note should exist or be supplied.
+		//+creation mod: Parent Note should exist or be supplied.
 		//deletion mod: Deletes binded Note (if any) in case Data's Note is binded Note's root
 		
 	}
@@ -94,13 +94,15 @@ function svFetchData($_dataA,$_notesA){
 
 
 function svFetchNotes($_notesA){
-	global $SAVE_RES, $NOTA_RIGHTS;
+	global $SAVE_RES, $SAVE_STATES, $NOTA_RIGHTS;
 
 	//read Notes
 	$noteIdA= Array();
 	foreach($_notesA->all() as $curNote)
 	  if ($curNote->id>0)
 	    $noteIdA[]= $curNote->id;
+	  else if ($curNote->inherit>0) //parents of new notes
+	  	$noteIdA[]= $curNote->inherit;
 	$rNoteA= notesBDById($noteIdA);
 	notesGetRights($rNoteA);
 
@@ -109,7 +111,7 @@ function svFetchNotes($_notesA){
 			//db-unexistent Note
 			if (!array_key_exists($curNote->id, $rNoteA)){
 				$curNote->saveRes= $SAVE_RES->DB_ERR;
-				$curNote->forSave= 0;
+				$curNote->forSave= $SAVE_STATES->IDLE;
 				continue;
 			}	
 
@@ -118,7 +120,7 @@ function svFetchNotes($_notesA){
 			//misversion
 			if ($curNote->version>$dbNote->version){
 				$curNote->saveRes= $SAVE_RES->VERSION_ERR;
-				$curNote->forSave= 0;
+				$curNote->forSave= $SAVE_STATES->IDLE;
 				continue;
 			}
 
@@ -128,16 +130,22 @@ function svFetchNotes($_notesA){
 			$curNote->ownerId= $dbNote->ownerId;
 			$curNote->inherit= $dbNote->inherit;
 		} else {
+			//no ancestor
+			if ($curNote->inherit<1 && !array_key_exists($curNote->inherit, $rNoteA)){
+				$curNote->saveRes= $SAVE_RES->PARAM_ERR;
+				$curNote->forSave= $SAVE_STATES->IDLE;
+				continue;
+			}
+
 			$curNote->rights=
 			  $curNote->inherit>0
-//todo: check if ancestors are fetched for new Note
 			  ? $rNoteA[$curNote->inherit]->rights
 			  : $NOTA_RIGHTS->OWN;
 		}
 
 	//modify Note's references
 
-		//creation mod: Ancestor should exist or be supplied.
+		//+creation mod: Ancestor should exist or be supplied.
 		//deletion mod: Deletes all Data binded Notes whose root is this Note.
 		// (get db; append to $rNoteA)
 	}
@@ -145,43 +153,66 @@ function svFetchNotes($_notesA){
 
 
 function svSaveNotes($_notesA){
-	global $SAVE_MODE, $NOTA_RIGHTS, $SAVE_RES, $CORE_VERSION;
+	global $NOTA_RIGHTS, $SAVE_RES, $SAVE_STATES, $CORE_VERSION;
 	global $DB, $USER;
 
-	foreach($_notesA as $curNote){
-		if ($curNote->forSave &$SAVE_MODE->MAIN){
-			if ($curNote->rights<=$NOTA_RIGHTS->RO){ //no rights
-				$curNote->saveRes= $SAVE_RES->SECURITY_ERR;
-				continue;
-			}
+	foreach($_notesA as $curNote)
+	  if ($curNote->forSave == $SAVE_STATES->READY){
+		$curNote->forSave= $SAVE_STATES->IDLE;
 
-			if ($curNote->version==$CORE_VERSION->INIT){ //create
-				$sqRes= $DB->apply('saveNoteAdd',$USER->id,$curNote->name,$curNote->style,$curNote->inherit,$USER->id);
-				$curNote->saveRes= $DB->lastInsertId();
-			} else { //update
-				$sqRes= $DB->apply('saveNoteUpdate',$curNote->id,$curNote->version,$curNote->isDeleted,$curNote->ownerId,$curNote->name,$curNote->style,$curNote->inherit,$USER->id);
-				$curNote->saveRes= $curNote->version;
-			}
-
-			if (!$sqRes)
-			  $curNote->saveRes= $SAVE_RES->SQL_ERR;
+		if ($curNote->rights<=$NOTA_RIGHTS->RO){ //no rights
+			$curNote->saveRes= $SAVE_RES->SECURITY_ERR;
+			continue;
 		}
 
-		if ($curNote->forSave &$SAVE_MODE->RIGHTS){
-			//todo: do saving rights
+		if ($curNote->version==$CORE_VERSION->INIT){ //create
+			$sqRes= $DB->apply('saveNoteAdd',$USER->id,$curNote->name,$curNote->style,$curNote->inherit,$USER->id);
+			$curNote->saveRes= $DB->lastInsertId();
+		} else { //update
+			$sqRes= $DB->apply('saveNoteUpdate',$curNote->id,$curNote->version,$curNote->isDeleted,$curNote->ownerId,$curNote->name,$curNote->style,$curNote->inherit,$USER->id);
+			$curNote->saveRes= $curNote->version;
 		}
-	}
+
+		if (!$sqRes)
+		  $curNote->saveRes= $SAVE_RES->SQL_ERR;
+	  }
+
+//		if ($curNote->forSave){
+//			//todo: do saving rights
+//		}
 }
 
 function svSaveData($_dataA,$_notesA){
-	global $SAVE_MODE, $NOTA_RIGHTS, $SAVE_RES, $CORE_VERSION;
+	global $NOTA_RIGHTS, $SAVE_RES, $SAVE_STATES, $CORE_VERSION, $DATA_TYPE;
 	global $DB, $USER;
 
 	foreach($_dataA as $curData)
-	  if ($curData->forSave){
-		if ($_notesA->get($curData->rootNote)->rights<=$NOTA_RIGHTS->RO){ //no rights
+	  if ($curData->forSave == $SAVE_STATES->READY){
+		$curData->forSave= $SAVE_STATES->IDLE;
+
+		$curRoot= $_notesA->get($curData->rootNote);
+		if (!$curRoot){ //no parent
+			$curData->saveRes= $SAVE_RES->PARAM_ERR;
+			continue;
+		}
+		if ($curRoot->rights<=$NOTA_RIGHTS->RO){ //no rights
 			$curData->saveRes= $SAVE_RES->SECURITY_ERR;
 			continue;
+		}
+
+		if ($curData->datatype==$DATA_TYPE->NOTE){ //embedded Note availability
+			$refNote= $_notesA->get($curData->data);
+			if (!$refNote){ //no ref note
+				$curData->saveRes= $SAVE_RES->PARAM_ERR;
+				continue;
+			}
+			if ($curData->data<1){
+				if ($refNote->saveRes<1){ //invalid ref note
+					$curData->saveRes= $SAVE_RES->REFERENCE_ERR;
+					continue;
+				}
+				$curData->data= $refNote->saveRes;
+			}
 		}
 
 		$tPlace= explode(',',$curData->place);
@@ -217,9 +248,9 @@ Arguments:
 
 		saveMode &1:
 			Incrementally save Note
-		saveMode &2:
-			Directly set rights using supplied Right array;
-			Note entity is not really updated
+//		saveMode &2:
+//			Directly set rights using supplied Right array;
+//			Note entity is not really updated
 
 		version =-1:
 			Create new Note;

@@ -61,7 +61,7 @@ this.close= function(){
 }
 
 
-this.level= 2;
+this.level= 0;
 this.checkTime= 0;
 this.coords= SESSION.cookieGet('notaProfLoc').split('_');
 this.profileW= (!this.level || NOPROFILE)? null : window.open(

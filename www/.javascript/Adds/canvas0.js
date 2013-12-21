@@ -7,6 +7,12 @@ var paintC = function(_canvas){
 	setInterval(loop, 1000/20);
 
 	function loop(){
+		var prev = context.globalCompositeOperation;
+		context.globalCompositeOperation = "destination-in";
+		context.fillStyle= "rgba(0, 0, 0, 0.997)";
+		context.fillRect(0,0,_canvas.offsetWidth,_canvas.offsetHeight);
+		context.globalCompositeOperation = prev;
+
 		if (branches.length < 500)
 			branches.push(new Branch(UI.mouseX -_canvas.offsetLeft, UI.mouseY -_canvas.offsetTop));
 

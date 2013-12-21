@@ -27,25 +27,28 @@ this.saveGo= function(){
 	for(var iN in Ncore.all){
 		var curNote= Ncore.all[iN];
 
-		var canSave= curNote.canSave();
+		var canSave= curNote.canSave(true);
 		var nId= curNote.PUB.id;
 
-		if (canSave){
+		if (canSave==SAVE_STATES.READY){
 			var noteBlock= [];
-			noteBlock[ASYNC_PLACE.SVN_CANSAVE]= canSave;
-			if (canSave &SAVE_MODE.MAIN){
-				noteBlock[ASYNC_PLACE.SVN_VER]= curNote.PUB.ver;
-				noteBlock[ASYNC_PLACE.SVN_INHERIT]= curNote.inherit()? curNote.inherit().PUB.id :0;
-				noteBlock[ASYNC_PLACE.SVN_NAME]= curNote.PUB.name;
-				noteBlock[ASYNC_PLACE.SVN_STYLE]= encodeURIComponent(curNote.PUB.style.makeString());
-			}
-			if (canSave &SAVE_MODE.RIGHTS)
-			  noteBlock[ASYNC_PLACE.SVN_RIGHTS]= curNote.PUB.rightsA.join(ASYGN.D_LIST);
+			noteBlock[ASYNC_PLACE.SVN_VER]= curNote.PUB.ver;
+			noteBlock[ASYNC_PLACE.SVN_INHERIT]= curNote.inherit()? curNote.inherit().PUB.id :0;
+			noteBlock[ASYNC_PLACE.SVN_NAME]= curNote.PUB.name;
+			noteBlock[ASYNC_PLACE.SVN_STYLE]= encodeURIComponent(curNote.PUB.style.makeString());
 
 			saveData[ASYGN.NBREEF+nId]= noteBlock.join(ASYGN.D_ITEM);
 		}
 
-		var allData= curNote.dataForSave()
+//		var canSaveRts= curNote.canSaveRts(true);
+//		if (canSaveRts==SAVE_STATES.IDLE){
+//			var rightsBlock= [];
+//			rightsBlock[ASYNC_PLACE.SVR_RIGHTS]= curNote.PUB.rightsA.join(ASYGN.D_LIST);
+//
+//			saveData[ASYGN.NRIGHTS+nId]= rightsBlock.join(ASYGN.D_ITEM);
+//		}
+
+		var allData= curNote.dataForSave(true);
 		for (var iD in allData){
 			var curData= allData[iD];
 

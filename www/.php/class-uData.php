@@ -1,10 +1,13 @@
 <?
 
 class User {
-	var $id, $version= 1, $name, $relation= -2, $groupId= 0, $isBreef, $boardLst= Array(), $contactLst= Array(), $forSave= 0, $saveRes;
+	var $id, $version= 1, $name, $relation, $groupId= 0, $isBreef, $boardLst= Array(), $contactLst= Array(), $forSave= 0, $saveRes;
 	var $stateIn= -1, $stateOut= -1; //tmp
 		
 	function User($_id= 0, $_name= '', $_isBreef= 1) {
+		global $USER_RELATION;
+		$this->relation= $USER_RELATION->UNAVAILABLE;
+
 		$this->id= $_id;
 		$this->name= $_name;
 		$this->isBreef= $_isBreef;
@@ -21,19 +24,21 @@ class User {
 
 */
 	function relations(){
+		global $USER_RELATION;
+
 		if ($this->stateIn==1 && $this->stateOut==1){ //normal
-			$this->relation= 0;
+			$this->relation= $USER_RELATION->NORMAL;
 			return;
 		}
 		if ($this->stateIn==0 && $this->stateOut==-1){ //incoming
-			$this->relation= 2;
+			$this->relation= $USER_RELATION->IN;
 			return;
 		}
 		if ($this->stateIn==-1 && $this->stateOut==0){ //outgoing
-			$this->relation= 1;
+			$this->relation= $USER_RELATION->OUT;
 			return;
 		}
-		$this->relation= -1; //none
+		$this->relation= $USER_RELATION->NEUTRAL; //none
 	}
 }
 

@@ -65,10 +65,10 @@ $CONSTANTS= array(
 		'INHERITED'=>	-1
 	),
 
-	'SAVE_STATES'=> array(
-		'NORMAL'=>	0,
-		'UNSAVED'=>	1,
-		'DEAD'=>	2
+	'SAVE_STATES'=> array( //used separately in js/php
+		'IDLE'=>	0,
+		'READY'=>	1,
+		'HOLD'=>	2,
 	),
 
 	'DATA_TYPE'=> array( 
@@ -77,17 +77,14 @@ $CONSTANTS= array(
 		'NOTE'=>	2
 	),
 
-	'SAVE_MODE'=> array(
-		'MAIN'=>	1,
-		'RIGHTS'=>	2,
-	),
-
 	'SAVE_RES'=> array(
 		'INIT'=>	-1,
 		'SECURITY_ERR'=>	-2,
 		'SQL_ERR'=>	-3,
 		'VERSION_ERR'=>	-4,
-		'DB_ERR'=> -5
+		'DB_ERR'=> -5,
+		'PARAM_ERR'=> -6,
+		'REFERENCE_ERR'=> -7
 	),
 
 	'ASYGN'=> array(
@@ -95,6 +92,7 @@ $CONSTANTS= array(
 		'NFULL'=>	'N',
 		'NBREEF'=>	'n',
 		'NDATA'=>	'd',
+		'NRIGHTS'=>	'r',
 		'USER'=>	'u',
 		'YOU'=>	'U',
 		'D_UNIT'=>	'\\',
@@ -140,12 +138,12 @@ $CONSTANTS= array(
 		'UPU_BOARDLIST'=> 6,
 		'UPU_CONTACTSLIST'=> 7,
 
-		'SVN_CANSAVE'=> 0,
-		'SVN_VER'=> 1,
-		'SVN_INHERIT'=> 2,
-		'SVN_NAME'=> 3,
-		'SVN_STYLE'=> 4,
-		'SVN_RIGHTS'=> 5,
+		'SVN_VER'=> 0,
+		'SVN_INHERIT'=> 1,
+		'SVN_NAME'=> 2,
+		'SVN_STYLE'=> 3,
+
+		'SVR_RIGHTS'=> 0,
 
 		'SVD_VER'=> 0,
 		'SVD_PARENT'=> 1,

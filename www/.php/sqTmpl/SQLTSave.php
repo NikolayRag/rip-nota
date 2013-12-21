@@ -1,8 +1,9 @@
 <?
 
 $sqlTemplate= array_merge($sqlTemplate, array(
+//todo: change default 'version' to '1'
 	'saveNoteAdd'=> "
-		INSERT INTO note (isdeleted,id_owner,name,style,inherit,id_editor) values (0,?,?,?,?,?)
+		INSERT INTO note (version,id_owner,name,style,inherit,id_editor) values (1,?,?,?,?,?)
 	",
 
 	'saveNoteUpdate'=> "

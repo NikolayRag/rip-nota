@@ -33,6 +33,7 @@ var Ncore= function(_id,_referer){
 	  return undefined;
 
 	_id= _id |0;
+//todo: check: id shouldn't be <0
 	if (!_id) //get new auto-decrement id
 	  _id= Ncore.newId--;
 
@@ -52,7 +53,7 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 		id:			_id,
 		ver:		CORE_VERSION.INIT,
 		name:		'',
-		style:		'',
+		style:		new Style(),
 		ownerId:	0,
 		editorId:	0,
 		rights:		NOTA_RIGHTS.INIT,  //Substituted Notes remain INIT, virtually not RO.
@@ -65,8 +66,8 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 		//operating
 		complete: 0,
 		forRedraw: 0,
-		forSave: 0,
-		forSaveRts: 0,
+		forSave: SAVE_STATES.IDLE,
+		forSaveRts: SAVE_STATES.IDLE,
 		saveCB: null
 	};
 
@@ -231,16 +232,16 @@ Ncore.prototype.inherit= function(){
 
 //todo: mantain list of .forSave==1 notes
 Ncore.prototype.save= function(_vals, _immediate, _okCB){
+//todo: use .set()
+
 	if (IS.fn(_okCB))
 	  this.saveCB= _okCB;
 
 	if (!Object.keys(_vals).length)
 	  return;
 
-	if (_vals.rights){
-		this.PUB.rightsA[_vals.rights.group]= _vals.rights.right;
-		this.PUB.forSaveRts= SAVE_STATES.UNSAVED;
-	}
+	if (_vals.rights)
+	  this.PUB.rightsA[_vals.rights.group]= _vals.rights.right;
 
 	if (_vals.style)
 	  this.PUB.style= _vals.style;
@@ -248,14 +249,23 @@ Ncore.prototype.save= function(_vals, _immediate, _okCB){
 	if (_vals.name)
 	  this.PUB.name= _vals.name;
 
-	if (_vals.style || _vals.name){
+	if (_vals.inherit!=this.PUB.inheritId && this.PUB.ver==CORE_VERSION.INIT)
+	  this.PUB.inheritId= _vals.inherit |0;
+
+
+	if (_vals.rights)
+	  this.PUB.forSaveRts= SAVE_STATES.READY;
+	if (_vals.style || _vals.name || _vals.inherit){
 		this.PUB.editorId= SESSION.owner().id;
 		this.PUB.stamp= new Date();
-		this.PUB.forSave= SAVE_STATES.UNSAVED;
+		this.PUB.forSave= SAVE_STATES.READY;
 
 		this.draw(1);
 	}
 
+
+
+//todo: need here?
 	for (var ir in this.referers)
 	  if (this.referers[ir])
 		this.referers[ir].doSaved();
@@ -275,7 +285,7 @@ Ncore.prototype.saved= function(_res){
 //todo: hold case when Ncore is changed to save WHILE IN save
 	this.PUB.forSave=
 	  this.PUB.forSaveRts=
-	  0;
+	  SAVE_STATES.IDLE;
 
 	if (this.saveCB)
 	  this.saveCB(_res);
@@ -289,15 +299,25 @@ Ncore.prototype.saved= function(_res){
 
 
 //todo: check for being edited
-Ncore.prototype.canSave= function(){
-	return(this.PUB.forSave*SAVE_MODE.MAIN | this.PUB.forSaveRts*SAVE_MODE.RIGHTS);
+Ncore.prototype.canSave= function(_enum){
+	var curState= this.PUB.forSave;
+	if (_enum && curState==SAVE_STATES.READY)
+		this.PUB.forSave= SAVE_STATES.HOLD;
+	return(curState);
 }
 
+Ncore.prototype.canSaveRts= function(_enum){
+	var curState= this.PUB.forSaveRts;
+	if (_enum && curState==SAVE_STATES.READY)
+		this.PUB.forSaveRts= SAVE_STATES.HOLD;
+	return(curState);
+}
 
 //todo: make ndata a collection object
 Ncore.prototype.dataSet= function(_id, _setA){ //{ver: , dtype: , content: , editor: , stamp: , place: }
 //todo: Data core should be same as Note core
 	_id= _id |0;
+//todo: check: id shouldn't be <0
 	if (!_id) //get new auto-decrement id
 	  _id= Ndata.newId--;
 
@@ -323,10 +343,10 @@ Ncore.prototype.dataContext= function(_id){
 	}
 }
 
-Ncore.prototype.dataForSave= function(){
+Ncore.prototype.dataForSave= function(_enum){
 	var outDataA= [];
 	for (var d in this.PUB.ndata)
-	  if (this.PUB.ndata[d].canSave())
+	  if (this.PUB.ndata[d].canSave(_enum)==SAVE_STATES.READY)
 	  	outDataA.push(this.PUB.ndata[d]);
 
 	return outDataA;
