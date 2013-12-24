@@ -272,7 +272,7 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 
 //todo:
 	//delete all unused
-//	Ncore.all.forEach(function(note){
+//	Ncore.all().forEach(function(note){
 //		if (note.PUB.ver==CORE_VERSION.DEL){
 //		}
 //	});
@@ -281,13 +281,8 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 	UI.drawWindow();
 	UI.youW.draw();
 
-	SESSION.board.draw(); //prior to leafs
-
-	for (var nI in Ncore.all){
-		var curNote= Ncore.all[nI];
-		if (curNote.PUB!=SESSION.board.PUB)
-		  curNote.draw();
-	}
+//todo: mantain cached Ncore/Ndata .redrawList[]
+	SESSION.board.draw();
 
 	//reset redraw flag for Users
 	for (var nU in Ucore.all){

@@ -48,7 +48,6 @@ var DataUIBoardNote= function(_ndata,_context,_curDI){
 DataUIBoardNote.prototype.draw= function () {
 	this.place();
 	this.sign();
-	this.signStamp();
 }
 
 //support method for Data's derived Note draw() (same as UI.style() for Board.draw())
@@ -58,7 +57,6 @@ DataUIBoardNote.prototype.style= function(){}
 
 DataUIBoardNote.prototype.setState= function(_state){
 	this.sign();
-	this.signStamp();
 
 //todo: state must remain after data saved if sibling is unsaved
 	this.DOM.mark.style.display= _state? '': 'none';
@@ -123,12 +121,12 @@ DataUIBoardNote.prototype.shadow= function () {
 	var sFract= 1;
 
 	var sibPUB= this.ndata.sibling().PUB;
-	if (sibPUB.rights>NOTA_RIGHTS.INIT && sibPUB.style.main.a){
+	for (var iD in sibPUB.ndata) break;
+	if (iD && sibPUB.rights>NOTA_RIGHTS.INIT && sibPUB.style.main.a){
 //todo: get first element in better manner
-		for (var io in sibPUB.ndata) break;
-		var sibData= sibPUB.ndata[io];
+		var sibData= sibPUB.ndata[iD];
 
-		var sFract= !sibData? 1: ((new Date()-sibData.stamp)/(TIMER_LENGTH.MONTH*1000));
+		var sFract= (new Date()-sibData.stamp)/(TIMER_LENGTH.MONTH*1000);
 		sFract= sFract>1? 1 : sFract;
 		sFract= Math.pow(sFract,STYLE.NOTESHADOW_DECAY_EXP);
 
@@ -175,6 +173,8 @@ DataUIBoardNote.prototype.sign= function () {
 		this.DOM.sign.style.display=
 		  okSign? '':'none';
 	}
+
+	this.signStamp();
 }
 
 DataUIBoardNote.prototype.signStamp= function(){
@@ -183,13 +183,13 @@ DataUIBoardNote.prototype.signStamp= function(){
 	var sib= this.ndata.sibling();
 	var sibPUB= this.ndata.sibling().PUB;
 //todo: get first element in better manner
-	for (var io in sibPUB.ndata) break;
-	var sibData= sibPUB.ndata[io];
+	for (var iD in sibPUB.ndata) break;
 
-	if (!sibPUB.style.main.a)
+	if (!iD || !sibPUB.style.main.a)
 	  return;
 
-	var okSign= sibData && sib.inherit() && sibData.editorId!=sib.inherit().PUB.ownerId;
+	var sibData= sibPUB.ndata[iD];
+	var okSign= sib.inherit() && sibData.editorId!=sib.inherit().PUB.ownerId;
 
 	var stamp= stampDiff(sibData? sibData.stamp :sibPUB.stamp,TIMER_LENGTH.MONTH*2);
 	this.DOM.stamp.elementText(

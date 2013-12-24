@@ -30,18 +30,12 @@ var Style= function(_styleStr){
 	
 //cache
 Style.colorMainBG= new Color(CSS.MAIN_BG);
-Style.colorNoteBG= new Color(CSS.NOTE_BG);
-Style.colorNoteBorder= new Color(CSS.NOTE_BORDER);
 
+//todo: unify color names
 Style.prototype.build= function(_rootColor){
 	this.main=
 	  _rootColor.valid? new Color(_rootColor) : Style.colorMainBG;
 	this.mainDark= this.main.mix(STYLE.MAIN_CC_TINT,STYLE.MAIN_CC_MIX);
-
-	this.noteBG=
-	  _rootColor.valid? this.main : Style.colorNoteBG;
-	this.noteBorder=
-	  _rootColor.valid? this.mainDark : Style.colorNoteBorder;
 
 //todo: make proper colors
 	this.borderActive= new Color(

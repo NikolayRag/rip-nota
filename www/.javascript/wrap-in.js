@@ -58,6 +58,11 @@ IS.scrollW=
 IS.fn= function(_test){
 	return 'function' == typeof _test;
 }
+IS.instance= function(_test,_class){
+	return (_test instanceof _class);
+}
+
+
 
 //cache stylesheets
 var STYLES= {};

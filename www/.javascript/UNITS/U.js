@@ -5,14 +5,11 @@
 	If duplicated, existing Ucore is updated and returned.
 */
 
-var /**
- * @return {undefined}
- */
-	Ucore= function(_id){
+var Ucore= function(_id){
 	var _this= this;
 
 //todo: decide what to return instead of undefined to be adequate
-	if (!(_this instanceof Ucore) && !Ucore.all[_id]) //static call
+	if (!IS.instance(_this,Ucore) && !Ucore.all[_id]) //static call
 	  return undefined;
 
 //todo: decide what to return instead of undefined to be adequate
@@ -31,7 +28,9 @@ var /**
 	_this.uname= '';
 	_this.relation= USER_RELATION.UNAVAILABLE;
 	_this.groupId= 0; //relative to You
+//todo: ref; use objects, make .changed(obj) reactor
 	_this.boardIds= []; //for logged user and board owner.
+//todo: ref; use objects, make .changed(obj) reactor
 	_this.contactIds= []; //contactlist, basically for logged user.
 
 	//operating

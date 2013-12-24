@@ -7,8 +7,8 @@ this.bindEvt= function(){
 	this.DOM.boardCreate.onchange= function(){
 		//validate
 		var newName= this.value;
-		for(var iN in Ncore.all)
-			if (Ncore.all[iN].PUB.name == newName)
+		for(var iN in Ncore.all())
+			if (Ncore.all(iN).PUB.name == newName)
 //todo: ask to switch
 		    	return;
 

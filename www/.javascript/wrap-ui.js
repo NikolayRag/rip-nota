@@ -3,7 +3,7 @@ HTMLElement.prototype.flash= function(_hex,_num,_delay){
 	_num= _num ||1;
 	_delay= _delay ||TIMER_LENGTH.FLASH_DELAY;
 
-	if (!this.style || !(this.style instanceof CSSStyleDeclaration))
+	if (!this.style || !IS.instance(this.style,CSSStyleDeclaration))
 	  return;
 	var _this= this;
 	for (var i= 0; i<_num; i++){
@@ -28,7 +28,7 @@ HTMLElement.prototype.elementText= function(_new,_htext){
 		var outTxt= [];
 		for (it in this.childNodes){
 			textNode= this.childNodes[it];
-			if (textNode instanceof Text)
+			if (IS.instance(textNode,Text))
 			  outTxt.push(textNode.nodeValue);
 		}
 		return outTxt.join('');
@@ -37,7 +37,7 @@ HTMLElement.prototype.elementText= function(_new,_htext){
  //deal with growing ammount of textNodes afted editmode add text in better way
  	for (it= this.childNodes.length-1; it>=0; it--){
 		textNode= this.childNodes[it];
-		if ((textNode instanceof Text) && it!=0){
+		if (IS.instance(textNode,Text) && it!=0){
 			this.removeChild(textNode);
 			textNode= undefined;
 		}
@@ -47,7 +47,7 @@ HTMLElement.prototype.elementText= function(_new,_htext){
 	if (_htext)
 	  this.innerHTML= _new;
 	else {
-		if (!(textNode instanceof Text))
+		if (!IS.instance(textNode,Text))
 		  this.appendChild(textNode= DOCUMENT.createTextNode(''));
 		textNode.nodeValue= _new;
 	}

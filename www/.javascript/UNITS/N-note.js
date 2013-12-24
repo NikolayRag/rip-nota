@@ -20,6 +20,8 @@ var Note= function(_id){
 
 Note.prototype.doDraw= function(_force){
 	var rootData= SESSION.board.dataContext(this.PUB.id);
+	if (!rootData)
+	  return;
 
 	//inited at draw(), coz all Notes creation done prior to draw (see update cb)
 	if (!this.PUB.ui)
@@ -34,19 +36,22 @@ Note.prototype.doDraw= function(_force){
 	}
 
 	if (!_force && !this.PUB.forRedraw)
-	  return;
+	  return true;
 
 //	UI.ownerW.draw(this);
 	this.PUB.ui.style();
 	rootData.ui.style(); //parent holder influenced
 
 ALERT(PROFILE.BREEF, "Note "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
+	return true;
 }
 
 
 
 Note.prototype.doSaved= function(){
 	var rootData= SESSION.board.dataContext(this.PUB.id);
+	if (!rootData || !rootData.ui)
+	  return;
 
 //todo: inspect, obsolete code?
 /*

@@ -13,10 +13,13 @@ var Ndata= function(_root,_id)
 	_this.ver= CORE_VERSION.INIT;
 	_this.place= {x:null,y:null,w:null,h:null};
 	_this.dtype= null;
+//todo: ref; use objects, make .changed(obj) reactor
 	_this.content= null;
+//todo: ref; use objects, make .changed(obj) reactor
 	_this.editorId= null;
 	_this.stamp= null;
 
+//todo: ref; use objects, make .changed(obj) reactor
 	_this.rootNote= _root;
 	_this.ui= null;
 	_this.forRedraw= 0;
@@ -29,8 +32,8 @@ Ndata.newId= -1;
 
 //spike: replace with all[] later; Bruteforce is evil
 Ndata.all= function(_id){
-	for (var iN in Ncore.all){
-		var allD= Ncore.all[iN].PUB.ndata;
+	for (var iN in Ncore.all()){
+		var allD= Ncore.all(iN).PUB.ndata;
 		for (var iD in allD)
 		  if (allD[iD].id==_id)
 		    return allD[iD];
@@ -95,6 +98,9 @@ Ndata.prototype.editor= function(){
 
 
 Ndata.prototype.draw= function(_uiTemplateA,_curDI){
+//	if (this.ver==CORE_VERSION.INIT)
+//	  return;
+
 	if (!this.ui){
 		var newTemplate= _uiTemplateA[this.dtype]?
 		  _uiTemplateA[this.dtype]
@@ -141,7 +147,7 @@ Ndata.prototype.save= function(_vals){
 	SESSION.save.save();
 }
 
-Ndata.prototype.saved= function(_res){
+Ndata.prototype.saved= function(_res, _resNotesA){
 	if (this.ver==CORE_VERSION.INIT){ //CREATED
 	  this.ver= 1;
 	  this.setId(_res);
@@ -157,7 +163,8 @@ Ndata.prototype.saved= function(_res){
 		this.rootNote.referers[ir].doSaved();
 	//affect contained
 	if (this.dtype==DATA_TYPE.NOTE){
-		var curN= Ncore.all[this.content];
+		var curN= _resNotesA[this.content] || Ncore.all(this.content);
+		this.content= curN.PUB.id;
 		for (var ir in curN.referers)
 		  if (curN.referers[ir])
 			curN.referers[ir].doSaved();

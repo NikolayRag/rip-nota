@@ -227,8 +227,10 @@ this.inAsync= false;
 this.asyncQueue= [];
 this.httpRequest= null;
 //todo: make use of .updated in contacts and UI.update
+//todo: ref; use objects, make .changed(obj) reactor
 this.ownerId= null;
 //todo: split to .boardObj and board(), as with .user
+//todo: ref; use objects, make .changed(obj) reactor
 this.board= null; //UI painting and interaction.
 
 this.bindEvt();

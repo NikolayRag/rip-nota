@@ -25,7 +25,6 @@ Board.prototype.doDraw= function(_force){
 	  UI.ownerW.boardlistW.draw(this);
 	UI.ownerW.drawBRight(this.PUB.rights);
 
-
 	//update Data at its own condition
 	var curDI= 0;
 	for(var iD in this.PUB.ndata){
@@ -34,6 +33,9 @@ Board.prototype.doDraw= function(_force){
 		_force= _force || cData.forRedraw;
 		if (cData.draw(this.leafTemplates,curDI))
 		  curDI++;
+
+		if (cData.dtype==DATA_TYPE.NOTE) //go deeper
+		  Ncore.all(cData.content) && Ncore.all(cData.content).draw();
 	}
 
 	if (!_force && !this.PUB.forRedraw)

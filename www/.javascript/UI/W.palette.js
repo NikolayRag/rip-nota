@@ -10,7 +10,7 @@
 UI.paletteW= new function(){
 
 this.show= function(_isPop,_cb){
-	this.DOM.paletteSample.style.background= this.style.noteBG.hex();
+	this.DOM.paletteSample.style.background= this.style.main.hex();
 
 	var _this= this;
 
@@ -34,7 +34,7 @@ this.bindEvt= function(){
 				Math.random()*255
 			]).hex()
 		);
-		_this.DOM.paletteSample.style.background= _this.style.noteBG.hex();
+		_this.DOM.paletteSample.style.background= _this.style.main.hex();
 	}
 
 }

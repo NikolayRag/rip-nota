@@ -104,7 +104,7 @@ ToolBoard.prototype.opNewNote= function(){
 	}
 
 
-	var newNote= new Ncore();
+	var newNote= new Note();
 	newNote.save({inherit:this.board.PUB.id});
 
 	var newData= this.board.dataSet(0,{

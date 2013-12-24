@@ -50,7 +50,7 @@ function svParseInput($_postIn, $notesA, $dataA) {
 
 
 function svFetchData($_dataA,$_notesA){
-	global $SAVE_RES, $SAVE_STATES;
+	global $SAVE_RES, $SAVE_STATES, $DATA_TYPE;
 
 	//read existent Data from db
 	$dataIdA= Array();
@@ -80,12 +80,30 @@ function svFetchData($_dataA,$_notesA){
 			//fetch from db
 			$curData->version= $dbData->version+1;
 			$curData->rootNote= $dbData->rootNote;
+		} else { //creation mod:
+			//new reference Note should be supplied
+			if (
+				$curData->datatype==$DATA_TYPE->NOTE
+				&& $curData->data<1
+				&& !$_notesA->get($curData->data)
+			){
+				$curData->saveRes= $SAVE_RES->PARAM_ERR;
+				$curData->forSave= $SAVE_STATES->IDLE;
+				continue;
+			}
+
+			//Parent Note should exist or be supplied.
+			if ($curData->rootNote<0 && !$_notesA->get($curData->rootNote)){
+				$curData->saveRes= $SAVE_RES->PARAM_ERR;
+				$curData->forSave= $SAVE_STATES->IDLE;
+				continue;
+			}
+
 		}
 		//Data's root for rights; won't overwrite if exists
 		$_notesA->add($curData->rootNote,new Note($curData->rootNote));
 
 
-		//+creation mod: Parent Note should exist or be supplied.
 		//deletion mod: Deletes binded Note (if any) in case Data's Note is binded Note's root
 		
 	}
@@ -129,8 +147,8 @@ function svFetchNotes($_notesA){
 			$curNote->version= $dbNote->version+1;
 			$curNote->ownerId= $dbNote->ownerId;
 			$curNote->inherit= $dbNote->inherit;
-		} else {
-			//no ancestor
+		} else { //creation mod:
+			//Ancestor should exist or be supplied.
 			if ($curNote->inherit<1 && !array_key_exists($curNote->inherit, $rNoteA)){
 				$curNote->saveRes= $SAVE_RES->PARAM_ERR;
 				$curNote->forSave= $SAVE_STATES->IDLE;
@@ -143,9 +161,6 @@ function svFetchNotes($_notesA){
 			  : $NOTA_RIGHTS->OWN;
 		}
 
-	//modify Note's references
-
-		//+creation mod: Ancestor should exist or be supplied.
 		//deletion mod: Deletes all Data binded Notes whose root is this Note.
 		// (get db; append to $rNoteA)
 	}
@@ -200,12 +215,8 @@ function svSaveData($_dataA,$_notesA){
 			continue;
 		}
 
-		if ($curData->datatype==$DATA_TYPE->NOTE){ //embedded Note availability
+		if ($curData->datatype==$DATA_TYPE->NOTE){ //correct referenced ID
 			$refNote= $_notesA->get($curData->data);
-			if (!$refNote){ //no ref note
-				$curData->saveRes= $SAVE_RES->PARAM_ERR;
-				continue;
-			}
 			if ($curData->data<1){
 				if ($refNote->saveRes<1){ //invalid ref note
 					$curData->saveRes= $SAVE_RES->REFERENCE_ERR;

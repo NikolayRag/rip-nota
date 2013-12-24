@@ -10,9 +10,10 @@ border:1px solid;
 .elInlineTxt {
 	position:absolute;
 	font-size:20pt;
-	color:#ccc;
+	color:rgba(64,64,64,1);
 
-	text-shadow: -1px -1px 0px #888, 1px 1px 0px #FFF;
+	opacity: .5;
+	text-shadow: -1px -1px 0px rgba(0,0,0,1), 1px 1px 0px rgba(255,255,255,1);
 }
 
 .note {
@@ -202,7 +203,7 @@ border:1px solid;
 }
 
 .noteInlineBg{
-	color: $NOTE_BG;
+	color: $MAIN_BG;
 	opacity:1;
 
 	position: absolute;

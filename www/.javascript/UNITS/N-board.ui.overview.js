@@ -107,7 +107,7 @@ BoardUIOverview.prototype.drawField= function(){
 		if (curLeaf.dtype!=DATA_TYPE.NOTE)
 		  continue;
 		var atomStyle= curLeaf.sibling().PUB.style;
-		if (!atomStyle.noteBG.a)
+		if (!atomStyle.main.a)
 		  continue;
 
 		var newAtomBG= this.atoms[i]= DOCUMENT.createElement('span');
@@ -122,8 +122,8 @@ BoardUIOverview.prototype.drawField= function(){
 		var newAtom= DOCUMENT.createElement('span');
 		  newAtom.className= 'overViewAtom';
 
-		  newAtom.style.backgroundColor= atomStyle.noteBG.mix(STYLE.OVERVIEW_TINT,STYLE.OVERVIEW_MIX).hex();
-		  newAtom.style.borderColor= atomStyle.noteBorder.mix(STYLE.OVERVIEW_TINT,STYLE.OVERVIEW_MIX).hex();
+		  newAtom.style.backgroundColor= atomStyle.main.mix(STYLE.OVERVIEW_TINT,STYLE.OVERVIEW_MIX).hex();
+		  newAtom.style.borderColor= atomStyle.mainDark.mix(STYLE.OVERVIEW_TINT,STYLE.OVERVIEW_MIX).hex();
 
 		newAtomBG.appendChild(newAtom);
 		this.DOM.bg.appendChild(newAtomBG);

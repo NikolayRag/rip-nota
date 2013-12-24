@@ -214,9 +214,6 @@ $CONSTANTS= array(
 		'MAIN_BORDER'=>	'#ddd',
 		'DECORDARK'=> '#444',
 
-		'NOTE_BG'=>	'#fed',
-		'NOTE_BORDER'=>	'#ba9',
-
 		'FIELD_REQUIRED_HILITE'=>	'#f44',
 
 		'UPDATEMARKER_UPDATE'=> '#7f0',

@@ -14,23 +14,21 @@ var Color= function(_v1,_v2,_v3,_v4)//noinspection UnterminatedStatementJS
 {
 	var _this= this;
 
-	_this.valid= 0;
-
 	_this.r= 0;
 	_this.g= 0;
 	_this.b= 0;
 	_this.a= 0;
 
-	_this.build(_v1,_v2,_v3,_v4);
+	_this.valid= _this.build(_v1,_v2,_v3,_v4);
 }
 
 Color.prototype.build= function(_v1,_v2,_v3,_v4){
 	var tmp0RGBa= null;
 
 	if (_v1==undefined){} //none
-	else if (_v1 instanceof Color) //instance
+	else if (IS.instance(_v1,Color)) //instance
 	  tmp0RGBa= [_v1.r,_v1.g,_v1.b,_v1.a];
-	else if ((_v1 instanceof Array) && _v1.length>2) //array
+	else if (IS.instance(_v1,Array) && _v1.length>2) //array
 	  tmp0RGBa= [parseInt(_v1[0]),parseInt(_v1[1]),parseInt(_v1[2]),(_v1[3]===undefined?1:parseInt(_v1[3]))];
 	else if (parseInt(_v1)==_v1 && parseInt(_v2)==_v2 && parseInt(_v3)==_v3) //three ints
 	  tmp0RGBa= [_v1,_v2,_v3,(_v4===undefined?1:parseInt(_v4))];
@@ -82,8 +80,9 @@ Color.prototype.build= function(_v1,_v2,_v3,_v4){
 		this.g= tmp0RGBa[1];
 		this.b= tmp0RGBa[2];
 		this.a= tmp0RGBa[3];
+
+		return true;
 	}
-	this.valid= tmp0RGBa?1:0;
 }
 
 

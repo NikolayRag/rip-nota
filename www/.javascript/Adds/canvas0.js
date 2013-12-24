@@ -50,4 +50,4 @@ var paintC = function(_canvas){
 		this.rw = Math.random()*360;
 		this.rwRate = -Math.pow(Math.random(),5);
 	}
-};
+}

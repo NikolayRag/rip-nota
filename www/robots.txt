@@ -1,4 +1,4 @@
 Sitemap: /.sitemap
 
 User-agent: *
-Disallow: /.
+Disallow: /anti-robots.txt

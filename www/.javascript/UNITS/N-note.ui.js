@@ -17,9 +17,9 @@ var NoteUI= function(_note,_rootW){
 NoteUI.prototype.style= function(){
 	var _style= this.note.PUB.style;
 
-	this.DOM.bg.style.background= _style.noteBG.hex();
-	this.DOM.bg.style.borderColor= _style.noteBorder.hex();
-	this.DOM.overbg.style.background= _style.noteBG.hex(false)? '' :'transparent';
+	this.DOM.bg.style.background= _style.main.hex();
+	this.DOM.bg.style.borderColor= _style.mainDark.hex();
+	this.DOM.overbg.style.background= _style.main.hex(false)? '' :'transparent';
 
 	var thisData= this.note.PUB.ndata;
 	for (var i in thisData)

@@ -224,10 +224,13 @@ b1.9:
 		+ Ncore stores CB for successfull save
 		+ Ncore save reaction; toplevel
 		+ inherited Notes
-		- Ncore save reaction; inherited
+		+ Ncore save reaction; inherited
+		- Ncore WITH supplied Ndata
 +save:	procceed cyclically Data/Note from most defined to ensure
 		all new-references are linked
 -save:	saving rights is dedicated
++browse:	Added trap for bad robots (anti-robot.txt)
+
 
 
 
@@ -320,7 +323,10 @@ Minor:
 +php:		move compactHTML to compact.php/kiCompackHTML()
 +js:		forEach avoided to use with Ncore and Ndata enum
 -update:	update boardlist as need
-
++save:		CB deals with Notes first;
+			Notes id remap array is supplied to NData.save()
+-UI:		review caching redraw
+-UI:		review stamps draw
 
 
 Refactor:
@@ -423,6 +429,10 @@ Refactor:
 				+ ASYGN.NRIGHTS introduced
 				+ ASYNC_PLACE.SVR_RIGHTS renamed to .SVR_RIGHTS
 +constants:		USER_RELATION used widely
++Board:			.draw() calls referenced Note's .draw()
++Note:			.draw() flow affected
++Style:			NOTE_* colors replaced with MAIN_*
+
 
 
 Fix:
@@ -471,7 +481,7 @@ Fix:
 +note.php:		notesGetRights() fixed; cache used (more) properly
 +ui:			mouseContextRelease() releases mouse events
 +Note ui:		sign updating forced within optional drawCorrect(); Temporary
--Note ui:		replace drawCorrect() with auto-updated intervals
++Note ui:		replace drawCorrect() with auto-updated intervals
 +update:		fixed non-updating Data
 +Ndata:			editorId translated and displayed normally
 +CC:			wide Warning removal
@@ -487,7 +497,7 @@ Fix:
 +async:			asyncStatusString() referencing fixed
 +async:			removed public writing of .inAsync;
 				.asyncStop() dont destroy .httpRequest
-				- check .httpRequest within concurence calls 
+				+ depricated: check .httpRequest within concurence calls 
 +board:			initial canvas painting made more reliable
 +logon:			validation for blank username was calling server;
 				should not.

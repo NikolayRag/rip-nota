@@ -29,7 +29,7 @@
 var Ncore= function(_id,_referer){
 	var _this= this;
 
-	if (!(_this instanceof Ncore) && !Ncore.all[_id]) //static call
+	if (!IS.instance(_this,Ncore) && !Ncore.all(_id)) //static call
 	  return undefined;
 
 	_id= _id |0;
@@ -38,7 +38,7 @@ var Ncore= function(_id,_referer){
 	  _id= Ncore.newId--;
 
 
-	var oldN= Ncore.all[_id];
+	var oldN= Ncore.all(_id);
 	if (oldN){ //reuse existing Ncore
 		oldN.link(_referer);
 		return oldN;
@@ -54,10 +54,13 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 		ver:		CORE_VERSION.INIT,
 		name:		'',
 		style:		new Style(),
+//todo: ref; use objects, make .changed(obj) reactor
 		ownerId:	0,
+//todo: ref; use objects, make .changed(obj) reactor
 		editorId:	0,
 		rights:		NOTA_RIGHTS.INIT,  //Substituted Notes remain INIT, virtually not RO.
 		  rightsA:	[], //[gId]= [0=ro|1=add|2=rw]
+//todo: ref; use objects, make .changed(obj) reactor
 		inheritId:	NOTA_RIGHTS.INHERITED,
 		stamp:		0,
 
@@ -74,7 +77,7 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 	//private
 	_this.referers= []; //all who refers to this ncore
 
-	Ncore.all[_id]= _this;
+	Ncore.allNotes[_id]= _this;
 //todo: do also something with data Ndata additional storage properties
 	_this.link(_referer);
 }
@@ -90,7 +93,18 @@ Ncore.newId= -1;
 	Negative indices holds Imps and unsaved Notes, that also only have different rights (0|3). 
 	Notes automatically set unsupplied id to negative-1 (-1,-2,-3...)
 */	
-Ncore.all= [];
+Ncore.allNotes= [];
+Ncore.all= function(_id){
+	if (arguments.length==0)
+	  return Ncore.allNotes;
+
+	for (var iN in Ncore.allNotes){
+		var curNote= Ncore.allNotes[iN];
+		if (curNote.PUB.id==_id)
+		  return curNote;
+	}
+}
+
 
 /*
 	Public destructor, holds global list
@@ -111,7 +125,7 @@ Ncore.prototype.kill= function(){
 	Mantain global Ncore.all list
 */
 Ncore.prototype.doKill= function(){
-	delete Ncore.all[this.PUB.id];
+	delete Ncore.allNotes[this.PUB.id];
 }
 
 
@@ -162,9 +176,9 @@ ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +' re-id ', 'id: '+ _id);
 	this.PUB.id= _id; //change id of provided Ncore
 
 //todo: should reuse instead of deleting
-	if (Ncore.all[_id]) //wipe duplicating Ncore
-	  Ncore.all[_id].kill();
-	Ncore.all[_id]= this; //fill in existent Ncore
+	if (Ncore.allNotes[_id]) //wipe duplicating Ncore
+	  Ncore.allNotes[_id].kill();
+	Ncore.allNotes[_id]= this; //fill in existent Ncore
 }
 
 /*
@@ -209,11 +223,15 @@ if (!this.PUB.forRedraw) ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +"("+ this.P
 
 
 Ncore.prototype.draw= function(_force){
+//	if (this.PUB.ver==CORE_VERSION.INIT)
+//	  return;
+
+	var success= 1;
 	for (var ir in this.referers)
-	  if (this.referers[ir])
-		this.referers[ir].doDraw(_force);
+	  if (this.referers[ir] && !this.referers[ir].doDraw(_force))
+	    success= 0;
 		
-	this.PUB.forRedraw= 0;
+	this.PUB.forRedraw= !success;
 }
 
 
@@ -264,11 +282,10 @@ Ncore.prototype.save= function(_vals, _immediate, _okCB){
 	}
 
 
-
-//todo: need here?
-	for (var ir in this.referers)
-	  if (this.referers[ir])
-		this.referers[ir].doSaved();
+//todo: meaningless
+//	for (var ir in this.referers)
+//	  if (this.referers[ir])
+//		this.referers[ir].doSaved();
 
 	SESSION.save.save(_immediate);
 }
@@ -291,7 +308,6 @@ Ncore.prototype.saved= function(_res){
 	  this.saveCB(_res);
 	this.saveCB= null;
 
-	SESSION.board.draw();
 	for (var ir in this.referers)
 	  if (this.referers[ir])
 		this.referers[ir].doSaved();

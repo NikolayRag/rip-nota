@@ -42,7 +42,7 @@ this.up= function(_src,_okCode,_notCode,_focusOn){
 
 	while (this.DOM.upContent.firstChild)
       this.DOM.upContent.removeChild(this.DOM.upContent.firstChild);
-	if (_src instanceof HTMLElement)
+	if (IS.instance(_src,HTMLElement))
 	  this.DOM.upContent.appendChild(_src);
 	else
 	  this.DOM.upContent.elementText(_src,true);
