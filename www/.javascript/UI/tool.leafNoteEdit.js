@@ -159,10 +159,10 @@ ToolBoardLeafEdit.prototype.opNewData= function(){
 		dtype:DATA_TYPE.TEXT,
 		place:[newPlace.x,newPlace.y,newPlace.w,newPlace.h]
 	});
-	dTarget.draw();
+	newData.draw();
+
 //todo: make in-place (confirm save)
 	newData.save({content:'test',place:newPlace});
-	newData.ui && newData.ui.draw();
 
 
 	setTimeout(function(){

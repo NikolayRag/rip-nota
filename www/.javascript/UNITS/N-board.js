@@ -3,9 +3,16 @@
 */
 var Board= function(_id){
 	var thisNote= new Nroot(_id);
+//todo: SHORTCUT, MUST REDESIGN
+	thisNote.PUB.nroot= thisNote;
 
+	thisNote.dataTemplates= Board.prototype.dataTemplates;
 	thisNote.doDraw= Board.prototype.doDraw;
 	thisNote.doSaved= Board.prototype.doSaved;
+	//override to make delayed
+	thisNote.drawTimeout= null;
+	thisNote.__draw= thisNote.draw;
+	thisNote.draw= Board.prototype.draw;
 
 	thisNote.PUB.ui= new BoardUI(thisNote,UI.DOM.workField);
 	thisNote.leafTemplates= [ //see DATA_TYPE constant enumeration
@@ -17,6 +24,15 @@ var Board= function(_id){
 	return thisNote;
 }
 
+
+Board.prototype.draw= function(){
+	clearTimeout(this.drawTimeout);
+	this.drawTimeout= setTimeout(this.__draw.bind(this),0);
+}
+
+Board.prototype.dataTemplates= function(){
+	return this.leafTemplates;
+}
 
 Board.prototype.doDraw= function(_force){
 	if (this.owner().forRedraw)
@@ -31,11 +47,8 @@ Board.prototype.doDraw= function(_force){
 		var cData= this.PUB.ndata[iD];
 
 		_force= _force || cData.forRedraw;
-		if (cData.draw(this.leafTemplates,curDI))
+		if (cData.draw(curDI))
 		  curDI++;
-
-		if (cData.dtype==DATA_TYPE.NOTE) //go deeper
-		  Ncore.all(cData.content) && Ncore.all(cData.content).draw();
 	}
 
 	if (!_force && !this.PUB.forRedraw)

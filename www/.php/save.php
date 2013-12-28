@@ -8,7 +8,7 @@ include('sqTmpl/SQLTSave.php');
 
 
 function svParseInput($_postIn, $notesA, $dataA) {
-	global $ASYNC_PLACE, $ASYGN, $SAVE_RES, $SAVE_STATES, $CORE_VERSION, $USER;
+	global $ASIDX_SAVE, $ASYGN, $SAVE_RES, $SAVE_STATES, $CORE_VERSION, $USER;
 	foreach ($_postIn as $entityId=> $entityData){
 		$entityIdSplit= array();
 		if (!preg_match("/^($ASYGN->NBREEF|$ASYGN->NDATA)(-?\\d+)\$/", $entityId, $entityIdSplit))
@@ -19,28 +19,28 @@ function svParseInput($_postIn, $notesA, $dataA) {
 			case $ASYGN->NBREEF:
 				$curNote= new Note(
 					$curId,
-					0, arrGet($entityDataA,$ASYNC_PLACE->SVN_NAME,''),
+					0, arrGet($entityDataA,$ASIDX_SAVE->N_NAME,''),
 					0, $USER->id,
-					arrGet($entityDataA,$ASYNC_PLACE->SVN_INHERIT,0),
-					0, arrGet($entityDataA,$ASYNC_PLACE->SVN_VER, $CORE_VERSION->INIT),
-					arrGet($entityDataA,$ASYNC_PLACE->SVN_STYLE,'')
+					arrGet($entityDataA,$ASIDX_SAVE->N_INHERIT,0),
+					0, arrGet($entityDataA,$ASIDX_SAVE->N_VER, $CORE_VERSION->INIT),
+					arrGet($entityDataA,$ASIDX_SAVE->N_STYLE,'')
 				 );
 				$curNote->forSave= $SAVE_STATES->READY;
-//				$curNote->rightGrps= explode($ASYGN->D_LIST,arrGet($entityDataA,$ASYNC_PLACE->SVR_RIGHTS,''));
+//				$curNote->rightGrps= explode($ASYGN->D_LIST,arrGet($entityDataA,$ASIDX_SAVE->R_RIGHTS,''));
 				$notesA->add($curId,$curNote);
 				break;
 			case $ASYGN->NDATA:
 				$curData= new NData(
 					$curId,
 					$USER->id,
-					arrGet($entityDataA,$ASYNC_PLACE->SVD_DTYPE,0),
-					arrGet($entityDataA,$ASYNC_PLACE->SVD_DATA,''),
-					arrGet($entityDataA,$ASYNC_PLACE->SVD_VER, $CORE_VERSION->INIT),
-					0, arrGet($entityDataA,$ASYNC_PLACE->SVD_PLACE,'')
+					arrGet($entityDataA,$ASIDX_SAVE->D_DTYPE,0),
+					arrGet($entityDataA,$ASIDX_SAVE->D_DATA,''),
+					arrGet($entityDataA,$ASIDX_SAVE->D_VER, $CORE_VERSION->INIT),
+					0, arrGet($entityDataA,$ASIDX_SAVE->D_PLACE,'')
 				);
 				$curData->forSave= $SAVE_STATES->READY;
 				if ($curData->version==$CORE_VERSION->INIT)
-				  $curData->rootNote = arrGet($entityDataA,$ASYNC_PLACE->SVD_PARENT,0);
+				  $curData->rootNote = arrGet($entityDataA,$ASIDX_SAVE->D_PARENT,0);
 				$dataA->add($curId,$curData);
 				break;
 		} 

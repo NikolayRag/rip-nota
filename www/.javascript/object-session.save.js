@@ -18,6 +18,8 @@ this.save= function(_immediate){
 		, this.lazyCtx
 	);
 
+	SESSION.board.draw();
+
 ALERT(PROFILE.BREEF, 'SAVE attempt', '');
 }
 
@@ -30,10 +32,10 @@ this.saveGo= function(){
 
 		if (curNote.canSave(true)==SAVE_STATES.READY){
 			var noteBlock= [];
-			noteBlock[ASYNC_PLACE.SVN_VER]= curNote.PUB.ver;
-			noteBlock[ASYNC_PLACE.SVN_INHERIT]= curNote.inherit()? curNote.inherit().PUB.id :0;
-			noteBlock[ASYNC_PLACE.SVN_NAME]= curNote.PUB.name;
-			noteBlock[ASYNC_PLACE.SVN_STYLE]= encodeURIComponent(curNote.PUB.style.makeString());
+			noteBlock[ASIDX_SAVE.N_VER]= curNote.PUB.ver;
+			noteBlock[ASIDX_SAVE.N_INHERIT]= curNote.inherit()? curNote.inherit().PUB.id :0;
+			noteBlock[ASIDX_SAVE.N_NAME]= curNote.PUB.name;
+			noteBlock[ASIDX_SAVE.N_STYLE]= encodeURIComponent(curNote.PUB.style.makeString());
 
 			saveData[ASYGN.NBREEF+nId]= noteBlock.join(ASYGN.D_ITEM);
 		}
@@ -41,7 +43,7 @@ this.saveGo= function(){
 //		var canSaveRts= curNote.canSaveRts(true);
 //		if (canSaveRts==SAVE_STATES.IDLE){
 //			var rightsBlock= [];
-//			rightsBlock[ASYNC_PLACE.SVR_RIGHTS]= curNote.PUB.rightsA.join(ASYGN.D_LIST);
+//			rightsBlock[ASIDX_SAVE.R_RIGHTS]= curNote.PUB.rightsA.join(ASYGN.D_LIST);
 //
 //			saveData[ASYGN.NRIGHTS+nId]= rightsBlock.join(ASYGN.D_ITEM);
 //		}
@@ -51,11 +53,11 @@ this.saveGo= function(){
 			var curData= allData[iD];
 
 			var dataBlock= [];
-			dataBlock[ASYNC_PLACE.SVD_VER]= curData.ver;
-			if (curData.id<0) dataBlock[ASYNC_PLACE.SVD_PARENT]= nId;
-			dataBlock[ASYNC_PLACE.SVD_PLACE]= [curData.place.x,curData.place.y,curData.place.w,curData.place.h].join(ASYGN.D_LIST);
-			dataBlock[ASYNC_PLACE.SVD_DTYPE]= curData.dtype;
-			dataBlock[ASYNC_PLACE.SVD_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
+			dataBlock[ASIDX_SAVE.D_VER]= curData.ver;
+			if (curData.id<0) dataBlock[ASIDX_SAVE.D_PARENT]= nId;
+			dataBlock[ASIDX_SAVE.D_PLACE]= [curData.place.x,curData.place.y,curData.place.w,curData.place.h].join(ASYGN.D_LIST);
+			dataBlock[ASIDX_SAVE.D_DTYPE]= curData.dtype;
+			dataBlock[ASIDX_SAVE.D_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
 
 			saveData[ASYGN.NDATA+curData.id]= dataBlock.join(ASYGN.D_ITEM);
 		}
@@ -74,13 +76,13 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 
 	var resNotesA= [];
 	var resDataA= [];
-	for (var i in sDataA){
+	for (var i in sDataA){ //Notes should be reacted first to be available an possible later Ndata redraw
 		var res= sDataA[i].split(ASYGN.D_LIST);
-		switch (res[0]){
+		switch (res[ASIDX_SAVECB.SIGN]){
 			case ASYGN.NBREEF:
-				var cNote= resNotesA[res[1]]= Ncore.all(res[1]);
-				if (cNote && res[2]>=0)
-				  cNote.saved(res[2])
+				var cNote= resNotesA[res[ASIDX_SAVECB.ID]]= Ncore.all(res[ASIDX_SAVECB.ID]);
+				if (cNote && res[ASIDX_SAVECB.RES]>=0)
+				  cNote.saved(res[ASIDX_SAVECB.RES])
 				else
 				  console.log('Error saving Note ' +iN +': ' +(cNote? resNotesA[iN] :'undefined'));
 
@@ -88,12 +90,12 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 			case ASYGN.NRIGHTS:
 				break;
 			case ASYGN.NDATA:
-				resDataA[res[1]]= res[2] |0;
+				resDataA[res[ASIDX_SAVECB.ID]]= res[ASIDX_SAVECB.RES] |0;
 				break;
 		}
 	}
 
-	for (var iD in resDataA){ //phase two
+	for (var iD in resDataA){ //phase two, Data
 		var cData= Ndata.all(iD);
 		if (cData && resDataA[iD]>=0)
 		  cData.saved(resDataA[iD], resNotesA);
@@ -101,11 +103,9 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 		  console.log('Error saving Data ' +iD +': ' +(cData? resDataA[iD] :'undefined'));
 	}
 
-//todo: draw RIGHT at creation
 	SESSION.board.draw();
 
-//todo: check for accidentally unsaved
-
+//todo: deal with accidentally unsaved
 } 
 
 this.saveCBErr= function(_err,_txt){

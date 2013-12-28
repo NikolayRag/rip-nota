@@ -11,44 +11,44 @@ if (!$NOPROFILE) foreach ($_profile as $curProfile) echo $curProfile;
 
 foreach ($notesA->all() as $noteP){
 	echo implode($ASYGN->D_ITEM, Array(
-		$ASYNC_PLACE->SIGN=> $noteP->isBreef? $ASYGN->NBREEF : $ASYGN->NFULL,
-		$ASYNC_PLACE->UPN_OLDID=> $noteP->clientId,
-		$ASYNC_PLACE->UPN_ID=> $noteP->id,
-		$ASYNC_PLACE->UPN_VER=> $noteP->version,
-		$ASYNC_PLACE->UPN_NAME=> $noteP->name,
-		$ASYNC_PLACE->UPN_STYLE=> $noteP->style,
-		$ASYNC_PLACE->UPN_OWNER=> $noteP==$boardReq? $whoId : $noteP->ownerId, //force return boards owner if any
-		$ASYNC_PLACE->UPN_EDITOR=> $noteP->editorId,
-		$ASYNC_PLACE->UPN_RIGHTS=> $noteP->rights>0? $noteP->rights : 0,
-		$ASYNC_PLACE->UPN_RIGHTGRPA=> implode($ASYGN->D_LIST, $noteP->rightGrps),
-		$ASYNC_PLACE->UPN_INHERIT=> $noteP->inherit, //-1 for implicit of any sort
-		$ASYNC_PLACE->UPN_STAMP=> $noteP->stamp
+		$ASIDX_UPDCB->SIGN=> $noteP->isBreef? $ASYGN->NBREEF : $ASYGN->NFULL,
+		$ASIDX_UPDCB->N_OLDID=> $noteP->clientId,
+		$ASIDX_UPDCB->N_ID=> $noteP->id,
+		$ASIDX_UPDCB->N_VER=> $noteP->version,
+		$ASIDX_UPDCB->N_NAME=> $noteP->name,
+		$ASIDX_UPDCB->N_STYLE=> $noteP->style,
+		$ASIDX_UPDCB->N_OWNER=> $noteP==$boardReq? $whoId : $noteP->ownerId, //force return boards owner if any
+		$ASIDX_UPDCB->N_EDITOR=> $noteP->editorId,
+		$ASIDX_UPDCB->N_RIGHTS=> $noteP->rights>0? $noteP->rights : 0,
+		$ASIDX_UPDCB->N_RIGHTGRPA=> implode($ASYGN->D_LIST, $noteP->rightGrps),
+		$ASIDX_UPDCB->N_INHERIT=> $noteP->inherit, //-1 for implicit of any sort
+		$ASIDX_UPDCB->N_STAMP=> $noteP->stamp
 	)) .$ASYGN->D_UNIT;
 
 	if (!$noteP->isBreef)
 	  foreach ($noteP->data as $dataP)
 	    echo implode($ASYGN->D_ITEM, Array(
-			$ASYNC_PLACE->SIGN=> $ASYGN->NDATA,
-			$ASYNC_PLACE->UPD_ID=> $dataP->id,
-			$ASYNC_PLACE->UPD_VER=> $dataP->version,
-			$ASYNC_PLACE->UPD_DTYPE=> $dataP->datatype,
-			$ASYNC_PLACE->UPD_DATA=> $dataP->data,
-			$ASYNC_PLACE->UPD_EDITOR=> $dataP->editorId,
-			$ASYNC_PLACE->UPD_STAMP=> $dataP->stamp,
-			$ASYNC_PLACE->UPD_PLACE=> $dataP->place
+			$ASIDX_UPDCB->SIGN=> $ASYGN->NDATA,
+			$ASIDX_UPDCB->D_ID=> $dataP->id,
+			$ASIDX_UPDCB->D_VER=> $dataP->version,
+			$ASIDX_UPDCB->D_DTYPE=> $dataP->datatype,
+			$ASIDX_UPDCB->D_DATA=> $dataP->data,
+			$ASIDX_UPDCB->D_EDITOR=> $dataP->editorId,
+			$ASIDX_UPDCB->D_STAMP=> $dataP->stamp,
+			$ASIDX_UPDCB->D_PLACE=> $dataP->place
 	    )) .$ASYGN->D_UNIT;
 }
 	
 foreach ($usersA->all() as $userP)
   echo implode($ASYGN->D_ITEM,Array(
-	$ASYNC_PLACE->SIGN=> $userP->id==$USER->id? $ASYGN->YOU : $ASYGN->USER,
-	$ASYNC_PLACE->UPU_ID=> $userP->id,
-	$ASYNC_PLACE->UPU_VER=> $userP->version,
-	$ASYNC_PLACE->UPU_NAME=> $userP->name,
-	$ASYNC_PLACE->UPU_RELATION=> $userP->relation,
-	$ASYNC_PLACE->UPU_GROUPID=> $userP->groupId,
-	$ASYNC_PLACE->UPU_BOARDLIST=> implode($ASYGN->D_LIST, $userP->boardLst),
-	$ASYNC_PLACE->UPU_CONTACTSLIST=> implode($ASYGN->D_LIST, $userP->contactLst)
+	$ASIDX_UPDCB->SIGN=> $userP->id==$USER->id? $ASYGN->YOU : $ASYGN->USER,
+	$ASIDX_UPDCB->U_ID=> $userP->id,
+	$ASIDX_UPDCB->U_VER=> $userP->version,
+	$ASIDX_UPDCB->U_NAME=> $userP->name,
+	$ASIDX_UPDCB->U_RELATION=> $userP->relation,
+	$ASIDX_UPDCB->U_GROUPID=> $userP->groupId,
+	$ASIDX_UPDCB->U_BOARDLIST=> implode($ASYGN->D_LIST, $userP->boardLst),
+	$ASIDX_UPDCB->U_CONTACTSLIST=> implode($ASYGN->D_LIST, $userP->contactLst)
   )) .$ASYGN->D_UNIT;
 
 

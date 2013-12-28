@@ -10,9 +10,9 @@ var DataUINoteEl= function(_ndata,_context){
 }
 
 DataUINoteEl.prototype.draw = function() {
-//todo: reduce multicall; called for every data within Note
 	this.DOM.root.elementText(this.ndata.content,true);
-	this.setState();
+//todo: reduce multicall; called for every data within Note
+//	this.setState();
 }
 
 DataUINoteEl.prototype.style= function(){}
@@ -70,9 +70,4 @@ DataUINoteEl.prototype.editMode= function(_edit,_onkeypress){
 	}
 }
 
-DataUINoteEl.prototype.setState= function(_state){
-	//redirect
-	var rootData= SESSION.board.dataContext(this.ndata.rootNote.PUB.id);
-	if (rootData)
-	  rootData.ui.setState(_state);
-}
+DataUINoteEl.prototype.setState= function(_state){}

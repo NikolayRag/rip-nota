@@ -215,39 +215,39 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 	//Update all changes prior to any redraw
 	for (var splitI in splitData){
 		var splitDStr= splitData[splitI].split(ASYGN.D_ITEM);
-		var sign= splitDStr[ASYNC_PLACE.SIGN];
+		var sign= splitDStr[ASIDX_UPDCB.SIGN];
 
 		//class proccessing
 		switch (sign) {
 			case ASYGN.NFULL: case ASYGN.NBREEF:
 			 	ctxNote= this.respondN(
 					sign,
-				 	splitDStr[ASYNC_PLACE.UPN_OLDID] |0,
-					splitDStr[ASYNC_PLACE.UPN_ID] |0,
+				 	splitDStr[ASIDX_UPDCB.N_OLDID] |0,
+					splitDStr[ASIDX_UPDCB.N_ID] |0,
 					{
-						ver: splitDStr[ASYNC_PLACE.UPN_VER] |0,
-						name: splitDStr[ASYNC_PLACE.UPN_NAME],
-						style: splitDStr[ASYNC_PLACE.UPN_STYLE],
-						owner: splitDStr[ASYNC_PLACE.UPN_OWNER] |0,
-						editor: splitDStr[ASYNC_PLACE.UPN_EDITOR] |0,
-						rights: splitDStr[ASYNC_PLACE.UPN_RIGHTS] |0,
-						rightA: splitDStr[ASYNC_PLACE.UPN_RIGHTGRPA].split(ASYGN.D_LIST),
-						inherit: splitDStr[ASYNC_PLACE.UPN_INHERIT] |0,
-						stamp: new Date(new Date()-(splitDStr[ASYNC_PLACE.UPN_STAMP] |0)*1000)
+						ver: splitDStr[ASIDX_UPDCB.N_VER] |0,
+						name: splitDStr[ASIDX_UPDCB.N_NAME],
+						style: splitDStr[ASIDX_UPDCB.N_STYLE],
+						owner: splitDStr[ASIDX_UPDCB.N_OWNER] |0,
+						editor: splitDStr[ASIDX_UPDCB.N_EDITOR] |0,
+						rights: splitDStr[ASIDX_UPDCB.N_RIGHTS] |0,
+						rightA: splitDStr[ASIDX_UPDCB.N_RIGHTGRPA].split(ASYGN.D_LIST),
+						inherit: splitDStr[ASIDX_UPDCB.N_INHERIT] |0,
+						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.N_STAMP] |0)*1000)
 					}
 				);
 				break;
 			case ASYGN.NDATA:
 				if (ctxNote)
 				  this.respondD(
-					splitDStr[ASYNC_PLACE.UPD_ID] |0,
+					splitDStr[ASIDX_UPDCB.D_ID] |0,
 					{
-						ver: splitDStr[ASYNC_PLACE.UPD_VER] |0,
-						dtype: splitDStr[ASYNC_PLACE.UPD_DTYPE] |0,
-						content: splitDStr[ASYNC_PLACE.UPD_DATA],
-						editor: splitDStr[ASYNC_PLACE.UPD_EDITOR] |0,
-						stamp: new Date(new Date()-(splitDStr[ASYNC_PLACE.UPD_STAMP] |0)*1000),
-						place: splitDStr[ASYNC_PLACE.UPD_PLACE].split(ASYGN.D_LIST)
+						ver: splitDStr[ASIDX_UPDCB.D_VER] |0,
+						dtype: splitDStr[ASIDX_UPDCB.D_DTYPE] |0,
+						content: splitDStr[ASIDX_UPDCB.D_DATA],
+						editor: splitDStr[ASIDX_UPDCB.D_EDITOR] |0,
+						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.D_STAMP] |0)*1000),
+						place: splitDStr[ASIDX_UPDCB.D_PLACE].split(ASYGN.D_LIST)
 				  	},
 				  ctxNote);
 				break;
@@ -255,14 +255,14 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 	  			ctxNote= undefined;
 				this.respondU(
 					sign,
-					splitDStr[ASYNC_PLACE.UPU_ID] |0,
+					splitDStr[ASIDX_UPDCB.U_ID] |0,
 					{
-						ver: splitDStr[ASYNC_PLACE.UPU_VER] |0,
-						uname: splitDStr[ASYNC_PLACE.UPU_NAME],
-						relation: splitDStr[ASYNC_PLACE.UPU_RELATION] |0,
-						groupId: splitDStr[ASYNC_PLACE.UPU_GROUPID] |0,
-						boardList: splitDStr[ASYNC_PLACE.UPU_BOARDLIST].split(ASYGN.D_LIST),
-						contactsList: splitDStr[ASYNC_PLACE.UPU_CONTACTSLIST].split(ASYGN.D_LIST)
+						ver: splitDStr[ASIDX_UPDCB.U_VER] |0,
+						uname: splitDStr[ASIDX_UPDCB.U_NAME],
+						relation: splitDStr[ASIDX_UPDCB.U_RELATION] |0,
+						groupId: splitDStr[ASIDX_UPDCB.U_GROUPID] |0,
+						boardList: splitDStr[ASIDX_UPDCB.U_BOARDLIST].split(ASYGN.D_LIST),
+						contactsList: splitDStr[ASIDX_UPDCB.U_CONTACTSLIST].split(ASYGN.D_LIST)
 					}
 				);
 				break;

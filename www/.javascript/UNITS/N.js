@@ -94,7 +94,8 @@ Ncore.newId= -1;
 	Notes automatically set unsupplied id to negative-1 (-1,-2,-3...)
 */	
 Ncore.allNotes= [];
-Ncore.all= function(_id){
+//todo: return filtered sets (unsaved, undrawed etc)
+Ncore.all= function(_id, _filter){
 	if (arguments.length==0)
 	  return Ncore.allNotes;
 
@@ -271,6 +272,7 @@ Ncore.prototype.save= function(_vals, _immediate, _okCB){
 	  this.PUB.inheritId= _vals.inherit |0;
 
 
+//todo: dedicate rights
 	if (_vals.rights)
 	  this.PUB.forSaveRts= SAVE_STATES.READY;
 	if (_vals.style || _vals.name || _vals.inherit){
@@ -278,7 +280,7 @@ Ncore.prototype.save= function(_vals, _immediate, _okCB){
 		this.PUB.stamp= new Date();
 		this.PUB.forSave= SAVE_STATES.READY;
 
-		this.draw(1);
+		this.PUB.forRedraw= true;
 	}
 
 

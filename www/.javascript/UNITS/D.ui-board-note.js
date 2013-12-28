@@ -55,12 +55,8 @@ DataUIBoardNote.prototype.draw= function () {
 DataUIBoardNote.prototype.style= function(){}
 
 
-DataUIBoardNote.prototype.setState= function(_state){
-	this.sign();
-
-//todo: state must remain after data saved if sibling is unsaved
-	this.DOM.mark.style.display= _state? '': 'none';
-}
+//only custom
+DataUIBoardNote.prototype.setState= function(_msg){}
 
 
 
@@ -141,7 +137,7 @@ DataUIBoardNote.prototype.shadow= function () {
 }
 
 DataUIBoardNote.prototype.sign= function () {
-	var sib= this.ndata.sibling();
+	var sibParent= this.ndata.sibling().inherit();
 	var sibPUB= this.ndata.sibling().PUB;
 //todo: get first element in better manner
 	for (var io in sibPUB.ndata) break;
@@ -155,23 +151,32 @@ DataUIBoardNote.prototype.sign= function () {
 			return;
 		}
 
-		var okRef= sib.inherit() && (sib.inherit()!= this.ndata.rootNote);
+		var okRef=
+		  sibParent && (sibParent!= this.ndata.rootNote);
 //???4 times
 		this.DOM.ref.elementText(
-			okRef? sib.inherit().PUB.name :''
+			okRef? sibParent.PUB.name :''
 		);
 		this.DOM.ref.style.display=
 		  okRef? '':'none';
 
-		var okSign= sibData && sib.inherit() && sibData.editorId!=sib.inherit().PUB.ownerId;
+		var okSign=
+		  sibData && sibParent && sibData.editorId!=sibParent.PUB.ownerId;
 		this.DOM.sign.elementText(
 			okSign? (
 				(!sibData.editor() || sibData.editor().uname=='')?
-				  DIC.stampSomebody : sibData.editor().uname
+				  DIC.stampSomebody
+				  : sibData.editor().uname
 			) :''
 		);
 		this.DOM.sign.style.display=
 		  okSign? '':'none';
+
+		this.DOM.mark.style.display=
+		  (
+		  	this.ndata.forSave!=SAVE_STATES.IDLE
+		  	|| sibPUB.forSave!=SAVE_STATES.IDLE
+		  )? '': 'none';
 	}
 
 	this.signStamp();
@@ -180,7 +185,7 @@ DataUIBoardNote.prototype.sign= function () {
 DataUIBoardNote.prototype.signStamp= function(){
 	clearTimeout(this.stampTimeout);
 
-	var sib= this.ndata.sibling();
+	var sibParent= this.ndata.sibling().inherit();
 	var sibPUB= this.ndata.sibling().PUB;
 //todo: get first element in better manner
 	for (var iD in sibPUB.ndata) break;
@@ -189,7 +194,7 @@ DataUIBoardNote.prototype.signStamp= function(){
 	  return;
 
 	var sibData= sibPUB.ndata[iD];
-	var okSign= sib.inherit() && sibData.editorId!=sib.inherit().PUB.ownerId;
+	var okSign= sibParent && sibData.editorId!=sibParent.PUB.ownerId;
 
 	var stamp= stampDiff(sibData? sibData.stamp :sibPUB.stamp,TIMER_LENGTH.MONTH*2);
 	this.DOM.stamp.elementText(

@@ -107,49 +107,58 @@ $CONSTANTS= array(
 		'LOGVALIDATE'=>	4
 	),
 
-	'ASYNC_PLACE'=> array( 
+	'ASIDX_UPDCB'=> array( 
 		'SIGN'=> 0,
 		
-		'UPN_OLDID'=> 1,
-		'UPN_ID'=> 2,
-		'UPN_VER'=> 3,
-		'UPN_NAME'=> 4,
-		'UPN_STYLE'=> 5,
-		'UPN_OWNER'=> 6,
-		'UPN_EDITOR'=> 7,
-		'UPN_RIGHTS'=> 8,
-		'UPN_RIGHTGRPA'=> 9,
-		'UPN_INHERIT'=> 10,
-		'UPN_STAMP'=> 11,
+		'N_OLDID'=> 1,
+		'N_ID'=> 2,
+		'N_VER'=> 3,
+		'N_NAME'=> 4,
+		'N_STYLE'=> 5,
+		'N_OWNER'=> 6,
+		'N_EDITOR'=> 7,
+		'N_RIGHTS'=> 8,
+		'N_RIGHTGRPA'=> 9,
+		'N_INHERIT'=> 10,
+		'N_STAMP'=> 11,
 
-		'UPD_ID'=> 1,
-		'UPD_VER'=> 2,
-		'UPD_DTYPE'=> 3,
-		'UPD_DATA'=> 4,
-		'UPD_EDITOR'=> 5,
-		'UPD_STAMP'=> 6,
-		'UPD_PLACE'=> 7,
+		'D_ID'=> 1,
+		'D_VER'=> 2,
+		'D_DTYPE'=> 3,
+		'D_DATA'=> 4,
+		'D_EDITOR'=> 5,
+		'D_STAMP'=> 6,
+		'D_PLACE'=> 7,
 
-		'UPU_ID'=> 1,
-		'UPU_VER'=> 2,
-		'UPU_NAME'=> 3,
-		'UPU_RELATION'=> 4,
-		'UPU_GROUPID'=> 5,
-		'UPU_BOARDLIST'=> 6,
-		'UPU_CONTACTSLIST'=> 7,
+		'U_ID'=> 1,
+		'U_VER'=> 2,
+		'U_NAME'=> 3,
+		'U_RELATION'=> 4,
+		'U_GROUPID'=> 5,
+		'U_BOARDLIST'=> 6,
+		'U_CONTACTSLIST'=> 7,
+	),
 
-		'SVN_VER'=> 0,
-		'SVN_INHERIT'=> 1,
-		'SVN_NAME'=> 2,
-		'SVN_STYLE'=> 3,
+	'ASIDX_SAVE'=> array( 
+		'N_VER'=> 0,
+		'N_INHERIT'=> 1,
+		'N_NAME'=> 2,
+		'N_STYLE'=> 3,
 
-		'SVR_RIGHTS'=> 0,
+		'R_RIGHTS'=> 0,
 
-		'SVD_VER'=> 0,
-		'SVD_PARENT'=> 1,
-		'SVD_PLACE'=> 2,
-		'SVD_DTYPE'=> 3,
-		'SVD_DATA'=> 4
+		'D_VER'=> 0,
+		'D_PARENT'=> 1,
+		'D_PLACE'=> 2,
+		'D_DTYPE'=> 3,
+		'D_DATA'=> 4,
+
+	),
+
+	'ASIDX_SAVECB'=> array( 
+		'SIGN'=> 0,
+		'ID'=>	1,
+		'RES'=>	2
 	),
 
 

@@ -97,20 +97,26 @@ Ndata.prototype.editor= function(){
 }
 
 
-Ndata.prototype.draw= function(_uiTemplateA,_curDI){
+//uiTemplateA varies dependent to context Data is in.
+Ndata.prototype.draw= function(_curDI){
 //	if (this.ver==CORE_VERSION.INIT)
 //	  return;
 
 	if (!this.ui){
-		var newTemplate= _uiTemplateA[this.dtype]?
-		  _uiTemplateA[this.dtype]
-		  : _uiTemplateA[DATA_TYPE.UNKNOWN];
+//todo: deal with multi-instancing (Ncore .referers)
+		var uiTemplateA= this.rootNote.PUB.nroot.dataTemplates();
+		var newTemplate= uiTemplateA[this.dtype]?
+		  uiTemplateA[this.dtype]
+		  : uiTemplateA[DATA_TYPE.UNKNOWN];
 
 		this.ui= new newTemplate(this,this.rootNote.PUB.ui.DOM.context,_curDI||0);
 	}
 
 	if (this.forRedraw)
 	  this.ui.draw();
+
+	if (this.dtype==DATA_TYPE.NOTE) //go deeper
+	  Ncore.all(this.content) && Ncore.all(this.content).draw();
 
 	var retRedraw= this.forRedraw;
 	this.forRedraw= 0;
@@ -142,7 +148,8 @@ Ndata.prototype.save= function(_vals){
 	this.stamp= new Date();
 	this.forSave= SAVE_STATES.READY;
 
-	this.ui && this.ui.setState(this.forSave);
+//todo: completely move to set()
+	this.forRedraw= true;
 
 	SESSION.save.save();
 }
@@ -155,6 +162,7 @@ Ndata.prototype.saved= function(_res, _resNotesA){
 	  this.ver= _res;
 
 	this.forSave= SAVE_STATES.IDLE;
+	this.forRedraw= true;
 
 //todo: will be simplified after dedication of Unit
 	//affect container

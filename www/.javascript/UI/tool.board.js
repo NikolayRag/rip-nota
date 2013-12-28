@@ -111,10 +111,9 @@ ToolBoard.prototype.opNewNote= function(){
 		dtype:DATA_TYPE.NOTE,
 		place:[newPlace.x,newPlace.y,newPlace.w,newPlace.h]
 	});
-//	this.board.draw();
+
 //todo: make in-place (confirm save)
 	newData.save({content:newNote.PUB.id,place:newPlace});
-//	newData.ui && newData.ui.draw();
 
 
 
@@ -139,10 +138,10 @@ ToolBoard.prototype.opNewData= function(){
 		dtype:DATA_TYPE.TEXT,
 		place:[newPlace.x,newPlace.y,newPlace.w,newPlace.h]
 	});
-	this.board.draw();
-//todo: make in-place (confirm save)
+	newData.draw();
+
+//todo: make in-place (only confirm save)
 	newData.save({content:'test',place:newPlace});
-	newData.ui && newData.ui.draw();
 
 
 	setTimeout(function(){

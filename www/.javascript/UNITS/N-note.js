@@ -3,7 +3,10 @@
 */
 var Note= function(_id){
 	var thisNote= new Nroot(_id);
+//todo: SHORTCUT, MUST REDESIGN
+	thisNote.PUB.nroot= thisNote;
 
+	thisNote.dataTemplates= Note.prototype.dataTemplates;
 	thisNote.doDraw= Note.prototype.doDraw;
 	thisNote.doSaved= Note.prototype.doSaved;
 	thisNote.leafTemplates= [ //see DATA_TYPE constant enumeration
@@ -16,7 +19,9 @@ var Note= function(_id){
 	return thisNote;
 }
 
-
+Note.prototype.dataTemplates= function(){
+	return this.leafTemplates;
+}
 
 Note.prototype.doDraw= function(_force){
 	var rootData= SESSION.board.dataContext(this.PUB.id);
@@ -32,7 +37,7 @@ Note.prototype.doDraw= function(_force){
 		var cData= this.PUB.ndata[iD];
 
 		_force= _force || cData.forRedraw;
-		cData.draw(this.leafTemplates);
+		cData.draw();
 	}
 
 	if (!_force && !this.PUB.forRedraw)

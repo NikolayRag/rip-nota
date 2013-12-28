@@ -226,11 +226,15 @@ b1.9:
 		+ inherited Notes
 		+ Ncore save reaction; inherited
 		- Ncore WITH supplied Ndata
-+save:	procceed cyclically Data/Note from most defined to ensure
-		all new-references are linked
 -save:	saving rights is dedicated
 +browse:	Added trap for bad robots (anti-robot.txt)
-
++save:	ASYNC_PLACE splitted;
+		define Save result indices by constants
++Data:	draw() made available to be called outside root Note
++tools:	Data/Notes drawed right at creation
+		- status is based on ANY of data's content is saved
++UI:	redraw board as bulk only, on dedicated actions (update, save, saveCB)
+		+ make Board.draw() timeouted to not double it calls
 
 
 
@@ -391,7 +395,7 @@ Refactor:
 				+ .asyncStop() added
 				+ .asyncState() replaces update/save .httpRequest
 				+ .httpRequest becomes SESSION attribute
-				- check and manage concurrensing async
+				+obv: check and manage concurrensing async
 				- manage Cookies within request
 +wrap:			WINDOW alias added
 +js:            + wide fixes applied based on webStorm instection
@@ -635,7 +639,6 @@ Fix:
 	-upload:	think of uncomplete uploads at board reloading
 
 	--misc:	make sitemap work
-	--misc:	make plain alternative for search robots
 	--misc: make lite RO for incompatible browsers
 
 	--sec:	SQL: prevent injection
