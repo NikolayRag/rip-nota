@@ -166,11 +166,9 @@ function kiMiniJs($_renameA=false){
 
 	 file_get_contents(".javascript/UNITS/D.js").
 	 //data ui
-	 file_get_contents(".javascript/UNITS/D.ui-board-.js").
-	 file_get_contents(".javascript/UNITS/D.ui-board-el.js").
-	 file_get_contents(".javascript/UNITS/D.ui-board-note.js").
-	 file_get_contents(".javascript/UNITS/D.ui-note-.js").
-	 file_get_contents(".javascript/UNITS/D.ui-note-el.js").
+	 file_get_contents(".javascript/UNITS/D.ui-unknown.js").
+	 file_get_contents(".javascript/UNITS/D.ui-text.js").
+	 file_get_contents(".javascript/UNITS/D.ui-note.js").
 
 	 //ui
 	 file_get_contents(".javascript/UI/ui.js").

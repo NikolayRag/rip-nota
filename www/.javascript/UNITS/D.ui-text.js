@@ -1,39 +1,59 @@
 /*
 	ui class for framed Note data
 */
-var DataUINoteEl= function(_ndata,_context){
+var DataUIText= function(_ndata,_context){
 	var _this= this;
 
 	_this.ndata= _ndata;
+//todo: make UI and reference be well-defined
+	_this.rootUi= _ndata.rootNote.PUB.ui;
 
 	_this.DOM= _this.build(_context);
 }
 
-DataUINoteEl.prototype.draw = function() {
-	this.DOM.root.elementText(this.ndata.content,true);
+DataUIText.prototype.draw = function() {
+	this.DOM.content.elementText(this.ndata.content, true);
+
 //todo: reduce multicall; called for every data within Note
 //	this.setState();
+
+
+	var curCtx= this.rootUi.note.coreType;
+
+//todo: introduce parents visual modifiers
+	if (!curCtx)
+	  this.DOM.content.style.fontSize= '20pt';
+
+	this.rootUi.place(this.ndata, this.DOM.root);
 }
 
-DataUINoteEl.prototype.style= function(){}
+DataUIText.prototype.style= function(){}
 
 
 ////PRIVATE
-DataUINoteEl.prototype.build= function(_parentEl){
-	var elRoot= DOCUMENT.createElement("div");
-	
-	_parentEl.appendChild(elRoot);
+DataUIText.tmpl= DOM('leafTextTmpl');
+DataUIText.prototype.build= function(_parentEl,_curDI){
+	var cRoot= DataUIText.tmpl.cloneNode(true);
+	var cText= DOM('leafTextTxt',cRoot);
+	NOID(cRoot);
+
+	setTimeout(function(){
+		_parentEl.appendChild(cRoot);
+		cRoot.focus();
+		cRoot.style.opacity= 1;
+	},_curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
 
 	return {
-		root: elRoot
+		root:cRoot,
+		content:cText
 	};
 }
 
-DataUINoteEl.prototype.content= function(_newValue){
+DataUIText.prototype.content= function(_newValue){
 	return this.DOM.root.elementText(_newValue);
 }
 
-DataUINoteEl.prototype.editMode= function(_edit,_onkeypress){
+DataUIText.prototype.editMode= function(_edit,_onkeypress){
 	var editField= this.DOM.root;
 
 	if (_edit){
@@ -70,4 +90,4 @@ DataUINoteEl.prototype.editMode= function(_edit,_onkeypress){
 	}
 }
 
-DataUINoteEl.prototype.setState= function(_state){}
+DataUIText.prototype.setState= function(_state){}

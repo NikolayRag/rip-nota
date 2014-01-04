@@ -1,7 +1,7 @@
 /*
 	ui class for toplevel Note stickers
 */
-var DataUIBoardNote= function(_ndata,_context,_curDI){
+var DataUINote= function(_ndata,_context,_curDI){
 	var _this= this;
 
 	_this.ndata= _ndata;
@@ -45,40 +45,40 @@ var DataUIBoardNote= function(_ndata,_context,_curDI){
 */
 }
 
-DataUIBoardNote.prototype.draw= function () {
-	this.place();
+DataUINote.prototype.draw= function () {
+	this.rootUi.place(this.ndata, this.DOM.root);
 	this.sign();
 }
 
 //support method for Data's derived Note draw() (same as UI.style() for Board.draw())
 //todo: lolwut? - ^^
-DataUIBoardNote.prototype.style= function(){}
+DataUINote.prototype.style= function(){}
 
 
 //only custom
-DataUIBoardNote.prototype.setState= function(_msg){}
+DataUINote.prototype.setState= function(_msg){}
 
 
 
 
 ////PRIVATE
 
-DataUIBoardNote.tmpl= DOM('noteTmpl');
-DataUIBoardNote.prototype.build= function(_parentEl,_curDI){
+DataUINote.tmpl= DOM('leafNoteTmpl');
+DataUINote.prototype.build= function(_parentEl,_curDI){
 //todo: _resizeSpot to be removed at all
 //todo: append _noteSign _noteRef to noteInfo (wat)
 //todo: redesign comments
 
-	var cRoot= DataUIBoardNote.tmpl.cloneNode(true);
-	var cShadow= DOM('noteShadow',cRoot);
-	var cMark= DOM('noteMark',cRoot);
-	var cStamp= DOM('noteStamp',cRoot);
-	var cRef= DOM('noteRef',cRoot);
-	var cSign= DOM('noteSign',cRoot);
-	var cPlate= DOM('notePlate',cRoot);
-	var cCtx= DOM('noteContext',cRoot);
-	var cTool= DOM('noteToolHolder',cRoot);
-	var cCover= DOM('noteFrameCover',cRoot);
+	var cRoot= DataUINote.tmpl.cloneNode(true);
+	var cShadow= DOM('leafNoteShadow',cRoot);
+	var cMark= DOM('leafNoteMark',cRoot);
+	var cStamp= DOM('leafNoteStamp',cRoot);
+	var cRef= DOM('leafNoteRef',cRoot);
+	var cSign= DOM('leafNoteSign',cRoot);
+	var cPlate= DOM('leafNotePlate',cRoot);
+	var cCtx= DOM('leafNoteContext',cRoot);
+	var cTool= DOM('leafNoteToolHolder',cRoot);
+	var cCover= DOM('leafNoteFrameCover',cRoot);
 	
 //cRoot.style.transform= 'rotate('+(Math.random()*100-50)+'deg)';
 
@@ -104,16 +104,7 @@ DataUIBoardNote.prototype.build= function(_parentEl,_curDI){
 	};
 }
 
-DataUIBoardNote.prototype.place= function(){
-	var _place= this.ndata.place;
-
-	this.DOM.root.style.left= _place.x +"px";
-	this.DOM.root.style.top= _place.y +"px";
-	this.DOM.root.style.width= _place.w +"px";
-	this.DOM.root.style.height= _place.h +"px";
-}
-
-DataUIBoardNote.prototype.shadow= function () {
+DataUINote.prototype.shadow= function () {
 	var sFract= 1;
 
 	var sibPUB= this.ndata.sibling().PUB;
@@ -136,7 +127,7 @@ DataUIBoardNote.prototype.shadow= function () {
 	this.DOM.shadow.style.display= sFract==1? 'none' :'';
 }
 
-DataUIBoardNote.prototype.sign= function () {
+DataUINote.prototype.sign= function () {
 	var sibParent= this.ndata.sibling().inherit();
 	var sibPUB= this.ndata.sibling().PUB;
 //todo: get first element in better manner
@@ -182,7 +173,7 @@ DataUIBoardNote.prototype.sign= function () {
 	this.signStamp();
 }
 
-DataUIBoardNote.prototype.signStamp= function(){
+DataUINote.prototype.signStamp= function(){
 	clearTimeout(this.stampTimeout);
 
 	var sibParent= this.ndata.sibling().inherit();
@@ -218,7 +209,7 @@ DataUIBoardNote.prototype.signStamp= function(){
 
 
 
-DataUIBoardNote.prototype.bindEvt= function(){
+DataUINote.prototype.bindEvt= function(){
 	var _this= this;
 	var rts= this.ndata.rootNote.PUB.rights;
 
@@ -273,7 +264,7 @@ DataUIBoardNote.prototype.bindEvt= function(){
 
 ////interaction
 
-DataUIBoardNote.prototype.mouseOver= function(){
+DataUINote.prototype.mouseOver= function(){
 	//switch previous hilite off instantly
 	var prevHilite= this.rootUi.lastHilite;
 	if (prevHilite && prevHilite!=this){
@@ -288,7 +279,7 @@ DataUIBoardNote.prototype.mouseOver= function(){
 
 	this.rootUi.lastHilite= this;
 }
-DataUIBoardNote.prototype.mouseOut= function(){
+DataUINote.prototype.mouseOut= function(){
 	clearTimeout(this.captionTimeout);
 
 	var _this= this;
@@ -299,7 +290,7 @@ DataUIBoardNote.prototype.mouseOut= function(){
 
 
 //todo: constantly review rights effects
-DataUIBoardNote.prototype.hiliteSet= function(){
+DataUINote.prototype.hiliteSet= function(){
 	var mouseState= this.actualMouseOver;
 	var _this= this;
 
@@ -326,7 +317,7 @@ DataUIBoardNote.prototype.hiliteSet= function(){
 }
 
 
-DataUIBoardNote.prototype.toolShow= function(_show){
+DataUINote.prototype.toolShow= function(_show){
 	if (_show && UI.mouseButton!=-1)
 	  return;
 	if (UI.toolSet.tool && UI.toolSet.tool.sticky)
@@ -344,7 +335,7 @@ DataUIBoardNote.prototype.toolShow= function(_show){
 	this.DOM.root.style.zIndex= _show?2:'';
 }
 
-DataUIBoardNote.prototype.toolShowEdit= function(){
+DataUINote.prototype.toolShowEdit= function(){
 	var rRoot= this.ndata.rootNote.PUB.rights;
 	var rNote= this.ndata.sibling().PUB.rights;
 	if (rRoot || rNote)

@@ -21,7 +21,7 @@ var Ndata= function(_root,_id)
 
 //todo: ref; use objects, make .changed(obj) reactor
 	_this.rootNote= _root;
-	_this.ui= null;
+	_this.ui= null; //inited at draw(), coz all Notes UI depend of parent
 	_this.forRedraw= 0;
 	_this.forSave= SAVE_STATES.IDLE;
 
@@ -104,12 +104,12 @@ Ndata.prototype.draw= function(_curDI){
 
 	if (!this.ui){
 //todo: deal with multi-instancing (Ncore .referers)
-		var uiTemplateA= this.rootNote.PUB.nroot.dataTemplates();
-		var newTemplate= uiTemplateA[this.dtype]?
-		  uiTemplateA[this.dtype]
-		  : uiTemplateA[DATA_TYPE.UNKNOWN];
+		var newTemplate= [];
+		  newTemplate[DATA_TYPE.UNKNOWN]= DataUIUnknown;
+		  newTemplate[DATA_TYPE.TEXT]= DataUIText;
+		  newTemplate[DATA_TYPE.NOTE]= DataUINote;
 
-		this.ui= new newTemplate(this,this.rootNote.PUB.ui.DOM.context,_curDI||0);
+		this.ui= new (newTemplate[this.dtype] || DataUIUnknown)(this,this.rootNote.PUB.ui.DOM.context,_curDI||0);
 	}
 
 	if (this.forRedraw)

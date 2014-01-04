@@ -90,7 +90,7 @@ input[type="reset"] {
 	overflow:scroll;
 	position:fixed;
 }
-.boardRoot {
+.plateBoardRoot {
 	top:0;
 	left:0;
 	height:0;
@@ -98,7 +98,7 @@ input[type="reset"] {
 	overflow:hidden;
 	position:absolute;
 }
-.boardContext {
+.plateBoardContext {
 	height:0;
 	width:0;
 	overflow:visible;
@@ -106,7 +106,7 @@ input[type="reset"] {
 
 	transition: transform 1s;
 }
-.boardBG {
+.plateBoardBG {
 	top:0;
 	left:0;
 	bottom:0;
@@ -116,7 +116,7 @@ input[type="reset"] {
 
 	transition: background 1s;
 }
-.boardCanvas {
+.plateBoardCanvas {
 	position:relative;
 	top:0;
 	left:0;

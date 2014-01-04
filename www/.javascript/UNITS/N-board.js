@@ -6,7 +6,9 @@ var Board= function(_id){
 //todo: SHORTCUT, MUST REDESIGN
 	thisNote.PUB.nroot= thisNote;
 
-	thisNote.dataTemplates= Board.prototype.dataTemplates;
+//todo: find place
+	thisNote.coreType= 0;
+
 	thisNote.doDraw= Board.prototype.doDraw;
 	thisNote.doSaved= Board.prototype.doSaved;
 	//override to make delayed
@@ -14,12 +16,8 @@ var Board= function(_id){
 	thisNote.__draw= thisNote.draw;
 	thisNote.draw= Board.prototype.draw;
 
+//todo: move ui out from PUB to this
 	thisNote.PUB.ui= new BoardUI(thisNote,UI.DOM.workField);
-	thisNote.leafTemplates= [ //see DATA_TYPE constant enumeration
-		DataUIBoardUnknown,
-		DataUIBoardEl,
-		DataUIBoardNote
-	];
 
 	return thisNote;
 }
@@ -28,10 +26,6 @@ var Board= function(_id){
 Board.prototype.draw= function(){
 	clearTimeout(this.drawTimeout);
 	this.drawTimeout= setTimeout(this.__draw.bind(this),0);
-}
-
-Board.prototype.dataTemplates= function(){
-	return this.leafTemplates;
 }
 
 Board.prototype.doDraw= function(_force){
@@ -51,27 +45,34 @@ Board.prototype.doDraw= function(_force){
 		  curDI++;
 	}
 
-	if (!_force && !this.PUB.forRedraw)
-	  return;
-
-	this.PUB.ui.correct();
-	this.PUB.ui.style();
-	UI.style(); //parent holder influenced
+	if (_force || this.PUB.forRedraw){
+		this.PUB.ui.correct();
+		this.PUB.ui.style();
+		UI.style(); //parent holder influenced
 
 //todo: set point of interest
-	if (!this.PUB.ui.lookat.done){
-		var coords= SESSION.cookieGet('bpos' +this.PUB.id).split('_');
-		if (coords!=''){
-			this.PUB.ui.lookat(coords[0], coords[1]);
-			this.PUB.ui.lookat.done= true;
-		} else {
+		if (!this.PUB.ui.lookat.done){
+			var coords= SESSION.cookieGet('bpos' +this.PUB.id).split('_');
+			if (coords!=''){
+				this.PUB.ui.lookat(coords[0], coords[1]);
+				this.PUB.ui.lookat.done= true;
+			} else {
 
+			}
 		}
 	}
 
-//todo:
-//	redraw preview if need
+//todo:	redraw preview if need
 	
+	//reset redraw flag for Users
+//todo: move elsewhere
+	for (var nU in Ucore.all){
+		var curUcore= Ucore.all[nU];
+		curUcore.forRedraw= 0;
+		curUcore.forRedrawBoards= 0;
+		curUcore.forRedrawContacts= 0;
+	}
+
 ALERT(PROFILE.BREEF,"Board "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
 }
 

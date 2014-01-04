@@ -24,18 +24,18 @@
 	<? include('.templates/tdyn_register.php'); ?>
 	<? include('.templates/tdyn_palette.php'); ?>
 	<? include('.templates/tdyn_pin.php'); ?>
-	<? include('.templates/ttool-boardLeaf.php'); ?>
-	<? include('.templates/ttool-boardLeafEdit.php'); ?>
-	<? include('.templates/ttool-board.php'); ?>
-	<? include('.templates/tunit_board.php'); ?>
-	<? include('.templates/tunit_board-overview.php'); ?>
-	<? include('.templates/tunit_leaf-inline.php'); ?>
-	<? include('.templates/tunit_leaf-note.php'); ?>
-	<? include('.templates/tunit_leaf-noteInline.php'); ?>
+	<? include('.templates/ttool_boardLeaf.php'); ?>
+	<? include('.templates/ttool_boardLeafEdit.php'); ?>
+	<? include('.templates/ttool_board.php'); ?>
+	<? include('.templates/tunit_plateBoard.php'); ?>
+	<? include('.templates/tunit_plateBoardOverview.php'); ?>
+	<? include('.templates/tunit_plateNote.php'); ?>
+	<? include('.templates/tunit_leafText.php'); ?>
+	<? include('.templates/tunit_leafNote.php'); ?>
 </div>
 <span id='testEl'></span>
 
-<span id='workField'></span>
+<div id='workField'></div>
 
 <table id='workToolbar' <?=($_POST['rEmbed']?'style=display:none':'')?>><tr>
 	<td id='barLogo'><? include('.templates/t_barLogo.php'); ?></td>

@@ -235,7 +235,9 @@ b1.9:
 		- status is based on ANY of data's content is saved
 +UI:	redraw board as bulk only, on dedicated actions (update, save, saveCB)
 		+ make Board.draw() timeouted to not double it calls
-
++ui:	make unified data ui for board/notes
+		- visual modifiers for leafs
++ui:	move place() function to container (Board/Note)
 
 
 Minor:
@@ -436,6 +438,16 @@ Refactor:
 +Board:			.draw() calls referenced Note's .draw()
 +Note:			.draw() flow affected
 +Style:			NOTE_* colors replaced with MAIN_*
++update:		turning off Users .redraw flags moved to Board.redraw()
+				- move somewhere else
++templates:		elInline renamed to leafText
+				+ noteTmpl -> leafNoteTmpl
+				+ noteInlineTmpl -> plateNoteTmpl
+				+ boardTmpl -> plateBoardTmpl
+				+ implied css classes renamed
+				+ t*.php renamed reasonably
++Board ui:		.board renamed to .note
+
 
 
 

@@ -13,6 +13,9 @@ var NoteUI= function(_note,_rootW){
 }
 
 
+NoteUI.prototype.place= function(){
+}
+
 //todo: make stilyze affecting only own UI elements
 NoteUI.prototype.style= function(){
 	var _style= this.note.PUB.style;
@@ -30,12 +33,12 @@ NoteUI.prototype.style= function(){
 NoteUI.prototype.bindEvt= function(_parentEl){
 }
 
-NoteUI.tmpl= DOM('noteInlineTmpl');
+NoteUI.tmpl= DOM('plateNoteTmpl');
 NoteUI.prototype.build= function(_parentEl){
 	var cRoot= NoteUI.tmpl.cloneNode(true);
-	var cBg= DOM('noteInlineBg',cRoot);
-	var cObg= DOM('noteInlineOverbg',cRoot);
-	var cCtx= DOM('noteInlineContext',cRoot);
+	var cBg= DOM('plateNoteBg',cRoot);
+	var cObg= DOM('plateNoteOverbg',cRoot);
+	var cCtx= DOM('plateNoteContext',cRoot);
 	NOID(cRoot);
 
 	cObg.style.display= (UI.perfLevel &PERF.GRADIENTS)? '' :'none';

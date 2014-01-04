@@ -26,7 +26,9 @@ var DOM= function(_id,_root){
 	  	return allSib.item(i);
 }
 
-var NOID= function(_root){
+var NOID= !NOPROFILE?
+  function(){}:
+  function(_root){
 	var allSib= _root.getElementsByTagName('*');
 	_root.removeAttribute('id');
 	for (var i= 0; i<allSib.length; i++)

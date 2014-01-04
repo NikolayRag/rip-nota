@@ -6,21 +6,16 @@ var Note= function(_id){
 //todo: SHORTCUT, MUST REDESIGN
 	thisNote.PUB.nroot= thisNote;
 
-	thisNote.dataTemplates= Note.prototype.dataTemplates;
+//todo: find place
+	thisNote.coreType= 1;
+
 	thisNote.doDraw= Note.prototype.doDraw;
 	thisNote.doSaved= Note.prototype.doSaved;
-	thisNote.leafTemplates= [ //see DATA_TYPE constant enumeration
-		DataUINoteUnknown,
-		DataUINoteEl
-	];
 
-	thisNote.PUB.ui= null;
+//todo: move ui out from PUB to this
+	thisNote.PUB.ui= null; //inited at draw(), coz all Notes UI depend of parent
 
 	return thisNote;
-}
-
-Note.prototype.dataTemplates= function(){
-	return this.leafTemplates;
 }
 
 Note.prototype.doDraw= function(_force){
@@ -28,7 +23,6 @@ Note.prototype.doDraw= function(_force){
 	if (!rootData)
 	  return;
 
-	//inited at draw(), coz all Notes creation done prior to draw (see update cb)
 	if (!this.PUB.ui)
 	  this.PUB.ui= new NoteUI(this,rootData.ui.DOM.context);
 
@@ -50,7 +44,6 @@ Note.prototype.doDraw= function(_force){
 ALERT(PROFILE.BREEF, "Note "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
 	return true;
 }
-
 
 
 Note.prototype.doSaved= function(){

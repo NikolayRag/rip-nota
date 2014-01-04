@@ -2,13 +2,13 @@
 	Board UI.
  	called at Board.draw() to guarantee parent UI element is defined
 */
-var BoardUI= function(_board,_rootW){
+var BoardUI= function(_note,_rootW){
 	var _this= this;
 
-	_this.board= _board;
+	_this.note= _note;
 
 	_this.DOM= _this.build(_rootW);
-	_this.overview= new BoardUIOverview(_this.board,_rootW);
+	_this.overview= new BoardUIOverview(_this.note,_rootW);
 
 	_this.bound= {
 		xmin: null,	xmax: null, width: null,
@@ -25,11 +25,18 @@ var BoardUI= function(_board,_rootW){
 }
 
 
+BoardUI.prototype.place= function(_data,_uiRoot){
+	_uiRoot.style.left= _data.place.x +"px";
+	_uiRoot.style.top= _data.place.y +"px";
+	_uiRoot.style.width= _data.place.w +"px";
+	_uiRoot.style.height= _data.place.h +"px";
+}
+
 ////PRIVATE
 BoardUI.prototype.bindEvt= function(){
 	var _this= this;
 	this.DOM.root.onmousedown= function(_e){UI.mouseContext(_e,_this,_this.mouseDown,_this.mouseMove)};
-	this.DOM.root.onmouseup= function(_e){if (!_e.toolFlag && _this.board.PUB.rights>=NOTA_RIGHTS.RW) UI.toolSet.make(ToolBoard,_this.DOM.tool,_this.board)};
+	this.DOM.root.onmouseup= function(_e){if (!_e.toolFlag && _this.note.PUB.rights>=NOTA_RIGHTS.RW) UI.toolSet.make(ToolBoard,_this.DOM.tool,_this.note)};
 
 	UI.bindDeep(this.onWndScroll.bind(this),this.onWndResize.bind(this));
 }
@@ -47,14 +54,14 @@ BoardUI.prototype.mouseMove= function(_e){
 }
 
 
-BoardUI.tmpl= DOM('boardTmpl');
+BoardUI.tmpl= DOM('plateBoardTmpl');
 BoardUI.prototype.build= function(_parentEl){
 	var cRoot= BoardUI.tmpl.cloneNode(true);
-	var cBG= DOM('boardBG',cRoot);
-	var cCanvas= DOM('boardCanvas',cRoot);
-	var cRootover= DOM('boardRoot',cRoot);
-	var cCtx= DOM('boardContext',cRoot);
-	var cTool= DOM('boardToolHolder',cRoot);
+	var cBG= DOM('plateBoardBG',cRoot);
+	var cCanvas= DOM('plateBoardCanvas',cRoot);
+	var cRootover= DOM('plateBoardRoot',cRoot);
+	var cCtx= DOM('plateBoardContext',cRoot);
+	var cTool= DOM('plateBoardToolHolder',cRoot);
 	NOID(cRoot);
 
 	cCanvas.style.display= (UI.perfLevel &PERF.IMAGEBG)? '' :'none';
@@ -78,7 +85,7 @@ BoardUI.prototype.canvasSet= function(){
 	canvas.width= canvas.offsetWidth;
 	canvas.height= canvas.offsetHeight;
 
-	var cStyle= this.board.PUB.style;
+	var cStyle= this.note.PUB.style;
 
 	var canvasImgRepaint= function(_img){
 		var cctx= canvas.getContext('2d');
@@ -99,17 +106,17 @@ BoardUI.prototype.canvasSet= function(){
 }
 
 BoardUI.prototype.style= function() {
-	var curStyle= this.board.PUB.style;
+	var curStyle= this.note.PUB.style;
 
 	this.canvasSet();
 
 	this.DOM.bg.style.backgroundColor= curStyle.main.hex('');
 
 //todo: usa: overview should be auto-hidden for implicits not larger than screen
-	this.overview.DOM.root.style.display= ((this.board.PUB.rights<NOTA_RIGHTS.RO || UI.embed)? 'none' : '');
+	this.overview.DOM.root.style.display= ((this.note.PUB.rights<NOTA_RIGHTS.RO || UI.embed)? 'none' : '');
 	this.overview.DOM.bg.style.backgroundColor= curStyle.main.mix(STYLE.OVERVIEW_TINT,STYLE.OVERVIEW_MIX).hex('');
 
-	var thisData= this.board.PUB.ndata;
+	var thisData= this.note.PUB.ndata;
 	for (var i in thisData)
 	  if (thisData[i].ui) //skip for nonexistent (yet) leafs
 	    thisData[i].ui.style();
@@ -192,18 +199,18 @@ BoardUI.prototype.correct= function(redrawDelay){
 //todo: maybe: check for real changes, before applying
 //todo: issue: Board.BG moved out from Board.context and placed earlier. POSSIBLE correctField errors.
 BoardUI.prototype.correctField= function(){
-	if (this.board.PUB.ndata.length==0) { //blank field
+	if (this.note.PUB.ndata.length==0) { //blank field
 		this.DOM.root.style.width=
 		  this.DOM.root.style.height= 0;
 		return;
 	}
 
 	var bound= this.getBound();
-	var mainMargins= (this.board.PUB.rights>=NOTA_RIGHTS.RW? 0: STYLE.BOARD_MARGIN);
+	var mainMargins= (this.note.PUB.rights>=NOTA_RIGHTS.RW? 0: STYLE.BOARD_MARGIN);
 
 	//Horisontal
 	var wClient= DOCUMENT.clientWidthF();
-	var wClientEditable= wClient *(this.board.PUB.rights>=NOTA_RIGHTS.RW? STYLE.BOARD_MARGIN_EDITABLE :.0) +mainMargins;
+	var wClientEditable= wClient *(this.note.PUB.rights>=NOTA_RIGHTS.RW? STYLE.BOARD_MARGIN_EDITABLE :.0) +mainMargins;
 	var wFocus= bound.width +wClientEditable*2;
 	var wExcess= wClient>wFocus? wClient-wFocus :0;
 	this.DOM.root.style.width= (wExcess>0?wClient:wFocus) +"px";
@@ -211,7 +218,7 @@ BoardUI.prototype.correctField= function(){
 
 	//Vertical
 	var hClient= DOCUMENT.clientHeightF();
-	var hClientEditable= hClient *(this.board.PUB.rights>=NOTA_RIGHTS.RW? STYLE.BOARD_MARGIN_EDITABLE :.0) +mainMargins;
+	var hClientEditable= hClient *(this.note.PUB.rights>=NOTA_RIGHTS.RW? STYLE.BOARD_MARGIN_EDITABLE :.0) +mainMargins;
 	var hFocus= bound.height +hClientEditable*2;
 	var hExcess= hClient>hFocus? hClient-hFocus :0;
 	this.DOM.root.style.height= (hExcess>0?hClient:hFocus) +"px";
@@ -225,8 +232,8 @@ BoardUI.prototype.getBound= function(){
 //	  return this.bound;
 
 	var f; 
-	for (var i in this.board.PUB.ndata){
-		var curPlace= this.board.PUB.ndata[i].place;
+	for (var i in this.note.PUB.ndata){
+		var curPlace= this.note.PUB.ndata[i].place;
 
 		if (f){
 			var xm= curPlace.x+curPlace.w;
@@ -265,7 +272,7 @@ BoardUI.prototype.saveBrowse= function(){
 	lazyRun(
 		function(){
 			var xy= _this.blocksXY();
-			SESSION.cookieSet(xy.x +'_' +xy.y, 'bpos' +_this.board.PUB.id);
+			SESSION.cookieSet(xy.x +'_' +xy.y, 'bpos' +_this.note.PUB.id);
 		}
 		, TIMER_LENGTH.BROWSE_DELAY
 		, this.lazyCtx

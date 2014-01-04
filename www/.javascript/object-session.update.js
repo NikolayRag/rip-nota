@@ -284,17 +284,6 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 //todo: mantain cached Ncore/Ndata .redrawList[]
 	SESSION.board.draw();
 
-	//reset redraw flag for Users
-	for (var nU in Ucore.all){
-		var curUcore= Ucore.all[nU];
-		curUcore.forRedraw= 0;
-		curUcore.forRedrawBoards= 0;
-		curUcore.forRedrawContacts= 0;
-	}
-
-
-//todo:
-//	stamps
 
 ALERT();
 
