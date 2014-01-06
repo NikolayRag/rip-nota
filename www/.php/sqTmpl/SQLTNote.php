@@ -2,7 +2,7 @@
 
 $sqlTemplate= array_merge($sqlTemplate, array(
 	'notesByIds'=> "
-		SELECT note.*,UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(stamp) stamp FROM (
+		SELECT note.*,UNIX_TIMESTAMP(stamp) stamp FROM (
 			SELECT id maxi,max(version) maxv FROM note WHERE id IN (?) GROUP by id
 		) maxv INNER JOIN note ON id=maxi AND version=maxv
 	",

@@ -1,8 +1,12 @@
 <?
 
 $sqlTemplate= array_merge($sqlTemplate, array(
+	'dbStamp'=> "
+		SELECT UNIX_TIMESTAMP(NOW())
+	",
+
 	'noteByName1'=> "
-		SELECT note.*,UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(stamp) stamp FROM (
+		SELECT note.*,UNIX_TIMESTAMP(stamp) stamp FROM (
 			SELECT id maxi,max(version) maxv FROM note WHERE id_owner=? AND name=? GROUP by id
 		) maxv INNER JOIN note ON id=maxi AND version=maxv
 	",
@@ -16,7 +20,7 @@ $sqlTemplate= array_merge($sqlTemplate, array(
 	",
 
 	'usersByIds'=> "
-		SELECT user_id,username,first_name,version FROM users WHERE user_id in (?)
+		SELECT user_id,username,first_name,version,stamp FROM users WHERE user_id in (?)
 	",
 
 	'contactsByUser'=> "

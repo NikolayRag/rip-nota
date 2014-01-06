@@ -44,6 +44,7 @@ var Ucore= function(_id){
 ALERT(PROFILE.GENERAL, "Nuser new", 'id: ' +_id, 1);
 }
 
+//todo: replace with collection
 Ucore.all= []; //global users array
 
 //destructor, holds global list

@@ -15,11 +15,13 @@ $__startTime= microtime(true);
 
 //todo: //Macro:	0) Parse requests other than xxx/yyy
 
+$DB->apply('dbStamp');
+$dbStamp= (int)$DB->fetch(0);
+
 //Macro:	1) Get requested Note (full) and User
 
 if (
-	array_key_exists('rId',$_POST)
-	&& $_POST['rId']>0
+	array_key_exists('rId',$_POST) && $_POST['rId']>0
 ) { //use supplied exact Note by ID; fetch Who, What and whoId for non-NativeImps.
 	$brA= notesById(Array($_POST['rId']));
 	$boardReq= $brA[$_POST['rId']];
@@ -43,8 +45,8 @@ notesUnbreef(Array($boardReq));
 
 //init return data
 $notesA->add($boardReq->id,$boardReq); //fill root requested Note
-$usersA->add($USER->id, new User($USER->id,'',0)); //fill you
-$usersA->add($whoId, new User($whoId,'',0));
+$usersA->add($USER->id, new User($USER->id,'',0,0)); //fill you
+$usersA->add($whoId, new User($whoId,'',0,0));
 
 $_profile[]= "t;request;". round((microtime(true) -$__startTime)*1000)/1000 .$ASYGN->D_UNIT;
 $__startTime= microtime(true);
@@ -205,6 +207,7 @@ foreach ($usersA->all() as $userP)
 $DB->apply('usersByIds', $idLstA);
 while ($rowU= $DB->stmt->fetch()){
 	$usersA->get($rowU['user_id'])->name= $rowU['first_name'];
+	$usersA->get($rowU['user_id'])->stamp= $rowU['stamp'];
 //todo: move version check elswhere for incrementals
 	$usersA->get($rowU['user_id'])->version= $rowU['version'];
 }

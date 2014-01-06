@@ -6,7 +6,7 @@ index.php: include(".include/HTMLRenameId.php");
 -save:	hold while-in-save editing
 -js:	make Board reusable in Board and Update for html5
 
--async:	update.php exports incremental data
+-update:	make hashed incrementals instead of Unit listing
 -SQL:	Manage additional cached table only with recent versions and without deleted.
 -usa:	Show short username for logged User, otherwher use full name
 -usa:	unify Note UI style
@@ -238,6 +238,17 @@ b1.9:
 +ui:	make unified data ui for board/notes
 		- visual modifiers for leafs
 +ui:	move place() function to container (Board/Note)
++update:	incrementals
+		+ send current Units snapshot in POST
+		+ Ndata returned includes root Note id;
+			Root id explicitely defines Ndata parent in JS 
+		+ server return incrementals only
+		+ return deleted units;
+		- delete units in client
+		- deprecate Units snapshot
++update:	dbase timestamp used to identify incrementals
+		- prevent updating saved unit
+-sql:	define stamps for rights and contacts;
 
 
 Minor:

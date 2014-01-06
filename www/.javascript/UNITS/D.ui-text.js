@@ -1,3 +1,5 @@
+//todo: delegate D.UI class (and NRoot -> N.UI)
+
 /*
 	ui class for framed Note data
 */

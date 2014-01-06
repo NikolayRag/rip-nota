@@ -222,6 +222,7 @@ this.owner= function(_newid, _name){
 this.reqWho= '';
 this.reqWhat= '';
 this.reqFilter= '';
+this.dbStamp= 0;
 
 this.inAsync= false;
 this.asyncQueue= [];

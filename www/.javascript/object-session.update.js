@@ -76,32 +76,39 @@ this.setState= function(_newState, _msgVerb){
 //todo change update to hash+data 2-step call.
 this.update= function() {
 __PROFILE.profileTime(); //profile
+ALERT();
+
 	var _board= SESSION.board;
 
 	var saveData= [];
+	saveData['last']= SESSION.dbStamp;
 	saveData['rId']= _board.PUB.id; //lock onto original id
-	if (_board.PUB.id<0){
+	if (_board.PUB.id<0){ //freeform request, prioritized
 		saveData['rWho']= SESSION.reqWho;
 		saveData['rWhat']= SESSION.reqWhat;
 		saveData['rFilter']= SESSION.reqFilter;
-//		saveData+= "&bWhoVer=" +this.board.owner.ver;
 	}
-/*
-	saveData+="&bVer=" +this.ver;
-	saveData+="&idCheck=";
-	for (var i in this.notes)
-	  if (i>0)
-		saveData+=i+",";
-	for (var i in this.notes){
-		var bn= this.notes[i];
-		saveData+="&vn"+i+"=" +bn.ver;
-		saveData+="&vd"+i+"=" +(bn.ndata==[]? -1:bn.ndata[0].ver);
-		saveData+="&vc"+i+"=" +(bn.ndata.length-1);
-	}
-*/
-	this.saveData= saveData; //cache for report
+
+//checklist: used only for deletion
+//todo: depricate
+	var checkNotes= [];
+	for (var iN in Ncore.all())
+	  checkNotes.push(iN);
+	saveData['chkN']= checkNotes.join(ASYGN.D_LIST);
+
+	var checkData= [];
+	for (var iD in Ndata.all())
+	  checkData.push(iD);
+	saveData['chkD']= checkData.join(ASYGN.D_LIST);
+
+	var checkUsers= [];
+	for (var iU in Ucore.all)
+	  checkUsers.push(iU);
+	saveData['chkU']= checkUsers.join(ASYGN.D_LIST);
 
 	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
+
+ALERT(PROFILE.VERBOSE, 'Request', saveData);
 }
 
 this.updateCBErr= function(_err,_txt){
@@ -194,7 +201,6 @@ this.updateCB= function(_bData){
 	//start waiting for fuckup. removed at end of routine.
 	this.setState(UPDATE_STATE.STEADY); //hanging update routine will set STOP mode
 	var splitData= _bData.split(ASYGN.D_UNIT);
-	var ctxNote= undefined; //context for storing Ndata to within cycle
 
 	var profTime= __PROFILE.profileTime();
 	var profSize= DIC._got +': ' +formatMeasures(_bData.length,1024,.1,'b');
@@ -205,7 +211,6 @@ this.updateCB= function(_bData){
 
 var ALERTFLAG= 1;
 if (ALERTFLAG) {	//profile request +CBtime +responce
-	ALERT(PROFILE.VERBOSE, 'Request', this.saveData);
 	ALERT(PROFILE.VERBOSE, 'Reloaded in', profTime/1000 +(profTimeMsg!=''? 's (' +profTimeMsg +')' :''));
 	ALERT(PROFILE.VERBOSE, 'FPS', UI.fps);
 	ALERT(PROFILE.VERBOSE, profSize +': ', splitData.join("\n"));
@@ -219,8 +224,11 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 
 		//class proccessing
 		switch (sign) {
+			case ASYGN.STAMP:
+				SESSION.dbStamp= splitDStr[1];
+				break;
 			case ASYGN.NFULL: case ASYGN.NBREEF:
-			 	ctxNote= this.respondN(
+			 	this.respondN(
 					sign,
 				 	splitDStr[ASIDX_UPDCB.N_OLDID] |0,
 					splitDStr[ASIDX_UPDCB.N_ID] |0,
@@ -238,21 +246,20 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 				);
 				break;
 			case ASYGN.NDATA:
-				if (ctxNote)
-				  this.respondD(
+				this.respondD(
 					splitDStr[ASIDX_UPDCB.D_ID] |0,
 					{
 						ver: splitDStr[ASIDX_UPDCB.D_VER] |0,
+						root: splitDStr[ASIDX_UPDCB.D_ROOT] |0,
 						dtype: splitDStr[ASIDX_UPDCB.D_DTYPE] |0,
 						content: splitDStr[ASIDX_UPDCB.D_DATA],
 						editor: splitDStr[ASIDX_UPDCB.D_EDITOR] |0,
 						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.D_STAMP] |0)*1000),
 						place: splitDStr[ASIDX_UPDCB.D_PLACE].split(ASYGN.D_LIST)
-				  	},
-				  ctxNote);
+				  	}
+				);
 				break;
 			case ASYGN.USER: case ASYGN.YOU:
-	  			ctxNote= undefined;
 				this.respondU(
 					sign,
 					splitDStr[ASIDX_UPDCB.U_ID] |0,
@@ -270,8 +277,7 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 	}	
 
 
-//todo:
-	//delete all unused
+//todo: delete all unused
 //	Ncore.all().forEach(function(note){
 //		if (note.PUB.ver==CORE_VERSION.DEL){
 //		}
@@ -284,8 +290,6 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 //todo: mantain cached Ncore/Ndata .redrawList[]
 	SESSION.board.draw();
 
-
-ALERT();
 
 	//no errors, fuckup is canceled and error state is reset
 	var profBreef= profSize +' ' +DIC._in.toLowerCase() +' ' +profTime/1000 +'s' +((profTimeMsg!=''? profTimeMsg +'<br> ' :'') +__PROFILE.profileTime() +'ms: ' +DIC._proccessed).decorateHTML(STR.IDENT) +'FPS: ' +UI.fps;
@@ -303,10 +307,10 @@ if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
 	if (_oldId)
 	  ctxNote= new Ncore(_oldId); //only fetch
 	else {
-		if (_sign==ASYGN.NFULL){
+		if (_sign==ASYGN.NFULL)
 		  ctxNote= new Note(_id);
-		} else
-		  ctxNote= new Nroot(_id);
+		else
+		  ctxNote= new Ncore(_id);
 	}
 
 	//resolve ID for found named request
@@ -319,22 +323,24 @@ if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
 	//no difference for real Note
 	if (
 		_id<0
-		|| _unit.ver>=ctxNote.PUB.ver
+		|| _unit.ver>ctxNote.PUB.ver
 		|| _unit.rights!=ctxNote.PUB.rights
 		|| _unit.inherit!=ctxNote.PUB.inheritId
 	)
 	//set grabbed; _name,_ver,_style,_rights,_rightA,_inherit,_stamp,_owner; _in.ver=0 for deletion
 	  ctxNote.set(_unit);
-
-	return ctxNote;
 }
 
 
-this.respondD= function(_id, _unit, _ctxNote){
+this.respondD= function(_id, _unit){
+	var ctxNote= Ncore.all(_unit.root);
+	if (!ctxNote)
+	  return;
+
 	if (_unit.dtype==DATA_TYPE.TEXT)
 	  _unit.content= _unit.content.base64_decode();
 
-	_ctxNote.dataSet(_id, _unit);
+	ctxNote.dataSet(_id, _unit);
 }
 
 

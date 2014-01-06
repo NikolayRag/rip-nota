@@ -32,6 +32,16 @@ Ndata.newId= -1;
 
 //spike: replace with all[] later; Bruteforce is evil
 Ndata.all= function(_id){
+	if (arguments.length==0){
+		var outDataA= [];
+		for (var iN in Ncore.all()){
+			var allD= Ncore.all(iN).PUB.ndata;
+			for (var iD in allD)
+		  	  outDataA[iD]=allD[iD];
+		}
+		return outDataA;
+	}
+
 	for (var iN in Ncore.all()){
 		var allD= Ncore.all(iN).PUB.ndata;
 		for (var iD in allD)

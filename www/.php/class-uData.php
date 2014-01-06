@@ -1,15 +1,16 @@
 <?
 
 class User {
-	var $id, $version= 1, $name, $relation, $groupId= 0, $isBreef, $boardLst= Array(), $contactLst= Array(), $forSave= 0, $saveRes;
+	var $id, $version= 1, $name, $relation, $groupId= 0, $isBreef, $boardLst= Array(), $contactLst= Array(), $stamp, $forSave= 0, $saveRes;
 	var $stateIn= -1, $stateOut= -1; //tmp
 		
-	function User($_id= 0, $_name= '', $_isBreef= 1) {
+	function User($_id= 0, $_name= '', $_stamp=0, $_isBreef= 1) {
 		global $USER_RELATION;
 		$this->relation= $USER_RELATION->UNAVAILABLE;
 
 		$this->id= $_id;
 		$this->name= $_name;
+		$this->stamp= $_stamp;
 		$this->isBreef= $_isBreef;
 	} 
 

@@ -24,6 +24,4 @@ SESSION.reqFilter= argsA[ARGS_PLACE.REQFILTER];
 
 UI.embed= argsA[ARGS_PLACE.EMBED];
 
-ALERT();
-
 setTimeout(function(){SESSION.update.coreCycle(true)},0); //start updating after others browser requests start (icon etc); mainly to optimize logging

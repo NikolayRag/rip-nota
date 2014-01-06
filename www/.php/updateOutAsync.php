@@ -9,8 +9,40 @@ if (!$NOPROFILE) foreach ($_profile as $curProfile) echo $curProfile;
 //todo:	document over return values
 //todo: exclude delimiters from values: \n ; , =
 
+$lastDbStamp= array_key_exists('last',$_POST)? $_POST['last'] :0;
+
+//checklist: used only for deletion
+//todo: depricate
+$checkNotesA= Array();
+if (array_key_exists('chkN',$_POST))
+  foreach (explode($ASYGN->D_LIST, $_POST['chkN']) as $tmpI=>$chkNote)
+    $checkNotesA[$chkNote]= true;
+
+$checkDataA= Array();
+if (array_key_exists('chkD',$_POST))
+  foreach (explode($ASYGN->D_LIST, $_POST['chkD']) as $tmpI=>$chkData)
+    $checkDataA[$chkData]= true;
+
+$checkUsersA= Array();
+if (array_key_exists('chkU',$_POST))
+  foreach (explode($ASYGN->D_LIST, $_POST['chkU']) as $tmpI=>$chkUsers)
+    $checkUsersA[$chkUsers]= true;
+
+
+
+echo implode($ASYGN->D_ITEM, Array($ASYGN->STAMP,$dbStamp)) .$ASYGN->D_UNIT;
+
 foreach ($notesA->all() as $noteP){
-	echo implode($ASYGN->D_ITEM, Array(
+	$nIdCheck= $noteP->clientId!=0? $noteP->clientId : $noteP->id;
+	unset($checkNotesA[$nIdCheck]);
+	if (
+//		|| !array_key_exists($nIdCheck, $checkNotesA) //new
+		$noteP->stamp>=$lastDbStamp //probably changed
+		|| $noteP->id<0 //implicit
+//todo: check if Note is set-unset implicit
+//todo: check rights changed
+	)
+	  echo implode($ASYGN->D_ITEM, Array(
 		$ASIDX_UPDCB->SIGN=> $noteP->isBreef? $ASYGN->NBREEF : $ASYGN->NFULL,
 		$ASIDX_UPDCB->N_OLDID=> $noteP->clientId,
 		$ASIDX_UPDCB->N_ID=> $noteP->id,
@@ -22,34 +54,57 @@ foreach ($notesA->all() as $noteP){
 		$ASIDX_UPDCB->N_RIGHTS=> $noteP->rights>0? $noteP->rights : 0,
 		$ASIDX_UPDCB->N_RIGHTGRPA=> implode($ASYGN->D_LIST, $noteP->rightGrps),
 		$ASIDX_UPDCB->N_INHERIT=> $noteP->inherit, //-1 for implicit of any sort
-		$ASIDX_UPDCB->N_STAMP=> $noteP->stamp
-	)) .$ASYGN->D_UNIT;
+		$ASIDX_UPDCB->N_STAMP=> $dbStamp-$noteP->stamp
+	  )) .$ASYGN->D_UNIT;
 
-	if (!$noteP->isBreef)
-	  foreach ($noteP->data as $dataP)
-	    echo implode($ASYGN->D_ITEM, Array(
+	if ($noteP->isBreef)
+	  continue;
+	
+	foreach ($noteP->data as $dataP){
+		unset($checkDataA[$dataP->id]);
+	    if (
+//			!array_key_exists($dataP->id, $checkDataA) //new
+			$dataP->stamp>=$lastDbStamp //probably changed
+		)
+	      echo implode($ASYGN->D_ITEM, Array(
 			$ASIDX_UPDCB->SIGN=> $ASYGN->NDATA,
 			$ASIDX_UPDCB->D_ID=> $dataP->id,
 			$ASIDX_UPDCB->D_VER=> $dataP->version,
+			$ASIDX_UPDCB->D_ROOT=> $noteP->id,
 			$ASIDX_UPDCB->D_DTYPE=> $dataP->datatype,
 			$ASIDX_UPDCB->D_DATA=> $dataP->data,
 			$ASIDX_UPDCB->D_EDITOR=> $dataP->editorId,
-			$ASIDX_UPDCB->D_STAMP=> $dataP->stamp,
+			$ASIDX_UPDCB->D_STAMP=> $dbStamp-$dataP->stamp,
 			$ASIDX_UPDCB->D_PLACE=> $dataP->place
-	    )) .$ASYGN->D_UNIT;
+	      )) .$ASYGN->D_UNIT;
+	}
 }
 	
-foreach ($usersA->all() as $userP)
-  echo implode($ASYGN->D_ITEM,Array(
-	$ASIDX_UPDCB->SIGN=> $userP->id==$USER->id? $ASYGN->YOU : $ASYGN->USER,
-	$ASIDX_UPDCB->U_ID=> $userP->id,
-	$ASIDX_UPDCB->U_VER=> $userP->version,
-	$ASIDX_UPDCB->U_NAME=> $userP->name,
-	$ASIDX_UPDCB->U_RELATION=> $userP->relation,
-	$ASIDX_UPDCB->U_GROUPID=> $userP->groupId,
-	$ASIDX_UPDCB->U_BOARDLIST=> implode($ASYGN->D_LIST, $userP->boardLst),
-	$ASIDX_UPDCB->U_CONTACTSLIST=> implode($ASYGN->D_LIST, $userP->contactLst)
-  )) .$ASYGN->D_UNIT;
+foreach ($usersA->all() as $userP){
+	unset($checkUsersA[$userP->id]);
+	if (
+//		!array_key_exists($userP->id, $checkUsersA) //new
+		$userP->stamp>=$lastDbStamp //probably changed
+	)
+      echo implode($ASYGN->D_ITEM,Array(
+		$ASIDX_UPDCB->SIGN=> $userP->id==$USER->id? $ASYGN->YOU : $ASYGN->USER,
+		$ASIDX_UPDCB->U_ID=> $userP->id,
+		$ASIDX_UPDCB->U_VER=> $userP->version,
+		$ASIDX_UPDCB->U_NAME=> $userP->name,
+		$ASIDX_UPDCB->U_RELATION=> $userP->relation,
+		$ASIDX_UPDCB->U_GROUPID=> $userP->groupId,
+		$ASIDX_UPDCB->U_BOARDLIST=> implode($ASYGN->D_LIST, $userP->boardLst),
+		$ASIDX_UPDCB->U_CONTACTSLIST=> implode($ASYGN->D_LIST, $userP->contactLst)
+      )) .$ASYGN->D_UNIT;
+}
+
+//deleted
+foreach ($checkNotesA as $delNote=>$tmpv)
+  echo implode($ASYGN->D_ITEM,Array('ss',$ASYGN->NBREEF,$delNote,0)) .$ASYGN->D_UNIT;
+foreach ($checkDataA as $delData=>$tmpv)
+  echo implode($ASYGN->D_ITEM,Array('ss',$ASYGN->NDATA,$delData,0)) .$ASYGN->D_UNIT;
+foreach ($checkUsersA as $delUser=>$tmpv)
+  echo implode($ASYGN->D_ITEM,Array('ss',$ASYGN->USER,$delUser,0)) .$ASYGN->D_UNIT;
 
 
 if (!$NOPROFILE){
