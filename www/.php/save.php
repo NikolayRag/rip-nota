@@ -78,6 +78,7 @@ function svFetchData($_dataA,$_notesA){
 			}
 
 			//fetch from db
+//todo: make increment in locked transaction
 			$curData->version= $dbData->version+1;
 			$curData->rootNote= $dbData->rootNote;
 		} else { //creation mod:
@@ -144,6 +145,7 @@ function svFetchNotes($_notesA){
 
 			//fetch from db
 			$curNote->rights= $dbNote->rights;
+//todo: make increment in locked transaction
 			$curNote->version= $dbNote->version+1;
 			$curNote->ownerId= $dbNote->ownerId;
 			$curNote->inherit= $dbNote->inherit;

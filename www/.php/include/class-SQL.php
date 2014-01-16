@@ -4,6 +4,7 @@ class kiSQL {
 	var $db;
 	var $lastSucc= 0;
 	var $lastRow;
+	var $callsCnt= 0;
 
 	function __construct($_host,$_base,$_uname,$_upass){
 		$this->db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));
@@ -34,6 +35,8 @@ class kiSQL {
 
 		$this->stmt= $this->db->prepare($TSqlA);
 		$this->lastSucc= $this->stmt->execute($bindVars);
+		$this->callsCnt+= 1;
+
 		if (!$this->lastSucc)
 		  return false;
 		return true;

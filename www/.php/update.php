@@ -9,7 +9,8 @@ $notesA= new Collect();
 $usersA= new Collect();
 
 
-$_profile= array("t;start;". round((microtime(true) -$__startTime)*1000)/1000 .$ASYGN->D_UNIT);
+$_profile= array('i;SQL;' .$DB->callsCnt .$ASYGN->D_UNIT);
+$_profile[]= "t;start;". round((microtime(true) -$__startTime)*1000)/1000 .$ASYGN->D_UNIT;
 $__startTime= microtime(true);
 
 
@@ -21,7 +22,8 @@ $dbStamp= (int)$DB->fetch(0);
 //Macro:	1) Get requested Note (full) and User
 
 if (
-	array_key_exists('rId',$_POST) && $_POST['rId']>0
+	array_key_exists('rId',$_POST)
+	&& $_POST['rId']>0
 ) { //use supplied exact Note by ID; fetch Who, What and whoId for non-NativeImps.
 	$brA= notesById(Array($_POST['rId']));
 	$boardReq= $brA[$_POST['rId']];

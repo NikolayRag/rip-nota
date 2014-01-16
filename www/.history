@@ -6,7 +6,7 @@ index.php: include(".include/HTMLRenameId.php");
 -save:	hold while-in-save editing
 -js:	make Board reusable in Board and Update for html5
 
--update:	make hashed incrementals instead of Unit listing
+-async:	update.php exports incremental data
 -SQL:	Manage additional cached table only with recent versions and without deleted.
 -usa:	Show short username for logged User, otherwher use full name
 -usa:	unify Note UI style
@@ -23,7 +23,7 @@ index.php: include(".include/HTMLRenameId.php");
 -ui:	feature: hint-based positioning and sizing
 -Units: make parent Unit class for all units to mantain flat lists;
 		((Ncore<-Nroot), Ndata, Ucore) turn to (Unit<-(N, D, U))
--noDe:	make cached key-object arrays, which key changes when objects ID changes
+-node:	make cached key-object arrays, which key changes when objects ID changes
 
 Fix:
 -upload:	blobs dont work with anon
@@ -247,7 +247,7 @@ b1.9:
 		- delete units in client
 		- deprecate Units snapshot
 +update:	dbase timestamp used to identify incrementals
-		- prevent updating saved unit
++update:	prevent updating saved unit
 -sql:	define stamps for rights and contacts;
 
 
@@ -344,6 +344,14 @@ Minor:
 			Notes id remap array is supplied to NData.save()
 -UI:		review caching redraw
 -UI:		review stamps draw
++save:		depricated "immediate" flag for save.save()
++profile:	show SQL calls count
++units:		validation moved in .set();
+			+ .set() skipped for in-save units, not updating them
+			+ .set() returns state
+			- make .set() return state more specific
++update:	User timestamps read
+
 
 
 Refactor:
@@ -458,7 +466,7 @@ Refactor:
 				+ implied css classes renamed
 				+ t*.php renamed reasonably
 +Board ui:		.board renamed to .note
-
++units:			.complete unused
 
 
 
@@ -542,7 +550,7 @@ Fix:
 -update:		php: Ndata db inconsistence (if ref unit not exist);
 				returne Ndata with dtype=0 and errormsg
 -Ndata:			reliable state/stamp update
-
++unit:			validation mistype removed
 
 
 Spike:

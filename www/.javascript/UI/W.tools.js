@@ -14,7 +14,7 @@ this.bindEvt= function(){
 
 		//create
 		var newNote= new Ncore();
-		newNote.save({name:newName}, 1, function(_res){
+		newNote.save({name:newName}, function(_res){
 			SESSION.owner().set({boardList:SESSION.owner().boardIds.concat([_res])});
 			SESSION.reload(SESSION.reqWho,newName)
 		});

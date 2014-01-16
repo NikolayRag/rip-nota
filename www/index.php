@@ -73,7 +73,7 @@ if ($_POST['rWho']=='' && $_POST['rId']==-1 && $_POST['rFilter']=='' && $USER->s
 include('.php/include/includeDic.php');
 include('.templates/t_index.php');
 
-if (!$NOPROFILE) echo '<!--', round((microtime(true) -$__startTime)*1000)/1000, 'sec -->';
+if (!$NOPROFILE) echo '<!--', round((microtime(true) -$__startTime)*1000)/1000, 'sec; ', $DB->callsCnt, ' SQLs -->';
 
 include('.php/include/compact.php');
 

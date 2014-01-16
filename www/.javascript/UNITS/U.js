@@ -34,7 +34,6 @@ var Ucore= function(_id){
 	_this.contactIds= []; //contactlist, basically for logged user.
 
 	//operating
-	_this.complete= 0; //all base data is filled
 	_this.forRedraw= 0;
 	_this.forRedrawBoards= 0;
 	_this.forRedrawContacts= 0;
@@ -44,7 +43,6 @@ var Ucore= function(_id){
 ALERT(PROFILE.GENERAL, "Nuser new", 'id: ' +_id, 1);
 }
 
-//todo: replace with collection
 Ucore.all= []; //global users array
 
 //destructor, holds global list
@@ -55,8 +53,14 @@ Ucore.prototype.kill= function(){
 
 //incoming update
 Ucore.prototype.set= function(_setA){ //{groupId: , relation: , ver: , uname: , bList: , cList: }
+	if (this.forSave!= SAVE_STATES.IDLE) //unsaved
+	  return false;
 
-	this.complete= this.complete || (Object.keys(_setA).length==6); //initial suggestion
+	if (!(
+		(_setA.ver |0)>this.ver //inconsistent
+	))
+	  return true;
+
 
 //todo: maybe change to comparing with key existance, not to being undefined
 	if (_setA.groupId!=undefined)
@@ -88,6 +92,7 @@ ALERT(PROFILE.BREEF,
 	  +'boards: ' +this.boardIds +'; '
 	  +'contacts: ' +this.contactIds +'; '
 );
+	return true;
 }
 
 

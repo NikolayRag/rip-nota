@@ -51,7 +51,16 @@ Ndata.all= function(_id){
 }
 
 Ndata.prototype.set= function(_setA){ //{ver: , dtype: , content: , editor: , stamp: , place: }
- 	if (_setA.ver!=undefined)
+	if (this.forSave!= SAVE_STATES.IDLE) //unsaved
+	  return false;
+
+	if (!(
+		(_setA.ver |0)>this.ver
+	))
+	  return true;
+
+
+	if (_setA.ver!=undefined)
 	  this.ver= _setA.ver |0;
 	if (_setA.dtype!=undefined)
 	  this.dtype= _setA.dtype |0;
@@ -72,6 +81,8 @@ Ndata.prototype.set= function(_setA){ //{ver: , dtype: , content: , editor: , st
 if (!this.forRedraw) ALERT(PROFILE.VERBOSE, "Data "+ this.id +"("+ this.rootNote.PUB.id +") set ", 'ver: ' +_setA.ver +(_setA.dtype==DATA_TYPE.NOTE? ('; link: ') : ('; data: ') +_setA.content));
 	  
 	this.forRedraw= this.forRedraw || (Object.keys(_setA).length>0);
+
+	return true;
 }
 
 //change .id

@@ -67,7 +67,6 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 		ndata:		[], //[id]= Ndata;
 
 		//operating
-		complete: 0,
 		forRedraw: 0,
 		forSave: SAVE_STATES.IDLE,
 		forSaveRts: SAVE_STATES.IDLE,
@@ -188,10 +187,17 @@ ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +' re-id ', 'id: '+ _id);
 	_rightsA is supplied only for owner as array or "group=[right]" strings and is parsed into existing rights group.
 */
 Ncore.prototype.set= function(_setA){ //{name: , ver: , style: , rights: , rightsA: , inherit: , stamp: , owner: , editor: }
-	if ((_setA.ver |0)<=this.PUB.ver) //inconsistent
-	  return;
+	if (this.PUB.forSave!= SAVE_STATES.IDLE) //unsaved
+	  return false;
 
-	this.PUB.complete= this.PUB.complete || (Object.keys(_setA).length==9); //initial suggestion
+	if (!(
+		this.PUB.id<=0 //subst notes
+		|| (_setA.ver |0)>this.PUB.ver
+		|| (_setA.rights |0)!=this.PUB.rights
+		|| (_setA.inherit |0)!=this.PUB.inheritId
+	))
+	  return true;
+
 
 	if (_setA.name!=undefined)
 	  this.PUB.name= _setA.name;
@@ -218,8 +224,10 @@ Ncore.prototype.set= function(_setA){ //{name: , ver: , style: , rights: , right
 	  }
 
 if (!this.PUB.forRedraw) ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +"("+ this.PUB.inheritId +") set ", 'ver: ' +_setA.ver);
-	  
+  
 	this.PUB.forRedraw= this.PUB.forRedraw || (Object.keys(_setA).length>0);
+
+	return true;
 }
 
 
@@ -250,7 +258,7 @@ Ncore.prototype.inherit= function(){
 }
 
 //todo: mantain list of .forSave==1 notes
-Ncore.prototype.save= function(_vals, _immediate, _okCB){
+Ncore.prototype.save= function(_vals, _okCB){
 //todo: use .set()
 
 	if (IS.fn(_okCB))
@@ -289,7 +297,7 @@ Ncore.prototype.save= function(_vals, _immediate, _okCB){
 //	  if (this.referers[ir])
 //		this.referers[ir].doSaved();
 
-	SESSION.save.save(_immediate);
+	SESSION.save.save();
 }
 
 Ncore.prototype.saved= function(_res){
@@ -343,12 +351,7 @@ Ncore.prototype.dataSet= function(_id, _setA){ //{ver: , dtype: , content: , edi
 	if (!curData)
 	  curData= this.PUB.ndata[_id]= new Ndata(this,_id);
 
-	if (_setA.ver<=curData.ver) //inconsistent
-	  return;
-
-	curData.set(_setA);
-
-	return curData;
+	return curData.set(_setA)? curData :false;
 }
 
 //fetch Data that refers specified Note(_id)

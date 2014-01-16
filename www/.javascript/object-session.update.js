@@ -106,9 +106,9 @@ ALERT();
 	  checkUsers.push(iU);
 	saveData['chkU']= checkUsers.join(ASYGN.D_LIST);
 
-	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
 
 ALERT(PROFILE.VERBOSE, 'Request', saveData);
+	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
 }
 
 this.updateCBErr= function(_err,_txt){
@@ -217,6 +217,9 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 //	ALERTFLAG= 0; //do once
 }
 
+	var newDbStamp= 0;
+	var updSuccess= true;
+
 	//Update all changes prior to any redraw
 	for (var splitI in splitData){
 		var splitDStr= splitData[splitI].split(ASYGN.D_ITEM);
@@ -225,10 +228,10 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 		//class proccessing
 		switch (sign) {
 			case ASYGN.STAMP:
-				SESSION.dbStamp= splitDStr[1];
+				newDbStamp= splitDStr[1];
 				break;
 			case ASYGN.NFULL: case ASYGN.NBREEF:
-			 	this.respondN(
+			 	updSuccess= this.respondN(
 					sign,
 				 	splitDStr[ASIDX_UPDCB.N_OLDID] |0,
 					splitDStr[ASIDX_UPDCB.N_ID] |0,
@@ -243,10 +246,10 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 						inherit: splitDStr[ASIDX_UPDCB.N_INHERIT] |0,
 						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.N_STAMP] |0)*1000)
 					}
-				);
+				) &&updSuccess;
 				break;
 			case ASYGN.NDATA:
-				this.respondD(
+				updSuccess= this.respondD(
 					splitDStr[ASIDX_UPDCB.D_ID] |0,
 					{
 						ver: splitDStr[ASIDX_UPDCB.D_VER] |0,
@@ -257,10 +260,10 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.D_STAMP] |0)*1000),
 						place: splitDStr[ASIDX_UPDCB.D_PLACE].split(ASYGN.D_LIST)
 				  	}
-				);
+				) &&updSuccess;
 				break;
 			case ASYGN.USER: case ASYGN.YOU:
-				this.respondU(
+				updSuccess= this.respondU(
 					sign,
 					splitDStr[ASIDX_UPDCB.U_ID] |0,
 					{
@@ -271,11 +274,12 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 						boardList: splitDStr[ASIDX_UPDCB.U_BOARDLIST].split(ASYGN.D_LIST),
 						contactsList: splitDStr[ASIDX_UPDCB.U_CONTACTSLIST].split(ASYGN.D_LIST)
 					}
-				);
+				) &&updSuccess;
 				break;
 		}
 	}	
-
+	if (updSuccess) //else should retry update
+	  SESSION.dbStamp= newDbStamp;
 
 //todo: delete all unused
 //	Ncore.all().forEach(function(note){
@@ -313,49 +317,37 @@ if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
 		  ctxNote= new Ncore(_id);
 	}
 
-	//resolve ID for found named request
-	if (ctxNote.PUB.id != _id)
-	  ctxNote.setId(_id);
+	ctxNote.setId(_id); //resolve ID for found named request
 
-//todo:	proper reaction to inadequate server version
-
-//todo: remove when incremental update implemented
-	//no difference for real Note
-	if (
-		_id<0
-		|| _unit.ver>ctxNote.PUB.ver
-		|| _unit.rights!=ctxNote.PUB.rights
-		|| _unit.inherit!=ctxNote.PUB.inheritId
-	)
 	//set grabbed; _name,_ver,_style,_rights,_rightA,_inherit,_stamp,_owner; _in.ver=0 for deletion
-	  ctxNote.set(_unit);
+//todo: Unit .set() should return VARIOUR errorcodes
+	return ctxNote.set(_unit);
 }
 
 
 this.respondD= function(_id, _unit){
 	var ctxNote= Ncore.all(_unit.root);
 	if (!ctxNote)
-	  return;
+	  return false;
 
 	if (_unit.dtype==DATA_TYPE.TEXT)
 	  _unit.content= _unit.content.base64_decode();
 
-	ctxNote.dataSet(_id, _unit);
+	return ctxNote.dataSet(_id, _unit)? true:false;
 }
 
 
 this.respondU= function(_sign, _id, _unit){
-	var curUser= new Ucore(_id);
-	if (_unit.ver<=curUser.ver)
-	  return;
-	
-	curUser.set(_unit);
-
 	if (_sign == ASYGN.YOU && _id != SESSION.owner().id){
 //todo: proper user relogon reaction
 		alert(DIC.errrUserOutdated);
 		SESSION.reload(SESSION.reqWho, SESSION.reqWhat);
 	}
+
+
+	var curUser= new Ucore(_id);
+
+	return curUser.set(_unit);
 }
 
 this.pulse= TIMER_LENGTH.UPDATE_PULSE;
