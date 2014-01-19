@@ -87,7 +87,7 @@ _that:		caller context to call callbacks within
 _cbOk:		normal callback
 _cbErr:		error callback
 */
-this.async= function(_saveMode,_saveData,_that,_cbOk,_cbError) {
+this.async= function(_saveMode, _saveData, _that, _cbOk, _cbError, _sync) {
 	if (this.inAsync){
 		this.asyncQueue.push(arguments);
 		return;
@@ -105,7 +105,7 @@ this.async= function(_saveMode,_saveData,_that,_cbOk,_cbError) {
 		if (this.status == 200)
 		  _cbOk.call(_that, this.responseText);
 		else if (_cbError)
-		  _cbError.call(_that, _this.asyncStatusString(this.status), this.responseText);
+		  _cbError.call(_that, this.status, _this.asyncStatusString(this.status), this.responseText);
 
 		_this.inAsync= false;
 
@@ -117,7 +117,7 @@ this.async= function(_saveMode,_saveData,_that,_cbOk,_cbError) {
 	for (var dName in _saveData)
 	  saveData.push([dName,_saveData[dName]].join('='));
 
-	this.httpRequest.open('POST', '/', true)
+	this.httpRequest.open('POST', '/', !_sync)
 	this.httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	this.httpRequest.send(saveData.join('&'));
 	return this.httpRequest;
@@ -175,38 +175,26 @@ this.onWindowHashChanged= function(){
     pAlert(WINDOW.location.hash);
 }
 
-//todo: catch update http err
-//randdd= Math.random();
-
 this.onWindowUnload= function(_e){
 	_e= _e||WINDOW.event;
+
+	SESSION.board.PUB.ui.saveBrowse();
 
 //todo: catch update http err
 	this.update.coreCycle(false);
 
-	__PROFILE.close();
-
-/*
-	if (BOARD.isChanged==1){
-		if (e)
-		  e.returnValue = DIC.warrBoardChanged;
-		return DIC.warrBoardChanged;
+	var lastSave= SESSION.save.saveGo(true);
+	if (lastSave.status!=200){
+		_e.returnValue= "Changes are NOT saved!"; //dic
+		return _e.returnValue;
 	}
 
-	for (var i in BOARD.notes)
-	  if (BOARD.notes[i].isChanged || BOARD.notes[i].ndata[0].isChanged || BOARD.notes[i].isCChanged() || BOARD.notes[i].editMode()){
-		if (e) {
-			e.returnValue = DIC.warrNotesChanged;
-			return;
-		}
-		return DIC.warrNotesChanged;
-	  }
-*/
+	__PROFILE.close();
 }
 
 this.bindEvt= function(){
 	WINDOW.onhashchange= this.onWindowHashChanged.bind(this);
-	WINDOW.onunload= this.onWindowUnload.bind(this);
+	WINDOW.onbeforeunload= this.onWindowUnload.bind(this);
 }
 
 

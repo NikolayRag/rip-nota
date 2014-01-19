@@ -111,7 +111,7 @@ ALERT(PROFILE.VERBOSE, 'Request', saveData);
 	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
 }
 
-this.updateCBErr= function(_err,_txt){
+this.updateCBErr= function(_code, _err,_txt){
 //todo: catch update http err
 
 	var resTxt= (_err+(_txt!=''? ': ' :'')).decorateHTML(STR.DIV |STR.BOLD)+ _txt;

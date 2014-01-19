@@ -127,8 +127,14 @@ BoardUI.prototype.style= function() {
 BoardUI.prototype.onWndScroll= function(){
 	this.overview.correct();
 	this.canvasMove();
-	this.saveBrowse();
+
+	lazyRun(
+		this.saveBrowse.bind(this)
+		, TIMER_LENGTH.BROWSE_DELAY
+		, this.lazyCtx
+	);
 }
+
 BoardUI.prototype.onWndResize= function(){
 	this.canvasMove();
 	this.correct(1);
@@ -268,13 +274,6 @@ BoardUI.prototype.dirtyBound= function(){
 }
 
 BoardUI.prototype.saveBrowse= function(){
-	var _this= this;
-	lazyRun(
-		function(){
-			var xy= _this.blocksXY();
-			SESSION.cookieSet(xy.x +'_' +xy.y, 'bpos' +_this.note.PUB.id);
-		}
-		, TIMER_LENGTH.BROWSE_DELAY
-		, this.lazyCtx
-	);
+	var xy= this.blocksXY();
+	SESSION.cookieSet(xy.x +'_' +xy.y, 'bpos' +this.note.PUB.id);
 }

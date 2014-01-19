@@ -11,7 +11,7 @@ $lastHttpLog= $DB->fetch();
 if ($lastHttpLog && $_SERVER['REQUEST_URI']==$lastHttpLog['request'] && $_POST['mode']==$lastHttpLog['mode']){
 	$DB->apply('logHttpRe', $lastHttpLog['id']);
 	$httpId= $agentId;
-}else{
+} else {
 	$DB->apply('logHttp', $_SERVER['REMOTE_ADDR'], $_SERVER['REMOTE_PORT'], $agentId, $_SERVER['REQUEST_URI'], $USER->id, $_POST['mode']?$_POST['mode']:0);
 	$httpId= $DB->lastInsertId();
 }

@@ -240,7 +240,7 @@ $CONSTANTS= array(
 		'IMAGEBG'=>	1,
 		'GRADIENTS'=>	2,
 
-		'LEVEL'=>	0|2
+		'LEVEL'=>	1|2
 	),
 
 	'STYLE'=>	array(

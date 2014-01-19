@@ -190,43 +190,41 @@ Ncore.prototype.set= function(_setA){ //{name: , ver: , style: , rights: , right
 	if (this.PUB.forSave!= SAVE_STATES.IDLE) //unsaved
 	  return false;
 
-	if (!(
+	if (
 		this.PUB.id<=0 //subst notes
 		|| (_setA.ver |0)>this.PUB.ver
 		|| (_setA.rights |0)!=this.PUB.rights
 		|| (_setA.inherit |0)!=this.PUB.inheritId
-	))
-	  return true;
+	){ //validated
+		if (_setA.name!=undefined)
+		  this.PUB.name= _setA.name;
+		if (_setA.ver!=undefined)
+		  this.PUB.ver= _setA.ver |0;
+		if (_setA.style!=undefined)
+		  this.PUB.style= new Style(_setA.style);
+		if (_setA.inherit!=undefined)
+		  this.PUB.inheritId= _setA.inherit |0;
+		if (_setA.stamp!=undefined)
+		  this.PUB.stamp= _setA.stamp;
+		if (_setA.owner!=undefined)
+		  this.PUB.ownerId= _setA.owner |0;
+		if (_setA.editor!=undefined)
+		  this.PUB.editorId= _setA.editor |0;
 
-
-	if (_setA.name!=undefined)
-	  this.PUB.name= _setA.name;
-	if (_setA.ver!=undefined)
-	  this.PUB.ver= _setA.ver |0;
-	if (_setA.style!=undefined)
-	  this.PUB.style= new Style(_setA.style);
-	if (_setA.inherit!=undefined)
-	  this.PUB.inheritId= _setA.inherit |0;
-	if (_setA.stamp!=undefined)
-	  this.PUB.stamp= _setA.stamp;
-	if (_setA.owner!=undefined)
-	  this.PUB.ownerId= _setA.owner |0;
-	if (_setA.editor!=undefined)
-	  this.PUB.editorId= _setA.editor |0;
-
-	if (_setA.rights!=undefined)
-	  this.PUB.rights= this.PUB.inheritId==NOTA_RIGHTS.INHERITED? NOTA_RIGHTS.INIT : (_setA.rights |0);
+		if (_setA.rights!=undefined)
+		  this.PUB.rights= this.PUB.inheritId==NOTA_RIGHTS.INHERITED? NOTA_RIGHTS.INIT : (_setA.rights |0);
 //fix: _setA.rightsA!='' due to getting here '' instead of []
-	if (_setA.rightsA!=undefined && _setA.rightsA!='')
-	  for (var rt in _setA.rightsA){
-		var rtA= _setA.rightsA[rt].split("=");
-		this.PUB.rightsA[rtA[0] |0]= rtA[1]!=''? (rtA[1] |0) : undefined;
-	  }
+		if (_setA.rightsA!=undefined && _setA.rightsA!='')
+		  for (var rt in _setA.rightsA){
+			var rtA= _setA.rightsA[rt].split("=");
+			this.PUB.rightsA[rtA[0] |0]= rtA[1]!=''? (rtA[1] |0) : undefined;
+		  }
 
 if (!this.PUB.forRedraw) ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +"("+ this.PUB.inheritId +") set ", 'ver: ' +_setA.ver);
   
-	this.PUB.forRedraw= this.PUB.forRedraw || (Object.keys(_setA).length>0);
-
+		this.PUB.forRedraw= this.PUB.forRedraw || (Object.keys(_setA).length>0);
+	}
+	
 	return true;
 }
 

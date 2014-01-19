@@ -23,7 +23,7 @@ this.save= function(_immediate){
 ALERT(PROFILE.BREEF, 'SAVE attempt', '');
 }
 
-this.saveGo= function(){
+this.saveGo= function(_sync){
 	var saveData= [];
 
 	for(var iN in Ncore.all()){
@@ -63,8 +63,9 @@ this.saveGo= function(){
 		}
 	}
 
-	SESSION.async(ASYNC_MODE.SAVE, saveData, this, this.saveCB, this.saveCBErr);
 ALERT(PROFILE.GENERAL, 'SAVE', saveData);
+
+	return SESSION.async(ASYNC_MODE.SAVE, saveData, this, this.saveCB, this.saveCBErr, _sync);
 } 
 
 this.saveCB= function(_sData){
@@ -108,7 +109,7 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 //todo: deal with accidentally unsaved
 } 
 
-this.saveCBErr= function(_err,_txt){
+this.saveCBErr= function(_code, _err,_txt){
 alert(_err +': ' +_txt);
 ALERT(PROFILE.GENERAL,'Save error',_err +': ' +_txt);
 	this.save();

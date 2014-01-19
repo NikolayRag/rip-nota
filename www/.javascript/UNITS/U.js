@@ -56,42 +56,33 @@ Ucore.prototype.set= function(_setA){ //{groupId: , relation: , ver: , uname: , 
 	if (this.forSave!= SAVE_STATES.IDLE) //unsaved
 	  return false;
 
-	if (!(
-		(_setA.ver |0)>this.ver //inconsistent
-	))
-	  return true;
-
-
+	if (
+		(_setA.ver |0)>this.ver
+	){ //validated
 //todo: maybe change to comparing with key existance, not to being undefined
-	if (_setA.groupId!=undefined)
-	  this.groupId= _setA.groupId;
-	if (_setA.relation!=undefined)
-	  this.relation= _setA.relation;
-	if (_setA.ver!=undefined)
-	  this.ver= _setA.ver;
-	if (_setA.uname!=undefined)
-	  this.uname= _setA.uname;
-	if (_setA.boardList!=undefined && _setA.boardList!=this.boardIds){
-		this.boardIds= _setA.boardList;
-		this.forRedrawBoards= 1;
-	}
-	if (_setA.contactsList!=undefined && _setA.contactsList!=this.contactIds){
-		this.contactIds= _setA.contactsList;
-		this.forRedrawContacts= 1;
-	}
+		if (_setA.groupId!=undefined)
+		  this.groupId= _setA.groupId;
+		if (_setA.relation!=undefined)
+		  this.relation= _setA.relation;
+		if (_setA.ver!=undefined)
+		  this.ver= _setA.ver;
+		if (_setA.uname!=undefined)
+		  this.uname= _setA.uname;
+		if (_setA.boardList!=undefined && _setA.boardList!=this.boardIds){
+			this.boardIds= _setA.boardList;
+			this.forRedrawBoards= 1;
+		}
+		if (_setA.contactsList!=undefined && _setA.contactsList!=this.contactIds){
+			this.contactIds= _setA.contactsList;
+			this.forRedrawContacts= 1;
+		}
 
-	this.forRedraw= this.forRedraw || (Object.keys(_setA).length>0);
+		this.forRedraw= this.forRedraw || (Object.keys(_setA).length>0);
 //todo: update sets redraw to 0
 
-ALERT(PROFILE.BREEF,
-	 "Nuser "+ this.id +" set ",
-	  'ver: ' +this.ver +'; '
-	  +'name: ' +this.uname +'; '
-	  +'rel: ' +this.relation +'; '
-	  +'group: ' +this.groupId +'; '
-	  +'boards: ' +this.boardIds +'; '
-	  +'contacts: ' +this.contactIds +'; '
-);
+ALERT(PROFILE.BREEF, "Nuser "+ this.id +" set ", 'ver: ' +this.ver +'; ' +'name: ' +this.uname +'; ' +'rel: ' +this.relation +'; ' +'group: ' +this.groupId +'; ' +'boards: ' +this.boardIds +'; ' +'contacts: ' +this.contactIds +'; ');
+	}
+	
 	return true;
 }
 

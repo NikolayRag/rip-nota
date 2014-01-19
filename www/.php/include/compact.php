@@ -1,45 +1,54 @@
 <?
 
-function kiMiniDictionary($_reqLanguage=''){
-	$dicEdited= filemtime(".php/c.php");
+function wasEdited($_dirsA, $_mini){
+	$timeEdited= filemtime(".php/c.php");
 
-	$dicEdited= max($dicEdited, filemtime(".dictionary/dic.php"));
-	include(".dictionary/dic.php");
-
-	if ($_reqLanguage){
-		$dicEdited= max($dicEdited, filemtime(".dictionary/dic". $_reqLanguage .".php"));
-		include(".dictionary/dic". $_reqLanguage .".php");
-		$DIC= array_merge($DIC, $DICLOC); 
+	foreach($_dirsA as $dn){
+		$d = dir($dn);
+		while ($entry = $d->read())
+		  $timeEdited= max($timeEdited, filemtime("$dn/$entry"));
+		$d->close();
 	}
 
-	if (file_exists(".mini/dic". $_reqLanguage .".js") && $dicEdited<=filemtime(".mini/dic". $_reqLanguage .".js"))
-	  return;
+	return (!file_exists($_mini)) || $timeEdited>filemtime($_mini);
+}
 
-	$LibFlatA= Array();
-	foreach($DIC as $n=>$v)
-	  $LibFlatA[]= "$n:\"{$v}\"";
+function kiMiniDictionary(){
+	include(".dictionary/dic.php");
+	$origDic= $DIC;
 
-	$outDict= "document['dic']= {\n\t". implode(",\n\t", $LibFlatA) ."\n};";
+	foreach (glob(".dictionary/dic*.php") as $entry){
+		$lang= array();
+		preg_match('/\.dictionary\/dic(.*)\.php/', $entry, $lang);
 
-	file_put_contents(".mini/dic". $_reqLanguage .".js",$outDict);
+		if (!wasEdited(
+			Array(".dictionary")
+			, ".mini/dic$lang[1].js"
+		))
+		  continue;
+
+		$DIC= $origDic;
+		if ($lang[1]){
+			include($entry);
+			$DIC= array_merge($DIC, $DICLOC); 
+		}
+
+		$LibFlatA= Array();
+		foreach($DIC as $n=>$v)
+		  $LibFlatA[]= "$n:\"{$v}\"";
+
+		$outDict= "document['dic']= {\n\t". implode(",\n\t", $LibFlatA) ."\n};";
+
+		file_put_contents(".mini/dic$lang[1].js",$outDict);
+	}
 }
 
 
 function kiMiniCss($_renameA=false){
-	$cssEdited= filemtime(".php/c.php");
-
-	$d = dir(".css");
-	while ($entry = $d->read())
-	  $cssEdited= max($cssEdited, filemtime(".css/". $entry));
-	$d->close();
-
-	//check for html edited too - id's might change
-	$d = dir(".templates");
-	while ($entry = $d->read())
-	  $cssEdited= max($cssEdited, filemtime(".templates/". $entry));
-	$d->close();
-
-	if (file_exists(".mini/mini.css") && $cssEdited<=filemtime(".mini/mini.css"))
+	if (!wasEdited(
+		Array(".css", ".templates")
+		, ".mini/mini.css"
+	))
 	  return;
 
 	$outCss= 
@@ -85,32 +94,10 @@ function kiMiniCss($_renameA=false){
 
 
 function kiMiniJs($_renameA=false){
-	$jsEdited= filemtime(".php/c.php");
-
-	$d = dir(".javascript");
-	while ($entry = $d->read())
-	  $jsEdited= max($jsEdited, filemtime(".javascript/". $entry));
-	$d->close();
-	$d = dir(".javascript/UI");
-	while ($entry = $d->read())
-	  $jsEdited= max($jsEdited, filemtime(".javascript/UI/". $entry));
-	$d->close();
-	$d = dir(".javascript/UNITS");
-	while ($entry = $d->read())
-	  $jsEdited= max($jsEdited, filemtime(".javascript/UNITS/". $entry));
-	$d->close();
-	$d = dir(".javascript/Adds");
-	while ($entry = $d->read())
-	  $jsEdited= max($jsEdited, filemtime(".javascript/Adds/". $entry));
-	$d->close();
-
-	//check for html edited too - id's might change
-	$d = dir(".templates");
-	while ($entry = $d->read())
-	  $jsEdited= max($jsEdited, filemtime(".templates/". $entry));
-	$d->close();
-
-	if (file_exists(".mini/mini.js") && $jsEdited<=filemtime(".mini/mini.js"))
+	if (!wasEdited(
+		Array(".javascript", ".javascript/UI", ".javascript/UNITS", ".javascript/Adds", ".templates")
+		, ".mini/mini.js"
+	))
 	  return;
 
 	//fetch constants from php
@@ -118,23 +105,20 @@ function kiMiniJs($_renameA=false){
 	$constsA= array();
 
 	foreach ($CONSTANTS as $cName=>$cCont){
-		if (!is_array($cCont)){
-			$constsA[]= '/** @const */ var ' .$cName .'= ' .$cCont;
-			continue;
-		}
+		if (is_array($cCont)){
+			$constVars= array();
+			foreach ($cCont as $cVar=>$cVal)
+			  $constVars[]= $cVar .':'. var_export($cVal,true); 
 
-		$constVars= array();
-		foreach ($cCont as $cVar=>$cVal)
-		  $constVars[]= $cVar .':'. var_export($cVal,true); 
+			$cCont= '{' .implode(',', $constVars) .'}';
+		}
 	
-		$constsA[]= '/** @const */ var ' .$cName .'= {' .implode(',', $constVars) .'}';
+		$constsA[]= '/** @const */ var ' .$cName .'= ' .$cCont;
 	}
 	$constsA[]= '';
-	file_put_contents(".javascript/wrap-c-auto.js",implode(";\n", $constsA));
 
 	//collect js
-	$outJs=
-	 file_get_contents(".javascript/wrap-c-auto.js").
+	$outJs= implode(";\n", $constsA).
 	 file_get_contents(".javascript/wrap-in.js").
 	 file_get_contents(".javascript/wrap-objects.js").
 	 file_get_contents(".javascript/wrap-ui.js").
@@ -207,9 +191,6 @@ function kiMiniJs($_renameA=false){
 	  );
 
 	file_put_contents(".mini/mini.js",$outJs);
-
-	//closure compiler
-//	if (isset($_GET["gcc"]) && $_GET["gcc"]==1);
 }
 
 /*
@@ -238,9 +219,8 @@ $HTMLDic= false;
 if ($NOPROFILE)
   echo kiMiniHTML($HTMLDic);
 
-kiMiniCss($HTMLDic);
 kiMiniDictionary();
-kiMiniDictionary('.ru');
+kiMiniCss($HTMLDic);
 kiMiniJs($HTMLDic);
 
 ?>

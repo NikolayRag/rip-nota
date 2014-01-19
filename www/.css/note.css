@@ -1,19 +1,15 @@
 .leafText {
 	position:absolute;
-	text-align:center;
-
-border:1px solid;
 
 	opacity:0;
 	transition: border .15s, opacity .2s;
 }
 .leafTextTxt {
-	position:absolute;
 	font-size:8pt;
 	color:rgba(64,64,64,1);
 
-	opacity: .5;
-	text-shadow: -1px -1px 0px rgba(0,0,0,1), 1px 1px 0px rgba(255,255,255,1);
+	opacity: .8;
+	text-shadow: -1px -1px 0px rgba(0,0,0,.5), 1px 1px 0px rgba(255,255,255,.5);
 }
 
 .leafNote {

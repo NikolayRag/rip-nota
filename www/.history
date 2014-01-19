@@ -249,6 +249,10 @@ b1.9:
 +update:	dbase timestamp used to identify incrementals
 +update:	prevent updating saved unit
 -sql:	define stamps for rights and contacts;
+-save:	indicate created noted within CB
++session:	commit changes immediatelly on document unload
++async:	handle flag to force synchronous call
+		+ error callback includes server state
 
 
 Minor:
@@ -351,7 +355,7 @@ Minor:
 			+ .set() returns state
 			- make .set() return state more specific
 +update:	User timestamps read
-
++async:		error callback includes server
 
 
 Refactor:
@@ -467,6 +471,8 @@ Refactor:
 				+ t*.php renamed reasonably
 +Board ui:		.board renamed to .note
 +units:			.complete unused
++php:			wrap-c-auto.js no more created
++php:			compact.php functions optimized
 
 
 

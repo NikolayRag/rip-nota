@@ -94,8 +94,11 @@ Color.prototype.hex= function(_defaultTransStr){
 		+(this.b<16.?"0":"") +Math.floor(this.b).toString(16)
 	) : (_defaultTransStr!=undefined? _defaultTransStr : 'transparent');
 }
-Color.prototype.rgb= function(){
-	return [this.r,this.g,this.b];
+Color.prototype.rgb= function(_joinBy){
+	return _joinBy? [this.r,this.g,this.b].join(_joinBy) : [this.r,this.g,this.b];
+}
+Color.prototype.rgbi= function(_joinBy){
+	return _joinBy? [Math.round(this.r),Math.round(this.g),Math.round(this.b)].join(_joinBy) : [Math.round(this.r),Math.round(this.g),Math.round(this.b)];
 }
 Color.prototype.gray= function(_int){
 	var mean= (this.r +this.g +this.b)/3;
