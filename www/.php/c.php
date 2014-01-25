@@ -82,9 +82,9 @@ $CONSTANTS= array(
 		'SECURITY_ERR'=>	-2,
 		'SQL_ERR'=>	-3,
 		'VERSION_ERR'=>	-4,
-		'DB_ERR'=>	-5,
-		'PARAM_ERR'=>	-6,
-		'REFERENCE_ERR'=>	-7
+		'NOTHIS_ERR'=>	-5,
+		'NOREFERENCE_ERR'=>	-6,
+		'NOPARENT_ERR'=>	-7
 	),
 
 	'ASYGN'=>	array(

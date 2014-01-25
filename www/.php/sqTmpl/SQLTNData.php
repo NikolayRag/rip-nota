@@ -13,8 +13,8 @@ $sqlTemplate= array_merge($sqlTemplate, array(
 		) maxv INNER JOIN ndata ON id=maxi AND version=maxv AND isdeleted=0
 	",
 
-	'rightsByGrp1'=> "
-		SELECT rights FROM boardcontacts WHERE id_boards=? AND id_contactgroups=?
+	'rightsByNotesIds'=> "
+		SELECT * FROM boardcontacts WHERE id_boards in (?)
 	"
 
 ));

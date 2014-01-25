@@ -17,7 +17,7 @@
 <? if (!$NOPROFILE) {?>
 <!-- Splashscreen; Will auto-hide when css loads -->
 <? } ?>
-<div id='precss' style='z-index:1000;position:fixed;top:0;bottom:0;left:0;right:0;background:<?=$CSS->MAIN_BG?>;color:<?=$CSS->DECORDARK?>;font-size:20pt;text-align:center'>
+<div id='precss' style='font:20pt sans-serif;z-index:1000;position:fixed;top:0;bottom:0;left:0;right:0;background:<?=$CSS->MAIN_BG?>;color:<?=$CSS->DECORDARK?>;text-align:center'>
 	<table style=width:100%;height:100%><tr><td><?=$DIC->preCss?></td></tr></table>
 </div>
 

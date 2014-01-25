@@ -5,9 +5,17 @@ class kiSQL {
 	var $lastSucc= 0;
 	var $lastRow;
 	var $callsCnt= 0;
+	var $dbErr= 0;
+	var $dbErrText= '';
 
 	function __construct($_host,$_base,$_uname,$_upass){
-		$this->db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));
+		try {
+			$this->db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));
+		}
+		catch( PDOException $Exception ) {
+			$this->dbErr= $Exception->getCode();
+			$this->dbErrText= $Exception->getMessage();
+		}
 	}
 
 	function apply($_tmpl){

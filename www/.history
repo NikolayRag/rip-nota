@@ -1,6 +1,3 @@
-currently disabled:
-includeError.php: register_shutdown_function('err');
-index.php: include(".include/HTMLRenameId.php");
 
 /todo:
 -save:	hold while-in-save editing
@@ -253,6 +250,11 @@ b1.9:
 +session:	commit changes immediatelly on document unload
 +async:	handle flag to force synchronous call
 		+ error callback includes server state
++save:	added basic leaf DELETION functionality to JS
+		+ php: added leaf deletion support
++update:	handles deleted Ndata
++general:	handle sql connection error; t_dbError.php template added
++save:	creating new board cause immediate save
 
 
 Minor:
@@ -356,6 +358,9 @@ Minor:
 			- make .set() return state more specific
 +update:	User timestamps read
 +async:		error callback includes server
++ui:		initial mouse gap behavior changed; breaking gap IS actually a trigger;
+			+ gap is now parameter
+
 
 
 Refactor:
@@ -473,6 +478,8 @@ Refactor:
 +units:			.complete unused
 +php:			wrap-c-auto.js no more created
 +php:			compact.php functions optimized
++update:		Notes are output bulk before Ndata
++general:		t_indexBot.php made nicer
 
 
 
@@ -557,6 +564,11 @@ Fix:
 				returne Ndata with dtype=0 and errormsg
 -Ndata:			reliable state/stamp update
 +unit:			validation mistype removed
+-UX:			fails save (a)sync when reload with logon/off
+-update:		toggling implicit/normal should handle previous note/data removal
++update:		sql calls outnumbered for logged on user: right groups reading; Speed up.
+-tools:			deleting unsaved created cause error
+
 
 
 Spike:

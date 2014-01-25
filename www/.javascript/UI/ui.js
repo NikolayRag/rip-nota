@@ -118,31 +118,44 @@ this.fpsTick= function(){
 
 //switch to global context using mouse -move and -out functions. Should be called within mouseover
 //todo: monitor noBubbles() behavior
-this.mouseContext= function(_e,_that,_fnDown,_fnMove,_fnUp){
+this.mouseContext= function(_e,_that,_fnDown,_fnMove,_fnUp,_gap){
 	_e= _e||WINDOW.event;
 	if (_e.button>0)
 	  return;
 	this.fpsTick();
 
-	this.mouseX= _e.clientX;
-	this.mouseY= _e.clientY;
-	this.freeze(1);
-
+/* original no-gap behaviour
+	_this.mouseX= _e.clientX;
+	_this.mouseY= _e.clientY;
+	_this.freeze(1);
+*/
 	var _this= this;
 	if (_fnMove)
-	  this.DOM.body.onmousemove=	function(_e2){
+	  this.DOM.body.onmousemove= function(_e2){
 		_e2= _e2||WINDOW.event;
 		_this._fpsTick+= 1;
 
-		if (_this.mouseButton==-1){ //initial move
-			if (
-				(Math.pow(_this.mouseX-_e2.clientX, 2) +Math.pow(_this.mouseY-_e2.clientY, 2))
-				>(USER_REACTION.POINTER_DEAD_SPOT*USER_REACTION.POINTER_DEAD_SPOT) //^2 px radius
-			)
-			  _this.mouseButton= _e2.button;
+		if (!_this.moved){ //called really once at gap broke
+			_this.moved=
+			 (Math.pow(_this.mouseX-_e2.clientX, 2) +Math.pow(_this.mouseY-_e2.clientY, 2))
+			 >((_gap|0)*(_gap|0)); //^2 px radius
+//new-style gap behavior in
+			if (_this.moved){
+				if (_gap>0 && _fnDown)
+				  _fnDown.call(_that,_e2);
+
+				_this.mouseX= _e2.clientX;
+				_this.mouseY= _e2.clientY;
+				_this.freeze(1);
+				if
+				 (_this.mouseButton==-1) //initial move
+				  _this.mouseButton= _e2.button;
+			}
+//new-style gap behavior in
 		}
 
-		_fnMove.call(_that,_e2)
+		if (_this.moved && _fnMove)
+		  _fnMove.call(_that,_e2)
 	  };
 	  this.DOM.body.onmouseup= function(_e2){
 		_this.mouseContextRelease(_e2);
@@ -150,7 +163,9 @@ this.mouseContext= function(_e,_that,_fnDown,_fnMove,_fnUp){
 		  _fnUp.call(_that,_e2||WINDOW.event);
 	  };
 
-	if (_fnDown)
+//original no-gap behaviour
+//	if (_fnDown)
+	if (!_gap && _fnDown)
 	  _fnDown.call(_that,_e);
 
 	noBubbles(_e);
@@ -164,6 +179,7 @@ this.mouseContextRelease= function(_e){
 	 null;
 	this.DOM.body.onmousemove= this.mouseContextNop;
 
+	this.moved= false;
 	this.mouseButton= -1;
 	this.freeze(0);
 }
@@ -193,6 +209,7 @@ this.perfLevel= PERF.LEVEL;
 this.mouseButton= -1;
 this.mouseX= null;
 this.mouseY= null;
+this.moved= false;
 
 //state
 this._fpsTickTimeout= null;

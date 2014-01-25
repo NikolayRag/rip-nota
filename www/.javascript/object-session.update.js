@@ -90,20 +90,33 @@ ALERT();
 	}
 
 //checklist: used only for deletion
-//todo: depricate
+//todo: depricate block
+	this.completeRequest= true; //depricete too
 	var checkNotes= [];
-	for (var iN in Ncore.all())
-	  checkNotes.push(iN);
+	var allNotes= Ncore.all();
+	for (var iN in allNotes)
+	  if (allNotes[iN].PUB.forSave == SAVE_STATES.IDLE)
+	    checkNotes.push(iN);
+	  else
+	  	this.completeRequest= false;
 	saveData['chkN']= checkNotes.join(ASYGN.D_LIST);
 
 	var checkData= [];
-	for (var iD in Ndata.all())
-	  checkData.push(iD);
+	var allData= Ndata.all();
+	for (var iD in allData)
+	  if (allData[iD].forSave == SAVE_STATES.IDLE)
+	    checkData.push(iD);
+	  else
+	  	this.completeRequest= false;
 	saveData['chkD']= checkData.join(ASYGN.D_LIST);
 
 	var checkUsers= [];
-	for (var iU in Ucore.all)
-	  checkUsers.push(iU);
+	var allUsers= Ucore.all;
+	for (var iU in allUsers)
+	  if (allUsers[iU].forSave == SAVE_STATES.IDLE)
+	    checkUsers.push(iU);
+	  else
+	  	this.completeRequest= false;
 	saveData['chkU']= checkUsers.join(ASYGN.D_LIST);
 
 
@@ -235,57 +248,45 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 					sign,
 				 	splitDStr[ASIDX_UPDCB.N_OLDID] |0,
 					splitDStr[ASIDX_UPDCB.N_ID] |0,
-					{
-						ver: splitDStr[ASIDX_UPDCB.N_VER] |0,
-						name: splitDStr[ASIDX_UPDCB.N_NAME],
-						style: splitDStr[ASIDX_UPDCB.N_STYLE],
-						owner: splitDStr[ASIDX_UPDCB.N_OWNER] |0,
-						editor: splitDStr[ASIDX_UPDCB.N_EDITOR] |0,
-						rights: splitDStr[ASIDX_UPDCB.N_RIGHTS] |0,
-						rightA: splitDStr[ASIDX_UPDCB.N_RIGHTGRPA].split(ASYGN.D_LIST),
-						inherit: splitDStr[ASIDX_UPDCB.N_INHERIT] |0,
-						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.N_STAMP] |0)*1000)
-					}
+					splitDStr[ASIDX_UPDCB.N_VER] |0,
+					splitDStr[ASIDX_UPDCB.N_NAME],
+					splitDStr[ASIDX_UPDCB.N_STYLE],
+					splitDStr[ASIDX_UPDCB.N_OWNER] |0,
+					splitDStr[ASIDX_UPDCB.N_EDITOR] |0,
+					splitDStr[ASIDX_UPDCB.N_RIGHTS] |0,
+					splitDStr[ASIDX_UPDCB.N_RIGHTGRPA],
+					splitDStr[ASIDX_UPDCB.N_INHERIT] |0,
+					splitDStr[ASIDX_UPDCB.N_STAMP] |0
 				) &&updSuccess;
 				break;
 			case ASYGN.NDATA:
 				updSuccess= this.respondD(
 					splitDStr[ASIDX_UPDCB.D_ID] |0,
-					{
-						ver: splitDStr[ASIDX_UPDCB.D_VER] |0,
-						root: splitDStr[ASIDX_UPDCB.D_ROOT] |0,
-						dtype: splitDStr[ASIDX_UPDCB.D_DTYPE] |0,
-						content: splitDStr[ASIDX_UPDCB.D_DATA],
-						editor: splitDStr[ASIDX_UPDCB.D_EDITOR] |0,
-						stamp: new Date(new Date()-(splitDStr[ASIDX_UPDCB.D_STAMP] |0)*1000),
-						place: splitDStr[ASIDX_UPDCB.D_PLACE].split(ASYGN.D_LIST)
-				  	}
+					splitDStr[ASIDX_UPDCB.D_VER] |0,
+					splitDStr[ASIDX_UPDCB.D_ROOT] |0,
+					splitDStr[ASIDX_UPDCB.D_DTYPE] |0,
+					splitDStr[ASIDX_UPDCB.D_DATA],
+					splitDStr[ASIDX_UPDCB.D_EDITOR] |0,
+					splitDStr[ASIDX_UPDCB.D_STAMP] |0,
+					splitDStr[ASIDX_UPDCB.D_PLACE]
 				) &&updSuccess;
 				break;
 			case ASYGN.USER: case ASYGN.YOU:
 				updSuccess= this.respondU(
 					sign,
 					splitDStr[ASIDX_UPDCB.U_ID] |0,
-					{
-						ver: splitDStr[ASIDX_UPDCB.U_VER] |0,
-						uname: splitDStr[ASIDX_UPDCB.U_NAME],
-						relation: splitDStr[ASIDX_UPDCB.U_RELATION] |0,
-						groupId: splitDStr[ASIDX_UPDCB.U_GROUPID] |0,
-						boardList: splitDStr[ASIDX_UPDCB.U_BOARDLIST].split(ASYGN.D_LIST),
-						contactsList: splitDStr[ASIDX_UPDCB.U_CONTACTSLIST].split(ASYGN.D_LIST)
-					}
+					splitDStr[ASIDX_UPDCB.U_VER] |0,
+					splitDStr[ASIDX_UPDCB.U_NAME],
+					splitDStr[ASIDX_UPDCB.U_RELATION] |0,
+					splitDStr[ASIDX_UPDCB.U_GROUPID] |0,
+					splitDStr[ASIDX_UPDCB.U_BOARDLIST],
+					splitDStr[ASIDX_UPDCB.U_CONTACTSLIST]
 				) &&updSuccess;
 				break;
 		}
 	}	
-	if (updSuccess) //else should retry update
+	if (updSuccess && this.completeRequest) //else should retry update
 	  SESSION.dbStamp= newDbStamp;
-
-//todo: delete all unused
-//	Ncore.all().forEach(function(note){
-//		if (note.PUB.ver==CORE_VERSION.DEL){
-//		}
-//	});
 
 //todo: make condition to call; see UI.drawWindow definition
 	UI.drawWindow();
@@ -301,9 +302,36 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 }
 
 
+/*
+checklist:
 
-this.respondN= function(_sign, _oldId, _id, _unit){
+- update implicits on/off (foreign note with/no rights)
+- update unit which id changed before callback (note created, [update], saved, [updateCB])
+
+*/
+
+this.respondN= function(_sign, _oldId, _id, _ver, _name, _style, _owner, _editor, _rights, _rightA, _inherit, _stamp){
+//todo: MAKE normal deletion
+	if (!_ver){
+
+		//return delete success
+		return true;
+	}
+
+	var unit= {
+		ver: _ver,
+		name: _name,
+		style: _style,
+		owner: _owner,
+		editor: _editor,
+		rights: _rights,
+		rightA: _rightA.split(ASYGN.D_LIST),
+		inherit: _inherit,
+		stamp: new Date(new Date() -_stamp*1000)
+	};
+
 //todo: plug; remove after incrementals implemented
+//????? watthis
 if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
 
 	//use existing or CREATE appropriate. Board assumed to exist
@@ -321,33 +349,68 @@ if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
 
 	//set grabbed; _name,_ver,_style,_rights,_rightA,_inherit,_stamp,_owner; _in.ver=0 for deletion
 //todo: Unit .set() should return VARIOUR errorcodes
-	return ctxNote.set(_unit);
+	return ctxNote.set(unit);
 }
 
 
-this.respondD= function(_id, _unit){
-	var ctxNote= Ncore.all(_unit.root);
+this.respondD= function(_id, _ver, _root, _dtype, _content, _editor, _stamp, _place){
+//todo: MAKE normal deletion
+	if (!_ver){ //delete
+		var curData= Ndata.all(_id);
+		if (!curData) //deleted already
+		  return true;
+		return curData.kill()? true:false;
+	}
+
+	var unit= {
+		ver: _ver,
+		root: _root,
+		dtype: _dtype,
+		content: _content,
+		editor: _editor,
+		stamp: new Date(new Date() -_stamp*1000),
+		place: _place.split(ASYGN.D_LIST)
+	};
+
+	var ctxNote= Ncore.all(unit.root);
 	if (!ctxNote)
 	  return false;
 
-	if (_unit.dtype==DATA_TYPE.TEXT)
-	  _unit.content= _unit.content.base64_decode();
+	if (unit.dtype==DATA_TYPE.TEXT)
+	  unit.content= unit.content.base64_decode();
 
-	return ctxNote.dataSet(_id, _unit)? true:false;
+	return ctxNote.dataSet(_id, unit)? true:false;
 }
 
 
-this.respondU= function(_sign, _id, _unit){
-	if (_sign == ASYGN.YOU && _id != SESSION.owner().id){
+this.respondU= function(_sign, _id, _ver, _uname, _relation, _groupId, _boardList, _contactsList){
+//todo: MAKE normal deletion
+	if (!_ver){
+
+		//return delete success
+		return true;
+	}
+
+	var unit= {
+		ver: _ver,
+		uname: _uname,
+		relation: _relation,
+		groupId: _groupId,
+		boardList: _boardList.split(ASYGN.D_LIST),
+		contactsList: _contactsList.split(ASYGN.D_LIST)
+	}
+
+
+
+	if (_sign == ASYGN.YOU && _id != SESSION.owner().id){ //YOU changed, relogon
 //todo: proper user relogon reaction
 		alert(DIC.errrUserOutdated);
 		SESSION.reload(SESSION.reqWho, SESSION.reqWhat);
 	}
 
-
 	var curUser= new Ucore(_id);
 
-	return curUser.set(_unit);
+	return curUser.set(unit);
 }
 
 this.pulse= TIMER_LENGTH.UPDATE_PULSE;

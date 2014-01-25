@@ -5,6 +5,7 @@ var DataUIUnknown= function(_ndata,_context){
 	var _this= this;
 
 	_this.ndata= _ndata;
+	_this.context= _context;
 
 	_this.DOM= _this.build(_context);
 }
@@ -31,3 +32,11 @@ DataUIUnknown.prototype.build= function(_parentEl){
 }
 
 DataUIUnknown.prototype.setState= function(_state){}
+
+DataUIUnknown.prototype.unbind= function(){
+	
+}
+
+DataUIUnknown.prototype.kill= function(){
+	this.context.removeChild(this.DOM.root);
+}

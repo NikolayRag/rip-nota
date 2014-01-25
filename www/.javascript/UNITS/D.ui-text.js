@@ -7,6 +7,8 @@ var DataUIText= function(_ndata,_context){
 	var _this= this;
 
 	_this.ndata= _ndata;
+	_this.context= _context;
+
 //todo: make UI and reference be well-defined
 	_this.rootUi= _ndata.rootNote.PUB.ui;
 
@@ -93,3 +95,11 @@ DataUIText.prototype.editMode= function(_edit,_onkeypress){
 }
 
 DataUIText.prototype.setState= function(_state){}
+
+DataUIText.prototype.unbind= function(){
+	
+}
+
+DataUIText.prototype.kill= function(){
+	this.context.removeChild(this.DOM.root);
+}

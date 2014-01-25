@@ -13,12 +13,12 @@
 	DB_NAME: xx
 
 */
-$siteSpecificC= Array();
+$siteSpecificConfig= Array();
 
 preg_match_all(
 	'/(\S+)\s*:([^\n\r]+)/',
 	file_get_contents("./../www.privateCfg"),
-	$siteSpecificC
+	$siteSpecificConfig
 );
 $SALT=
  $DB_HOST =
@@ -26,8 +26,8 @@ $SALT=
  $DB_PASS =
  $DB_NAME =
  '';
-foreach($siteSpecificC[1] as $key=>$sscName){
-	$sscValue= trim($siteSpecificC[2][$key]);
+foreach($siteSpecificConfig[1] as $key=>$sscName){
+	$sscValue= trim($siteSpecificConfig[2][$key]);
 	switch ($sscName){
 		case 'SALT':
 			$SALT= $sscValue;
@@ -48,6 +48,10 @@ foreach($siteSpecificC[1] as $key=>$sscName){
 }
 
 $DB = new kiSQL($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+if ($DB->dbErr){
+	include('.templates/t_dbError.php');
+	exit;
+}
 
 session_start();
 $USER = new uFlex();

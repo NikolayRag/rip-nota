@@ -3,6 +3,7 @@
 <div id='toolBLeafEditTmpl' class='tool'>
 	<span id='toolBLeafEditContext' class='toolContext'>
 		<span id='toolBLeafEditOuter'>
+			<span id='toolBLeafDelete' class='toolItem'>del</span>
 			<span id='toolBLeafEditMove' class='toolItem'>move</span>
 			<span id='toolBLeafNewData' class='toolItem'>data</span>
 		</span>

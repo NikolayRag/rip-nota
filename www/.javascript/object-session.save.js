@@ -11,10 +11,10 @@
 */
 SESSION.save= new function(){
 
-this.save= function(_immediate){
+this.save= function(){
 	lazyRun(
 		this.saveGo.bind(this)
-		, (_immediate?0:1)*TIMER_LENGTH.SAVE_DELAY
+		, TIMER_LENGTH.SAVE_DELAY
 		, this.lazyCtx
 	);
 
@@ -53,12 +53,16 @@ this.saveGo= function(_sync){
 			var curData= allData[iD];
 
 			var dataBlock= [];
-			dataBlock[ASIDX_SAVE.D_VER]= curData.ver;
-			if (curData.id<0) dataBlock[ASIDX_SAVE.D_PARENT]= nId;
-			dataBlock[ASIDX_SAVE.D_PLACE]= [curData.place.x,curData.place.y,curData.place.w,curData.place.h].join(ASYGN.D_LIST);
-			dataBlock[ASIDX_SAVE.D_DTYPE]= curData.dtype;
-			dataBlock[ASIDX_SAVE.D_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
-
+			if (curData.forDelete){
+				dataBlock[ASIDX_SAVE.D_VER]= 0;
+			} else {
+				dataBlock[ASIDX_SAVE.D_VER]= curData.ver;
+				if (curData.id<0) dataBlock[ASIDX_SAVE.D_PARENT]= nId;
+				dataBlock[ASIDX_SAVE.D_PLACE]= [curData.place.x,curData.place.y,curData.place.w,curData.place.h].join(ASYGN.D_LIST);
+				dataBlock[ASIDX_SAVE.D_DTYPE]= curData.dtype;
+				dataBlock[ASIDX_SAVE.D_DATA]= curData.dtype==DATA_TYPE.TEXT? curData.content.base64_encode() : curData.content;
+			}
+			
 			saveData[ASYGN.NDATA+curData.id]= dataBlock.join(ASYGN.D_ITEM);
 		}
 	}
@@ -77,21 +81,23 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 
 	var resNotesA= [];
 	var resDataA= [];
-	for (var i in sDataA){ //Notes should be reacted first to be available an possible later Ndata redraw
-		var res= sDataA[i].split(ASYGN.D_LIST);
+	for (var iN in sDataA){ //Notes should be reacted first to have available possible later Ndata redraw
+		var res= sDataA[iN].split(ASYGN.D_LIST);
+		var resId= res[ASIDX_SAVECB.ID];
+		var resRes= res[ASIDX_SAVECB.RES];
 		switch (res[ASIDX_SAVECB.SIGN]){
 			case ASYGN.NBREEF:
-				var cNote= resNotesA[res[ASIDX_SAVECB.ID]]= Ncore.all(res[ASIDX_SAVECB.ID]);
-				if (cNote && res[ASIDX_SAVECB.RES]>=0)
-				  cNote.saved(res[ASIDX_SAVECB.RES])
+				var cNote= resNotesA[resId]= Ncore.all(resId);
+				if (cNote && resRes>=0)
+				  cNote.saved(resRes)
 				else
-				  console.log('Error saving Note ' +iN +': ' +(cNote? resNotesA[iN] :'undefined'));
+				  console.log('Error saving Note ' +resId +': ' +(cNote? resRes :'undefined'));
 
 				break;
 			case ASYGN.NRIGHTS:
 				break;
-			case ASYGN.NDATA:
-				resDataA[res[ASIDX_SAVECB.ID]]= res[ASIDX_SAVECB.RES] |0;
+			case ASYGN.NDATA: //cache
+				resDataA[resId]= resRes |0;
 				break;
 		}
 	}

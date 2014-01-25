@@ -5,7 +5,7 @@ include('sqTmpl/SQLTNData.php');
 
 class NData {
 	var $id, $editorId, $datatype, $data, $version, $stamp, $place; //constructor arguments
-	var $isDeleted=0, $isImplicit=0, $forSave= 0, $saveRes, $rootNote;
+	var $isDeleted=0, $isImplicit=0, $forSave= 0, $forDel= 0, $saveRes, $rootNote;
 		
 	function NData($_id=0, $_editorId=0, $_datatype=0, $_data='', $_version=0, $_stamp=0, $_place='') {
 		global $SAVE_RES;
@@ -35,14 +35,14 @@ class NData {
 	
 */
 function notesUnbreef($_noteInA){
-	global $DB;
+	global $DB, $NOTA_RIGHTS;
 
 	//make list of interest
 	$noteInLstA= Array();
 	$noteBrA= Array();
-	foreach ($_noteInA as $noteIn)
+ 	foreach ($_noteInA as $noteIn)
 	 if ($noteIn->isBreef){ //get only breef
-		$noteBrA[]= $noteIn;
+		$noteBrA[$noteIn->id]= $noteIn;
 		$noteInLstA[]= $noteIn->id;
 	 }
 
@@ -63,22 +63,17 @@ function notesUnbreef($_noteInA){
 				$dataIn->place
 			);
 		  }
-
-//todo: REDO
-//todo: fetch rights assignment for all user groups
-		//get rights list
-
-
-
-		if ($noteIn->rights==3)
-		  foreach (Array(1,2,4) as $groupId) {
-			$DB->apply('rightsByGrp1',$noteIn->id,$groupId);
-			$rightsI= $DB->fetch('rights','');
-			if ($rightsI!='')
-			  $noteIn->rightGrps[]= "$groupId=$rightsI";
-		  }
-
 		$noteIn->isBreef= 0;
+	}
+
+	//get rights list
+	$DB->apply('rightsByNotesIds',$noteInLstA);
+	while ($rowRts= $DB->fetch()){
+		$noteIn= $noteBrA[$rowRts['id_boards']];
+		if ($noteIn->rights!=$NOTA_RIGHTS->OWN)
+		  continue;
+
+		  $noteIn->rightGrps[]= $rowRts['id_contactgroups'] . '=' .$rowRts['rights'];
 	}
 
 	return 0;

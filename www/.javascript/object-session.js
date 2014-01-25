@@ -185,7 +185,8 @@ this.onWindowUnload= function(_e){
 
 	var lastSave= SESSION.save.saveGo(true);
 	if (lastSave.status!=200){
-		_e.returnValue= "Changes are NOT saved!"; //dic
+//dic:
+ 		_e.returnValue= "Changes are NOT saved!";
 		return _e.returnValue;
 	}
 

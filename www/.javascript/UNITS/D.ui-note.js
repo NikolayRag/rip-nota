@@ -5,6 +5,7 @@ var DataUINote= function(_ndata,_context,_curDI){
 	var _this= this;
 
 	_this.ndata= _ndata;
+	_this.context= _context;
 	_this.rootUi= _ndata.rootNote.PUB.ui;
 
 	_this.stampTimeout= null;
@@ -16,15 +17,7 @@ var DataUINote= function(_ndata,_context,_curDI){
 	_this.tool= null;
 	
 	_this.DOM= _this.build(_context,_curDI);
-//	_this.DOMResizeSpot= DOM('noteResizeSpot',_this.DOMRoot);
-//	_this.DOMComment= DOM('noteComment',_this.DOMRoot);
-//	_this.DOMButEditOk= DOM('noteButEditOk',_this.DOMRoot);
-//	_this.DOMButEditNo= DOM('noteButEditNo',_this.DOMRoot);
-//	_this.DOMButPin= DOM('noteButPin',_this.DOMRoot);
-//	_this.DOMButTransp= DOM('noteButTransp',_this.DOMRoot);
-//	_this.DOMButCol= DOM('noteButCol',_this.DOMRoot);
-//	_this.DOMButDel= DOM('noteButDel',_this.DOMRoot);
-//	_this.DOMCaption= DOM('noteCaption',_this.DOMRoot);
+
 
 	_this.bindEvt();
 
@@ -80,7 +73,7 @@ DataUINote.prototype.build= function(_parentEl,_curDI){
 	var cTool= DOM('leafNoteToolHolder',cRoot);
 	var cCover= DOM('leafNoteFrameCover',cRoot);
 	
-//cRoot.style.transform= 'rotate('+(Math.random()*100-50)+'deg)';
+//cRoot.style.transform= 'rotate('+(Math.random()-.5)*5+'deg)';
 
 	NOID(cRoot);
 
@@ -213,20 +206,6 @@ DataUINote.prototype.bindEvt= function(){
 	var _this= this;
 	var rts= this.ndata.rootNote.PUB.rights;
 
-	//cancels
-//tool:	this.DOMComment.onmousedown= noBubbles;
-//tool:	this.DOMComment.ondblclick= noBubbles;
-//tool:	this.DOMCaption.ondblclick= noBubbles;
-//tool:	this.DOMButBlockPublic.onmousedown= noBubbles;
-//tool:	this.DOMButPin.onclick= function(){_this.notePin()};
-//tool:	this.DOMButTransp.onclick= function(){_this.colorize(0)};
-//tool:	this.DOMButCol.onclick= function(){_this.colorize(1)};
-//tool:	this.DOMButDel.onclick= function(){_this.noteDelete();};
-//tool:	this.DOMButBlockEdit.onmousedown= noBubbles;
-//tool:	this.DOMButEditOk.onclick= this.editAccept;
-//tool:	this.DOMButEditNo.onclick= this.editCancel;
-
-
 //todo: different behaviors for different user rights
 
 //todo: dont allow to react with implicit referers
@@ -237,26 +216,8 @@ DataUINote.prototype.bindEvt= function(){
 		this.DOM.plate.onmouseup= function(e){e.toolFlag=1; _this.toolShow(1)};
 	}
 
-/*
-	if (rts>=NOTA_RIGHTS.RW) { //for write/owner permissions
-		this._caption.onmousedown= function(e){mouseModeTo(e,thisNote,"capt")};
-		this._resizeSpot.onmousedown= function(e){mouseModeTo(e,thisNote,"resiz")};
-		this._glueL.onmouseover= function(e){thisNote.glue("l")};
-		this._glueL.onmouseout= function(e){thisNote.glue()};
-		this._glueL.onmousedown= noBubbles;
-		this._glueR.onmouseover= function(e){thisNote.glue("r")};
-		this._glueR.onmouseout= function(e){thisNote.glue()};
-		this._glueR.onmousedown= noBubbles;
-		this._glueU.onmouseover= function(e){thisNote.glue("u")};
-		this._glueU.onmouseout= function(e){thisNote.glue()};
-		this._glueU.onmousedown= noBubbles;
-		this._glueD.onmouseover= function(e){thisNote.glue("d")};
-		this._glueD.onmouseout= function(e){thisNote.glue()};
-		this._glueD.onmousedown= noBubbles;
-	}
-*/
-
 }
+
 
 
 
@@ -342,3 +303,16 @@ DataUINote.prototype.toolShowEdit= function(){
 	  this.tool= UI.toolSet.make(ToolBoardLeafEdit,this.DOM.tool,this.ndata);
 }
 
+DataUINote.prototype.unbind= function(){
+	clearTimeout(this.stampTimeout);
+
+	this.DOM.plate.onmouseover=
+	 this.DOM.plate.onmouseout=
+	 this.DOM.plate.onmouseup= undefined;
+
+	this.DOM.root.style.opacity= .33;
+}
+
+DataUINote.prototype.kill= function(){
+	this.context.removeChild(this.DOM.root);
+}

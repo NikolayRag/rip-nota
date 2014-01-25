@@ -17,6 +17,7 @@ var ToolBoardLeafEdit= function(_rootW,_ndata){
 ToolBoardLeafEdit.prototype.bindEvt= function(){
 	var _this= this;
 	this.DOM.tStyle.onmouseup= function(_e){_this.opStyle(_e)};
+	this.DOM.tDel.onmouseup= function(){_this.opDel()};
 	this.DOM.tMove.onmousedown= function(_e){UI.mouseContext(_e,_this,_this.mouseDown,_this.mouseMove,_this.opMouseUp)};
 	this.DOM.tNewData.onmouseup= function(){_this.opNewData()};
 
@@ -58,6 +59,7 @@ ToolBoardLeafEdit.prototype.build= function(_parentEl){
 		context: DOM('toolBLeafEditContext',cClone),
 
 		tOuter: DOM('toolBLeafEditOuter',cClone),
+		tDel: DOM('toolBLeafDelete',cClone),
 		tMove: DOM('toolBLeafEditMove',cClone),
 		tNewData: DOM('toolBLeafNewData',cClone),
 
@@ -144,6 +146,14 @@ ToolBoardLeafEdit.prototype.opCancel= function() {
 }
 
 
+ToolBoardLeafEdit.prototype.opDel= function() {
+	UI.popW.up(DIC.popEditRemove,function(){
+		this.ndata.save({del:true});
+		this.opDefault();
+	}.bind(this));
+}
+
+
 ToolBoardLeafEdit.prototype.opNewData= function(){
 	var _this= this;
 	var dTarget= this.ndata.sibling();
@@ -180,6 +190,8 @@ ToolBoardLeafEdit.prototype.opStyle= function() {
 
 ToolBoardLeafEdit.prototype.editMode= function(_edit){
 	var sibData= this.editContext();
+	if (!sibData)
+	  return;
 
 	var _this= this;
 	if (_edit)
@@ -211,6 +223,5 @@ ToolBoardLeafEdit.prototype.editContext= function(){
 	var sibNote= this.ndata.sibling();
 //todo: get first element in better manner
 	for (var rootData in sibNote.PUB.ndata)
-	  break;
-	return sibNote.PUB.ndata[rootData];
+	  return sibNote.PUB.ndata[rootData];
 }

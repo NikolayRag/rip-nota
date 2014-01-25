@@ -11,6 +11,7 @@ var Note= function(_id){
 
 	thisNote.doDraw= Note.prototype.doDraw;
 	thisNote.doSaved= Note.prototype.doSaved;
+	thisNote.doKill= Note.prototype.doKill;
 
 //todo: move ui out from PUB to this
 	thisNote.PUB.ui= null; //inited at draw(), coz all Notes UI depend of parent
@@ -62,4 +63,9 @@ Note.prototype.doSaved= function(){
 */
 
 	rootData.ui.setState(this.PUB.forSave!=SAVE_STATES.IDLE || rootData.forSave!=SAVE_STATES.IDLE);
+}
+
+
+Note.prototype.doKill= function(){
+	this.PUB.ui && this.PUB.ui.kill();
 }

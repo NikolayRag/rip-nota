@@ -256,7 +256,7 @@ Ncore.prototype.inherit= function(){
 }
 
 //todo: mantain list of .forSave==1 notes
-Ncore.prototype.save= function(_vals, _okCB){
+Ncore.prototype.save= function(_vals, _okCB, _immediate){
 //todo: use .set()
 
 	if (IS.fn(_okCB))
@@ -295,7 +295,10 @@ Ncore.prototype.save= function(_vals, _okCB){
 //	  if (this.referers[ir])
 //		this.referers[ir].doSaved();
 
-	SESSION.save.save();
+	if (_immediate)
+	  SESSION.save.saveGo();
+	else
+	  SESSION.save.save();
 }
 
 Ncore.prototype.saved= function(_res){

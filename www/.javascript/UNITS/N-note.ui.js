@@ -6,6 +6,7 @@ var NoteUI= function(_note,_rootW){
 	var _this= this;
 
 	_this.note= _note;
+	_this.rootW= _rootW;
 
 	_this.DOM= _this.build(_rootW);
 
@@ -53,3 +54,6 @@ NoteUI.prototype.build= function(_parentEl){
 	};
 }
 
+NoteUI.prototype.kill= function(){
+	this.rootW.removeChild(this.DOM.root);
+}

@@ -24,6 +24,7 @@ var Ndata= function(_root,_id)
 	_this.ui= null; //inited at draw(), coz all Notes UI depend of parent
 	_this.forRedraw= 0;
 	_this.forSave= SAVE_STATES.IDLE;
+	_this.forDelete= false;
 
 ALERT(PROFILE.BREEF,"Data new", 'id: ' +_id);
 }
@@ -83,6 +84,22 @@ if (!this.forRedraw) ALERT(PROFILE.VERBOSE, "Data "+ this.id +"("+ this.rootNote
 	return true;
 }
 
+
+Ndata.prototype.kill= function(){
+	if (this.forSave!= SAVE_STATES.IDLE) //unsaved
+	  return false;
+
+	this.ui && this.ui.kill();
+
+//todo: this is alien call for future Unit object
+	if (this.dtype==DATA_TYPE.NOTE)
+	  this.sibling() && this.sibling().kill();
+
+	delete this.rootNote.PUB.ndata[this.id];
+
+	return true;
+}
+
 //change .id
 //replaces parent's .data[_id]
 //todo: meke sure killing existing parent's .data[_id] will not make garbage
@@ -92,7 +109,7 @@ Ndata.prototype.setId= function(_id){
 
 ALERT(PROFILE.BREEF, "Ndata "+ this.id +' re-id ', 'id: '+ _id);
 
-var parentCollection= this.rootNote.PUB.ndata;
+	var parentCollection= this.rootNote.PUB.ndata;
 	delete parentCollection[this.id];
 
 	_id= _id |0;
@@ -151,6 +168,14 @@ Ndata.prototype.save= function(_vals){
 	if (!Object.keys(_vals).length)
 	  return;
 
+	if (_vals.del){
+		if (this.ver == CORE_VERSION.INIT) //shorthand for unsaved yet
+		  return this.saved(0);
+
+		this.ui && this.ui.unbind();
+		this.forDelete= true;
+	}
+
 	if (_vals.content!=undefined)
 	  this.content= _vals.content;
 
@@ -174,14 +199,16 @@ Ndata.prototype.save= function(_vals){
 }
 
 Ndata.prototype.saved= function(_res, _resNotesA){
-	if (this.ver==CORE_VERSION.INIT){ //CREATED
+	this.forSave= SAVE_STATES.IDLE;
+	this.forRedraw= true;
+
+	if (_res==0){ //DELETED
+		return this.kill();
+	} else if (this.ver==CORE_VERSION.INIT){ //CREATED
 	  this.ver= 1;
 	  this.setId(_res);
 	} else
 	  this.ver= _res;
-
-	this.forSave= SAVE_STATES.IDLE;
-	this.forRedraw= true;
 
 //todo: will be simplified after dedication of Unit
 	//affect container

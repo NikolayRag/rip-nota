@@ -35,7 +35,7 @@ BoardUI.prototype.place= function(_data,_uiRoot){
 ////PRIVATE
 BoardUI.prototype.bindEvt= function(){
 	var _this= this;
-	this.DOM.root.onmousedown= function(_e){UI.mouseContext(_e,_this,_this.mouseDown,_this.mouseMove)};
+	this.DOM.root.onmousedown= function(_e){UI.mouseContext(_e,_this,_this.mouseDown,_this.mouseMove,undefined,USER_REACTION.POINTER_DEAD_SPOT)};
 	this.DOM.root.onmouseup= function(_e){if (!_e.toolFlag && _this.note.PUB.rights>=NOTA_RIGHTS.RW) UI.toolSet.make(ToolBoard,_this.DOM.tool,_this.note)};
 
 	UI.bindDeep(this.onWndScroll.bind(this),this.onWndResize.bind(this));
@@ -207,7 +207,7 @@ BoardUI.prototype.correct= function(redrawDelay){
 BoardUI.prototype.correctField= function(){
 	if (this.note.PUB.ndata.length==0) { //blank field
 		this.DOM.root.style.width=
-		  this.DOM.root.style.height= 0;
+		  this.DOM.root.style.height= '100%';
 		return;
 	}
 
