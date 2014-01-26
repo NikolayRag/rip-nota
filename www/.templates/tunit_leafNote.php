@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in template LeafNote -->\n"?>
+<!-- in template LeafNote -->
 <div id='leafNoteTmpl' class='leafNote'>
 	<span id='leafNoteShadow' class='leafNoteShadow'></span>
 	<span class='leafNoteSign'>
@@ -14,4 +14,4 @@
 	</span>
 	<span id='leafNoteFrameCover' class='freezeIn'></span>
 </div>
-<?=$NOPROFILE? '': "<!-- out template LeafNote -->\n"?>
+<!-- out template LeafNote -->

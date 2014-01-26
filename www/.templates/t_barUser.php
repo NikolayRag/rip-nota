@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in Bar User -->\n"?>
+<!-- in Bar User -->
 <span class='toolWidget'>
 	<a id='barUserSelf'><? echo $USER->data['first_name']; ?></a>
 </span>
@@ -18,4 +18,4 @@
 <span class='toolWidget'>
 	<a id='youOut'><?=$DIC->labLogOut?></a>
 </span>
-<?=$NOPROFILE? '': "<!-- out Bar User -->\n"?>
+<!-- out Bar User -->

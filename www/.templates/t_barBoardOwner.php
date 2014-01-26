@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in Bar Board Owner -->\n"?>
+<!-- in Bar Board Owner -->
 <span class='toolWidget'>
 	<span id='idWhoName'></span>
 	<span id='idWhoAdd' class='knobAdd'>+</span>
@@ -12,4 +12,4 @@
 </span>
 
 <span class='toolWidgetOff'></span>
-<?=$NOPROFILE? '': "<!-- out Bar Board Owner -->\n"?>
+<!-- out Bar Board Owner -->

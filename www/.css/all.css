@@ -165,6 +165,6 @@ input[type="reset"] {
 	position:absolute;
 }
 
-#precss {
+.hidden {
 	display:none;
 }

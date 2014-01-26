@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in template toolBLeafEdit -->\n"?>
+<!-- in template toolBLeafEdit -->
 <div id='toolBLeafEditTmpl' class='tool'>
 	<span id='toolBLeafEditContext' class='toolContext'>
 		<span id='toolBLeafEditOuter'>
@@ -11,4 +11,4 @@
 		</span>
 	</span>
 </div>
-<?=$NOPROFILE? '': "<!-- out template toolBLeafEdit -->\n"?>
+<!-- out template toolBLeafEdit -->

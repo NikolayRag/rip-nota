@@ -198,20 +198,23 @@ function kiMiniJs($_renameA=false){
 */
 
 function kiMiniHTML(&$HTMLDic){
-    $html= ob_get_contents();
-    ob_clean();
+	$html= ob_get_contents();
+	ob_clean();
 
-    $HTMLDic= Array();
-    $substI= 360; //decimal for 'a1' base 36 (0-z) to start from
-    return preg_replace_callback(
-    	'/(?:(class|id)=\'([\d\w]+)\')/',
-    	function ($_matches) use (&$substI,&$HTMLDic) {
-    		if (!array_key_exists($_matches[2], $HTMLDic))
-    		  $HTMLDic[$_matches[2]]= base_convert($substI++,10,36);;
-    		return $_matches[1] .'=\'' .$HTMLDic[$_matches[2]] .'\'';
-    	},
-    	$html
-    );
+	$HTMLDic= Array();
+	$substI= 360; //decimal for 'a1' base 36 (0-z) to start from
+	return preg_replace_callback(
+		'/(?:(class|id)=\'([\d\w]+)\')|(<!--.*-->)/',
+		function ($_matches) use (&$substI,&$HTMLDic) {
+			if (array_key_exists(3, $_matches)) //blank, wipe
+			  return;
+
+			if (!array_key_exists($_matches[2], $HTMLDic))
+			  $HTMLDic[$_matches[2]]= base_convert($substI++,10,36);;
+			return $_matches[1] .'=\'' .$HTMLDic[$_matches[2]] .'\'';
+		},
+		$html
+	);
 }
 
 

@@ -6,29 +6,29 @@
 	<title>Nota Нота</title>
 
 	<style>
-*{
-	background:#eef;
-	margin:0;
-	padding:0;
-	font:12pt sans-serif;
-}
-.botHead{
-	background:#def;
-	padding:10px;
-}
-.botNote{
-	padding:10px;
-	border-bottom:1px solid #ddf;
-}
-.botCaption{
-	color:#666;
-	font-size:10pt;
-}
-.botLeaf{
-	padding-left:20px;
-}
-
+	*{
+		background:#eef;
+		margin:0;
+		padding:0;
+		font:12pt sans-serif;
+	}
+	.botHead{
+		background:#def;
+		padding:10px;
+	}
+	.botNote{
+		padding:10px;
+		border-bottom:1px solid #ddf;
+	}
+	.botCaption{
+		color:#666;
+		font-size:10pt;
+	}
+	.botLeaf{
+		padding-left:20px;
+	}
 	</style>
+	
 </head>
 
 <body>

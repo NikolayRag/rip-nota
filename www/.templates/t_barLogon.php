@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in Bar Logon -->\n"?>
+<!-- in Bar Logon -->
 <form class='loginForm' method='post' id='logForm'>
 	<table><tr><td>
 	  <table><tr>
@@ -17,4 +17,4 @@
 	  <input id='logSubmit' name='logSubmit' type='submit' value='<?=$DIC->labLogRegister?>' disabled=disabled>
 	</td></tr></table>
 </form>
-<?=$NOPROFILE? '': "<!-- out Bar Logon -->\n"?>
+<!-- out Bar Logon -->

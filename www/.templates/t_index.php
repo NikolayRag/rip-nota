@@ -11,17 +11,13 @@
 
 <body id='body'>
 
-<!-- DON'T browse into! It's a TRAP! -->
-<a href='anti-robots.txt'></a>
-
-<? if (!$NOPROFILE) {?>
 <!-- Splashscreen; Will auto-hide when css loads -->
-<? } ?>
-<div id='precss' style='font:20pt sans-serif;z-index:1000;position:fixed;top:0;bottom:0;left:0;right:0;background:<?=$CSS->MAIN_BG?>;color:<?=$CSS->DECORDARK?>;text-align:center'>
+<div class='hidden' style='font:20pt sans-serif;z-index:1000;position:fixed;top:0;bottom:0;left:0;right:0;background:<?=$CSS->MAIN_BG?>;color:<?=$CSS->DECORDARK?>;text-align:center'>
 	<table style=width:100%;height:100%><tr><td><?=$DIC->preCss?></td></tr></table>
 </div>
 
-<iframe name='loadForm' style='display:none'></iframe>
+<a class='hidden' href='anti-robots.txt'>DON'T browse into! It's a TRAP!</a>
+<iframe name='loadForm' class='hidden'></iframe>
 <div id='templates' style='display:none'>
 	<? include('.templates/tdyn_register.php'); ?>
 	<? include('.templates/tdyn_palette.php'); ?>

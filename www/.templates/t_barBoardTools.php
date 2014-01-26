@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in Bar Board Tools -->\n"?>
+<!-- in Bar Board Tools -->
 <div class='menu'><ul>
   <li><a><?=$DIC->boardTools?></a><ul>
     <li><p><INPUT type='text' id='boardCreate' style='width:100%;color:#888;'><?=$DIC->boardToolsNew?></p></li>
@@ -25,4 +25,4 @@
 		<input type='submit' id='upSubmit'>
 	</form>
 </div>
-<?=$NOPROFILE? '': "<!-- out Bar Board Tools -->\n"?>
+<!-- out Bar Board Tools -->

@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in template toolBoard -->\n"?>
+<!-- in template toolBoard -->
 <div id='toolBoardTmpl' class='tool'>
 	<span id='toolBoardContext' class='toolContext'>
 		<span id='toolBoardOuter'>
@@ -34,4 +34,4 @@
 		</span>
 	</span>
 </div>
-<?=$NOPROFILE? '': "<!-- out template toolBoard -->\n"?>
+<!-- out template toolBoard -->

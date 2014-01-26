@@ -1,5 +1,5 @@
 
-<?=$NOPROFILE? '': "<!-- in template Register -->\n"?>
+<!-- in template Register -->
 <span id='regTmpl'>
 	<?=$DIC->popRegisterTitle?><br>
 	<span id='regUname' class='bigTxt'></span><br><br>
@@ -16,4 +16,4 @@
 		</select>
 	</span>
 </span>
-<?=$NOPROFILE? '': "<!-- out template Register -->\n"?>
+<!-- out template Register -->
