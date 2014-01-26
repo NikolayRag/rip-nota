@@ -255,6 +255,9 @@ b1.9:
 +update:	handles deleted Ndata
 +general:	handle sql connection error; t_dbError.php template added
 +save:	creating new board cause immediate save
+-NdataUi:	dedicate root UI leaf
+-tool:	make context-based dynamic tool collections
+
 
 
 Minor:
@@ -360,6 +363,8 @@ Minor:
 +async:		error callback includes server
 +ui:		initial mouse gap behavior changed; breaking gap IS actually a trigger;
 			+ gap is now parameter
++tool:		add Ndata toolset to TEXT data
+			+ dedicete Ndata toolset
 
 
 
