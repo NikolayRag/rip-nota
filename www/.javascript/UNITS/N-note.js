@@ -3,8 +3,6 @@
 */
 var Note= function(_id){
 	var thisNote= new Nroot(_id);
-//todo: SHORTCUT, MUST REDESIGN
-	thisNote.PUB.nroot= thisNote;
 
 //todo: find place
 	thisNote.coreType= 1;

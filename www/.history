@@ -486,7 +486,7 @@ Refactor:
 +update:		Notes are output bulk before Ndata
 +general:		t_indexBot.php made nicer
 +html:			template's NOPROFILE-controlled comment now wiped out with kiMiniHTML()
-
++Ncore:			.doKill() renamed to .removeCore()
 
 
 Fix:

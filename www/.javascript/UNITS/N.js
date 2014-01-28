@@ -116,7 +116,7 @@ Ncore.prototype.kill= function(){
 		this.referers[ir].doKill();
 		this.referers[ir]= undefined; //unlink here instead of calling multiple unlink()
 	  }
-	this.doKill();
+	this.removeCore();
 }
 
 
@@ -124,7 +124,7 @@ Ncore.prototype.kill= function(){
 	local destructor
 	Mantain global Ncore.all list
 */
-Ncore.prototype.doKill= function(){
+Ncore.prototype.removeCore= function(){
 	delete Ncore.allNotes[this.PUB.id];
 }
 
@@ -153,7 +153,7 @@ Ncore.prototype.unlink= function(_ref){
 		  flag= 1;
 	}
 	if (!flag) //cleanup Ncore itself
-	  this.doKill();
+	  this.removeCore();
 }
 
 
@@ -170,7 +170,7 @@ Ncore.prototype.setId= function(_id){
 
 ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +' re-id ', 'id: '+ _id);
 
-	this.doKill();
+	this.removeCore();
 
 	_id= _id |0;
 	this.PUB.id= _id; //change id of provided Ncore

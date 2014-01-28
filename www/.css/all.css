@@ -7,6 +7,17 @@
 
 	transition: color .15s;
 }
+
+body {
+	background:$MAIN_BG;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	overflow:auto;
+	position:absolute;
+}
+
 hr {
 	height: 2px;
 	background-color: $DECORDARK;
@@ -73,15 +84,6 @@ input[type="reset"] {
 }
 
 
-#body {
-	background:$MAIN_BG;
-	top:0;
-	left:0;
-	height:100%;
-	width:100%;
-	overflow:auto;
-	position:absolute;
-}
 #testEl {
 	height:100px;
 	width:100px;

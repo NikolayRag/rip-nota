@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+	<meta content='charset=utf-8'>
 	<meta name='Keywords' content='nota,board,webboard,sticker,note,personal,individual,nickside,space,virtual,online,remote,information,wall,mind,map,mindmap,collaborative,writing,remark,hold,representation,home,homepage,own,together,share,map,scheme'>
 	<meta name='Description' content='Personal shared mindmap'>
 	<title><?=$DIC->labTitle?></title>
@@ -13,7 +13,7 @@
 
 <!-- Splashscreen; Will auto-hide when css loads -->
 <div class='hidden' style='font:20pt sans-serif;z-index:1000;position:fixed;top:0;bottom:0;left:0;right:0;background:<?=$CSS->MAIN_BG?>;color:<?=$CSS->DECORDARK?>;text-align:center'>
-	<table style=width:100%;height:100%><tr><td><?=$DIC->preCss?></td></tr></table>
+	<table style='width:100%;height:100%'><tr><td><?=$DIC->preCss?></td></tr></table>
 </div>
 
 <a class='hidden' href='anti-robots.txt'>DON'T browse into! It's a TRAP!</a>
