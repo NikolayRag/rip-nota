@@ -261,7 +261,12 @@ b1.9:
 		-Replacing addressing by ID and .all storage.
 +upload:	legacy, rewriten
 		+ tdyn_upload.php added
+		+ async used; handle db logging
 		- create upload nData leafs
+		- pre-restrict upload
++upload:	blobs, rewriten
+		- async used; handle db logging
+		- create upload leafs
 		- pre-restrict upload
 
 

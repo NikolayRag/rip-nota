@@ -1,6 +1,3 @@
-!!adapt: DOM, bind
-
-
 /*
 	HTML5 upload engine.
 
@@ -18,24 +15,13 @@
 
 	macro:
 
-	?in: pickFiles:
-		-new form created
-		-pickFiles() called
-		?by form:
-			-form put into form queue
-			-blank notes are created for each file
-			-submit queued form
-			end
-
-		?by blob:
-			-files from form are put into file queue
-	?in: DnD:
-			-file from DnD are put into file queue
+		-new form created from template
+		-its pickFiles() called
+		-on picked or DnD:
+			-files are put into file queue
 			-blank notes are created for each file
 			-procceed file queue
-			end
 */
-var UPLOAD;
 
 if (IS.dnd)
   var UPLOAD= new function(){
@@ -43,10 +29,8 @@ if (IS.dnd)
   /*
 		New style, sliced blob mode
   */
-  new function(){
-	this.formTry;  //used to select files only
 	this.queueA= []; //[file,associated_note],..
-	this.queueI;
+	this.queueNow;
 	
 	this.isUploading= 0;
 	this.timeoutUpProgress;
@@ -56,7 +40,7 @@ if (IS.dnd)
 	this.blobSize;
 	
 	this.fReader= new FileReader();
-	this.fileTarget	;	//server-side file guid
+	this.fileGuid;	//server-side file guid
 
 
 	/*
@@ -67,17 +51,18 @@ if (IS.dnd)
 	*/
 //todo: set final filename at start of upload, rather than end.
 	this.byForm= function(){
-		if (SESSION.board.PUB.rights<2)
+		if (SESSION.board.PUB.rights<NOTA_RIGHTS.RW)
 		  return;
-		//make new form and choose files
-		this.formTry= DOM.templateUpload.children[0].children["filePick"];
-		this.formTry.click();
+
+		//choose files
+		UPLOAD.formTry.pick.onchange= function(){this.filesSelected()}.bind(this);
+		UPLOAD.formTry.pick.click();
 	};
 
 
 	/*
 		Queue selected files after files are selected.
-		If dndEvent supplied, method is called by Drag-n-Drop,
+		If dndEvt supplied, method is called by Drag-n-Drop,
 		otherwise it is called by selecting files in form.
 		
 		macro:
@@ -86,24 +71,24 @@ if (IS.dnd)
 		-Append filelist to queue,
 		-Procceed with form queue.
 	*/
-	this.filesSelected= function(dndEvent){
-		if (dndEvent) //dnd
-		  dndEvent.preventDefault();
-		var thisFiles= dndEvent?
-		  dndEvent.dataTransfer.files
-		  : this.formTry.files;
-		var clientX= dndEvent? dndEvent.clientX :100;
-		var clientY= dndEvent? dndEvent.clientY: 100;
+	this.filesSelected= function(dndEvt){
+		var thisFiles= dndEvt?
+		  dndEvt.dataTransfer.files
+		  : UPLOAD.formTry.pick.files;
+
+//todo: get from tool if not dnd
+//..		var clientX= dndEvt? dndEvt.clientX :100;
+//..		var clientY= dndEvt? dndEvt.clientY: 100;
 
 		//create associated notes and add file/note pair to queue
 		for (var f=0; f<thisFiles.length; f++){
-			var tmpN= workFieldDbl( {clientX:clientX+f*5, clientY:clientY+f*50}, thisFiles[f].name.base64_encode() );
-			tmpN.setState(C_progress,0);
+//..			var tmpN= workFieldDbl( {clientX:clientX+f*5, clientY:clientY+f*50}, thisFiles[f].name.base64_encode() );
+//..			tmpN.setState(C_progress,0);
 
-			this.queueA[this.queueA.length]= [thisFiles[f],tmpN];
+			this.queueA.push({file:thisFiles[f], note:'tmpN'});
 		}
 //todo: fix in place
-		SESSION.board.PUB.ui.correct();
+//..		SESSION.board.PUB.ui.correct();
 
 		//go
 		if (!this.isUploading)
@@ -116,17 +101,14 @@ if (IS.dnd)
 	*/
 	this.goQueue= function(){
 		//re-init index
-		this.queueI= -1;
-		for (this.queueI in this.queueA) break;
-
-		if (this.queueI==-1){ //queue empty, stop
-			this.isUploading= 0;
+		if (!(this.queueNow= this.queueA.shift())){ //queue empty, stop
+			this.isUploading= false;
 			return;
 		}
-		this.isUploading= 1;
+		this.isUploading= true;
 
 		this.sliceOffset= 0;
-		this.blobSize= 1024*1024; //1mb chunk defaults
+		this.blobSize= UPSET.BLOB_SIZE;
 		this.blobCut();
 	};
 
@@ -135,7 +117,7 @@ if (IS.dnd)
 		repeatedly cut and (automatically) send slice
 	*/
 	this.blobCut= function(){
-		var thisFile= this.queueA[this.queueI][0];
+		var thisFile= this.queueNow.file;
 
 		//progress
 		this.fileProgressCB();
@@ -151,26 +133,24 @@ if (IS.dnd)
 	/*
 		Send file slice actually readed.
 	*/
-//todo: validate "this"
-	this.blobSend=
-	 this.fReader.onloadend= 
-	 function(e){
+	this.fReader.onloadend= function(e){
 		if (e.target.readyState != FileReader.DONE)
 		  return;
 
-		var thisFile= this.queueA[this.queueI][0];
+		var thisFile= this.queueNow.file;
 
+//todo: use ASYNC
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener("load",this.blobSent,false);
-		xhr.open('POST', "../.async/asyncUploadFileBlob.php");
+		xhr.open('POST', "/.async/_uploadBlob.php");
 		xhr.setRequestHeader("Content-Type", "application/x-binary; charset=x-user-defined");
 		xhr.setRequestHeader("Filename", thisFile.name);
-		xhr.setRequestHeader("File-guid", this.sliceOffset==0? "0":this.fileTarget); //tell what to continue
+		xhr.setRequestHeader("File-guid", this.sliceOffset==0? "0":this.fileGuid); //reuse
 		xhr.setRequestHeader("Filesize", thisFile.size);
 		xhr.setRequestHeader("Slice-From", this.sliceOffset);
 		xhr.setRequestHeader("Slice-Size", this.blobSize);
 		xhr.sendAsBinary(e.target.result);
-	}
+	}.bind(this);
 
 	/*
 		One slice is sent.
@@ -180,16 +160,17 @@ if (IS.dnd)
 	*/
 	this.blobSent= function(e) {
 		if (e.target.status!=200) {
-			alert(e.target.responseText);
+//todo: proper message
+			UI.popW.up(DIC.uploadLimit +' ' +e.target.responseText);
 			return;
 		}
 
-		var thisFile= this.queueA[this.queueI][0];
+		var thisFile= this.queueNow.file;
 
 		if (this.sliceOffset==0) //first slice, store file names
-		  this.fileTarget= e.target.responseText;
+		  this.fileGuid= e.target.responseText;
 		  
-//todo:	check for error
+//todo:	check for error, retry
 		if (!0)
 		  this.sliceOffset+= this.blobSize;
 
@@ -197,44 +178,48 @@ if (IS.dnd)
 		if (this.sliceOffset>=thisFile.size){
 			this.fileProgressCB(1); //100%
 
-			//remove first form and procceed
-			delete this.queueA[this.queueI];
+			//procceed
 			this.goQueue();
 			return;
 		}
 
 		this.blobCut();
-	}
+	}.bind(this);
 
 	
 	/*
 		update upload progress value
 	*/
-	this.fileProgressCB= function(complete){
-		var thisFile= this.queueA[this.queueI][0];
-		var thisNote= this.queueA[this.queueI][1];
+	this.fileProgressCB= function(_complete){
+		var thisFile= this.queueNow.file;
+		var thisNote= this.queueNow.note;
 
-		if (!complete){ //progress
+console.log(this.sliceOffset/thisFile.size);
+return;
+/*..
+		if (!_complete){ //progress
 			thisNote.setState(C_progress,this.sliceOffset/thisFile.size);
 		} else { //complete
-			thisNote.content("<a href='/file" +this.fileTarget +"'>" +thisFile.name +"</a>");
+			thisNote.content("<a href='/file" +this.fileGuid +"'>" +thisFile.name +"</a>");
 			thisNote.editAccept();
 //		this._note_.style.backgroundImage= "url(/file" +guidS +")";
 		}
+*/
 	}
-};
+  };
 
 
 if (UPLOAD){
-	DOM.boardUpload.onclick= //start pick files
-	  function(e){UPLOAD.byForm()};
-	DOM.filePick.onchange= //end pick files
-	  function(e){UPLOAD.filesSelected()};
-	if (IS.dnd){ //dnd
-		DOM.workField.ondragover=	function(){return false}; //need to be declared
-		DOM.workField.ondragleave=	function(){return false}; //need to be declared
-		DOM.workField.ondrop=	function(e){UPLOAD.filesSelected()};
-	}
+	var tmplForm= DOM('uploadTmpl').children[0];
+	UPLOAD.formTry= {
+		form: tmplForm,
+		pick: DOM('filePick', tmplForm),
+		submit: DOM('upSubmit', tmplForm)
+	};
+
+	UI.DOM.workField.ondragover=	function(){return false}; //need to be declared
+	UI.DOM.workField.ondragleave=	function(){return false}; //need to be declared
+	UI.DOM.workField.ondrop=	function(e){UPLOAD.filesSelected(e); return false};
 
 
 //wrap blob methods
@@ -255,3 +240,10 @@ if (UPLOAD){
 		  File.prototype.slice= File.prototype.mozSlice;
 	}
 }
+
+var xxx= DOCUMENT.bodyEl.appendChild(DOCUMENT.createElement('span'));
+ xxx.innerHTML= 'upload';
+ xxx.style.position= 'fixed';
+ xxx.style.top= '100px';
+ xxx.onclick= function(){UPLOAD.byForm()};
+

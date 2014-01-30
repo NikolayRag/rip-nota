@@ -165,9 +165,10 @@ $CONSTANTS= array(
 		'RES'=>	2
 	),
 
-	'UPLOAD'=>	array( 
+	'UPSET'=>	array( 
 		'LEGACY_MODESIGN'=>	'legUpMode',
-		'LEGACY_FILESIGN'=>	'legUpFiles'
+		'LEGACY_FILESIGN'=>	'legUpFiles',
+		'BLOB_SIZE'=>	1024*1024 //1mb chunk defaults
 	),
 
 

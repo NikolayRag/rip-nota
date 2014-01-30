@@ -1,40 +1,37 @@
 <?
 
-	set_time_limit(0);
-//	include('../.include/includeAll.php');
-	
-	if($USER->signed) {
-		$uploaddir= '\\\\Ki-master0\\Inetpub$\\nota\\.upload';
+set_time_limit(0);
 
-		$upFileA= pathinfo ($_SERVER["HTTP_FILENAME"]);
-		  $fileName= $upFileA['filename'];
-		  $fileExt= $upFileA['extension'];
-		
+$uploaddir= '//Ki-master0/Inetpub$/nota/www/.upload';
 
-		if ($_SERVER["HTTP_FILE_GUID"]==0){ //first slice
-			$guidString= uniqid("",true) .rand();
-			  $guidString[14]="0"; //remove '.'
+$upFileA= pathinfo ($_SERVER["HTTP_FILENAME"]);
+  $fileName= $upFileA['filename'];
+  $fileExt= $upFileA['extension'];
 
-			mysql_query("INSERT INTO uploads (guid,filename,id_user,public,size,ext,enabled) VALUES ('$guidString','$fileName',$USER->id,1,{$_SERVER["HTTP_FILESIZE"]},'$fileExt',0)" );
 
-			$fout= fopen("$uploaddir\\$guidString.$fileExt","wb");
-		} else { //sequent slice
-			$guidString= $_SERVER["HTTP_FILE_GUID"];
+if ($_SERVER["HTTP_FILE_GUID"]==0){ //first slice
+	$guidString= uniqid("",true) .rand();
+	  $guidString[14]="0"; //remove '.'
 
-			$fout= fopen("$uploaddir\\$guidString.$fileExt","ab");
-			fseek($fout,$_SERVER["HTTP_SLICE_FROM"]);
-		}
+//..			mysql_query("INSERT INTO uploads (guid,filename,id_user,public,size,ext,enabled) VALUES ('$guidString','$fileName',$USER->id,1,{$_SERVER["HTTP_FILESIZE"]},'$fileExt',0)" );
 
-		$fin = fopen("php://input", "rb");
-		while (!feof($fin))
-		  fwrite($fout,fread($fin, $_SERVER["HTTP_SLICE_SIZE"]));
-		fclose($fin);
+	$fout= fopen("$uploaddir/$guidString.$fileExt","wb");
+} else { //sequent slice
+	$guidString= $_SERVER["HTTP_FILE_GUID"];
 
-		fclose($fout);
+	$fout= fopen("$uploaddir/$guidString.$fileExt","ab");
+	fseek($fout,$_SERVER["HTTP_SLICE_FROM"]);
+}
 
-		if ($_SERVER["HTTP_SLICE_FROM"]+$_SERVER["HTTP_SLICE_SIZE"]==$_SERVER["HTTP_FILESIZE"])
-		  mysql_query("UPDATE uploads SET enabled=1 WHERE guid='$guidString'");
-		echo $guidString;
-	}
-	
+$fin = fopen("php://input", "rb");
+while (!feof($fin))
+  fwrite($fout,fread($fin, $_SERVER["HTTP_SLICE_SIZE"]));
+fclose($fin);
+
+fclose($fout);
+
+//..		if ($_SERVER["HTTP_SLICE_FROM"]+$_SERVER["HTTP_SLICE_SIZE"]==$_SERVER["HTTP_FILESIZE"])
+//..		  mysql_query("UPDATE uploads SET enabled=1 WHERE guid='$guidString'");
+echo $guidString;
+
 ?>

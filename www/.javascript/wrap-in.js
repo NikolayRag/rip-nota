@@ -44,9 +44,9 @@ IS.dnd= (
 		||'undefined'!==typeof File.prototype.webkitSlice
 		||'undefined'!==typeof File.prototype.mozSlice
 	)
-	&&'undefined'===typeof FileReader
-	&&'undefined'===typeof FileList
-	&&'undefined'===typeof Blob
+	&&'undefined'!==typeof FileReader
+	&&'undefined'!==typeof FileList
+	&&'undefined'!==typeof Blob
 )? 1:0;
 //todo: update url without reload
 IS.popurl=

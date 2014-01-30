@@ -19,7 +19,8 @@
 	
 
 
-//if (!IS.dnd)
+//todo: define at loading js
+if (!IS.dnd)
   var UPLOAD= new function(){
 	this.queueA= []; //forms/associated_notes
 	this.queueNow;
@@ -84,17 +85,17 @@
 
 		if (formUpFname.files){ //multi
 			for (var f=0; f<formUpFname.files.length; f++){
-//				var tmpN= workFieldDbl(	{clientX:100+f*5, clientY:100+f*50}, formUpFname.files[f].name.base64_encode() );
-//				fileNotesA.push(tmpN);
-//				tmpN.setState(C_progress,0);
+//..				var tmpN= workFieldDbl(	{clientX:100+f*5, clientY:100+f*50}, formUpFname.files[f].name.base64_encode() );
+//..				fileNotesA.push(tmpN);
+//..				tmpN.setState(C_progress,0);
 			}
 		} else { //single
-//			var tmpN= workFieldDbl(	{clientX:0, clientY:0}, formUpFname.value.base64_encode() );
-//			fileNotesA.push(tmpN);
-//			tmpN.setState(C_progress,0);
+//..			var tmpN= workFieldDbl(	{clientX:0, clientY:0}, formUpFname.value.base64_encode() );
+//..			fileNotesA.push(tmpN);
+//..			tmpN.setState(C_progress,0);
 		}
 
-//		SESSION.board.PUB.ui.correct();
+//..		SESSION.board.PUB.ui.correct();
 
 
 		//add to queue and go
@@ -130,7 +131,8 @@
 
 		var thisForm= this.queueNow.uploadForm;
 //check: should click() call work in some browsers?
-		DOCUMENT.body.appendChild(thisForm.form); //should be in DOM for submit clicks to work
+		//should be in DOM for submit clicks to work
+		DOCUMENT.body.appendChild(thisForm.form);
 		thisForm.submit.click(); //fired and forgot
 		DOCUMENT.body.removeChild(thisForm.form);
 	};
@@ -166,7 +168,7 @@
 		  return;
 console.log(res);
 return;
-/*
+/*..
 		if (!Array.isArray(res)) //filters out end of upload
 		  var resA= res.split(",");
 
@@ -196,12 +198,7 @@ return;
 */
 	};
 
-};
-UPLOAD.tmplForm= DOM('uploadTmpl').children[0];
+  };
 
-var xxx= DOCUMENT.bodyEl.appendChild(DOCUMENT.createElement('span'));
- xxx.innerHTML= 'upload';
- xxx.style.position= 'fixed';
- xxx.style.top= '100px';
- xxx.onclick= function(){UPLOAD.byForm()};
-
+if (UPLOAD)
+  UPLOAD.tmplForm= DOM('uploadTmpl').children[0];

@@ -130,9 +130,6 @@ function kiMiniJs($_renameA=false){
 	 file_get_contents(".javascript/helpers.js").
 
 	 //core
-	 file_get_contents(".javascript/object-upload_legacy.js").
-//	 file_get_contents(".javascript/object-upload.js").
-
 	 file_get_contents(".javascript/object-session.js").
 	 file_get_contents(".javascript/object-session.logon.js").
 	 file_get_contents(".javascript/object-session.update.js").
@@ -175,6 +172,9 @@ function kiMiniJs($_renameA=false){
 //		 file_get_contents(".javascript/object-ui.wrap-contacts.js").
 
      //adds
+	 file_get_contents(".javascript/object-upload_legacy.js").
+	 file_get_contents(".javascript/object-upload.js").
+
      file_get_contents(".javascript/Adds/canvas0.js").
 
 	 file_get_contents(".javascript/object-__profile.js").
