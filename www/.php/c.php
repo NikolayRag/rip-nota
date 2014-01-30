@@ -105,7 +105,9 @@ $CONSTANTS= array(
 		'UPDATE'=>	1,
 		'SAVE'=>	2,
 		'LOGON'=>	3,
-		'LOGVALIDATE'=>	4
+		'LOGVALIDATE'=>	4,
+		'UPLOAD_LEGACY'=>	5,
+		'UPLOADPROGRESS_LEGACY'=>	6
 	),
 
 	'ASIDX_UPDCB'=>	array( 
@@ -163,6 +165,10 @@ $CONSTANTS= array(
 		'RES'=>	2
 	),
 
+	'UPLOAD'=>	array( 
+		'LEGACY_MODESIGN'=>	'legUpMode',
+		'LEGACY_FILESIGN'=>	'legUpFiles'
+	),
 
 
 

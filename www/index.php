@@ -3,6 +3,7 @@ include('.php/include/includeAll.php');
 include('.php/include/filterClient.php');
 include('.php/include/filterUrl.php');
 
+
 //todo: move to stored proc
 $DB->apply('logHttpAgent', $_SERVER['HTTP_USER_AGENT']);
 $agentId= $DB->lastInsertId();
@@ -32,6 +33,19 @@ if (clientType()== $CLIENT_TYPE->BOT){
 	exit;
 }
 
+
+//branch: legacy upload
+if ($_POST['mode']== $ASYNC_MODE->UPLOAD_LEGACY){
+//todo: make normal upload restrictions
+	include('.php/uploadLegacy.php');
+	exit;
+}
+
+//branch: legacy upload progress
+if ($_POST['mode']== $ASYNC_MODE->UPLOADPROGRESS_LEGACY){
+	include('.php/uploadProgressLegacy.php');
+	exit;
+}
 
 //branch: async update
 if ($_POST['mode']== $ASYNC_MODE->UPDATE){

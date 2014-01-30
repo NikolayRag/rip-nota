@@ -257,6 +257,13 @@ b1.9:
 +save:	creating new board cause immediate save
 -NdataUi:	dedicate root UI leaf
 -tool:	make context-based dynamic tool collections
+-JS:	UnitLink introduced for all units placeholders;
+		-Replacing addressing by ID and .all storage.
++upload:	legacy, rewriten
+		+ tdyn_upload.php added
+		- create upload nData leafs
+		- pre-restrict upload
+
 
 
 
@@ -612,6 +619,9 @@ Minor:
 Fix:
 +session:	Logout fixed. All 'this' changed to 'thisNota'
 +upload:	temporaryly disabled.
+		+ returned back
+
+
 
 !b1.7:	09.01.13
 +org:	HTML widgets moved to templates: Overview, Contactlist, Colorpicker, Popup

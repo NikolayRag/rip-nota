@@ -17,11 +17,12 @@
 </div>
 
 <a class='hidden' href='anti-robots.txt'>DON'T browse into! It's a TRAP!</a>
-<iframe name='loadForm' class='hidden'></iframe>
+<iframe id='legacyUploadFrame' name='loadForm' class='hidden'></iframe>
 <div id='templates' style='display:none'>
 	<? include('.templates/tdyn_register.php'); ?>
 	<? include('.templates/tdyn_palette.php'); ?>
 	<? include('.templates/tdyn_pin.php'); ?>
+	<? include('.templates/tdyn_upload.php'); ?>
 	<? include('.templates/ttool_boardLeaf.php'); ?>
 	<? include('.templates/ttool_boardLeafEdit.php'); ?>
 	<? include('.templates/ttool_board.php'); ?>

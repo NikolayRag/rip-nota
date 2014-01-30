@@ -130,13 +130,15 @@ function kiMiniJs($_renameA=false){
 	 file_get_contents(".javascript/helpers.js").
 
 	 //core
-//		 file_get_contents(".javascript/object-upload_legacy.js").
-//		 file_get_contents(".javascript/object-upload.js").
+	 file_get_contents(".javascript/object-upload_legacy.js").
+//	 file_get_contents(".javascript/object-upload.js").
 
 	 file_get_contents(".javascript/object-session.js").
 	 file_get_contents(".javascript/object-session.logon.js").
 	 file_get_contents(".javascript/object-session.update.js").
 	 file_get_contents(".javascript/object-session.save.js").	
+
+	 file_get_contents(".javascript/UNITS/UnitLink.js").
 
 	 file_get_contents(".javascript/UNITS/U.js").
 	 file_get_contents(".javascript/UNITS/N.js").

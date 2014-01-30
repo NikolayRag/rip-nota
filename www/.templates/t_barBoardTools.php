@@ -14,15 +14,4 @@
   </ul></li>
 </ul></div>
 <br>
-
-
-
-<div id='templateUpload' style='display:none'>
-	<form enctype='multipart/form-data' target=loadForm action='../.async/asyncUploadFiles.php' method='POST' style='display:none'>
-		<input type='hidden' name='PHP_SESSION_UPLOAD_PROGRESS' value=1>
-		<input type='hidden' name='MAX_FILE_SIZE' value=1480000000>
-		<input type='file' id='filePick' multiple='multiple' name='upload[]'>
-		<input type='submit' id='upSubmit'>
-	</form>
-</div>
 <!-- out Bar Board Tools -->
