@@ -2,8 +2,10 @@
 	legacy upload engine.
 
 	Interface:
-		byForm() initiates file selection.
+		byForm(_onPickedCB) initiates file selection.
 		New hidden form is added for each selection to hold queued files.
+		As files picked, supplied _onPickedCB(files[]) called,
+		 returning upload container notes
 
 	macro:
 
@@ -20,8 +22,12 @@
 
 
 //todo: define at loading js
-if (!IS.dnd)
-  var UPLOAD= new function(){
+if (!IS.dnd){
+
+
+var UPLOAD= new function(){
+	this.onPickedCB;
+
 	this.queueA= []; //forms/associated_notes
 	this.queueNow;
 	
@@ -38,12 +44,17 @@ if (!IS.dnd)
 		One/several files accepted.
 
 		New Form is created from template and queued for uploading
+
+		_onPickedCB([file,...]) is supplied callback
+		returning array of notes for upload into
 	*/
 //todo: set final filename at start of upload, rather than end.
-	this.byForm= function(){
+//PUBLIC
+	this.byForm= function(_onPickedCB){
 		if (SESSION.board.PUB.rights<NOTA_RIGHTS.RW)
 		  return;
 
+		this.onPickedCB= _onPickedCB;
 		//make new form and choose files
 		var cClone= UPLOAD.tmplForm.cloneNode(true);;
 		var formTry= {
@@ -56,6 +67,11 @@ if (!IS.dnd)
 		formTry.pick.click();
 	};
 	
+	this.byDnD= function(){
+//dic:
+		UI.popW.up('unsupported dnd');
+		return;
+	}
 
 	/*
 		Queue Form after files are selected.
@@ -69,8 +85,11 @@ if (!IS.dnd)
 	this.filesSelected= function(_formTry){
 		var formUpFname= _formTry.pick;
 		
-		//check total length
-		if (formUpFname.files){
+//todo: should move to tool's callback .(files[])
+		//create associated notes
+		var filesA= [];
+		if (formUpFname.files){ //multi
+			//check total length
 			var tl=0;
 			for (var f=0; f<formUpFname.files.length; f++)
 			  tl+= formUpFname.files[f].size;
@@ -78,30 +97,19 @@ if (!IS.dnd)
 				UI.popW.up(DIC.uploadLimit);
 				return;
 			}
-		}
 
-		//create associated notes
-		var fileNotesA= [];
+			for (var f=0; f<formUpFname.files.length; f++)
+			  filesA.push( formUpFname.files[f].name );
+		} else //veeeeery legacy, no multi-file
+		  filesA.push( formUpFname.value );
 
-		if (formUpFname.files){ //multi
-			for (var f=0; f<formUpFname.files.length; f++){
-//..				var tmpN= workFieldDbl(	{clientX:100+f*5, clientY:100+f*50}, formUpFname.files[f].name.base64_encode() );
-//..				fileNotesA.push(tmpN);
-//..				tmpN.setState(C_progress,0);
-			}
-		} else { //single
-//..			var tmpN= workFieldDbl(	{clientX:0, clientY:0}, formUpFname.value.base64_encode() );
-//..			fileNotesA.push(tmpN);
-//..			tmpN.setState(C_progress,0);
-		}
-
-//..		SESSION.board.PUB.ui.correct();
-
-
-		//add to queue and go
-		this.queueA.push({uploadForm:_formTry, notesA:fileNotesA});
-		if (!this.isUploading) //only thread
-		  this.goQueue();
+		//add to queue and go if not yet
+		this.queueA.push({
+			uploadForm:_formTry,
+			notesA:this.onPickedCB(filesA)
+		});
+		if (!this.isUploading)
+		  this.nextInQueue();
 	};
 	
 	
@@ -113,7 +121,7 @@ if (!IS.dnd)
 		-Start upload
 		
 	*/
-	this.goQueue= function(){
+	this.nextInQueue= function(){
 		clearTimeout(this.timeoutUpProgress);
 		if (!(this.queueNow= this.queueA.shift())){ //queue empty, stop
 			this.isUploading= false;
@@ -151,7 +159,7 @@ if (!IS.dnd)
 		var result= _frame.contentDocument.firstChild.lastChild.innerHTML;
 		this.fileProgressCB(result);
 
-		this.goQueue();
+		this.nextInQueue();
 	}
 
 	
@@ -198,7 +206,9 @@ return;
 */
 	};
 
-  };
+};
 
-if (UPLOAD)
-  UPLOAD.tmplForm= DOM('uploadTmpl').children[0];
+UPLOAD.tmplForm= DOM('uploadTmpl').children[0];
+
+
+}

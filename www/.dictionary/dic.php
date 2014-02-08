@@ -26,16 +26,15 @@ $DIC= array(
 	'popPin'=>	"Pin note to..",
 
 	'popStateUpdating'=>	"Update requested",
-	'popStateError'=>	"Update error, server side",
-	'popStateStop'=>	"Update stopped<br>browser error",
-	'popStateStopALERT'=>	"<span class=bigTxt>Error updating board!</span><br><br>Server is returning shit<br><br><span class=smallTxt>Update is stopped, notes can still be edited<br>(but not likely to)</span>",
+	'popStateError'=>	"Update error, \nserver side",
+	'popStateStop'=>	"Update stopped, \nbrowser error",
+	'popStateStopALERT'=>	"<span class=bigTxt>Error updating board!</span>\n\nServer is returning shit\n\n<span class=smallTxt>Update is stopped, notes can still be edited\n(but not likely to)</span>",
 	'popStateOkay'=>	"Everything is Ok",
 	'popStateVDelayed'=>	'Waiting too long',
 	'popStateVAsyncHead'=>	'Async error ',
 	'popStateVAsync0'=>	'server unreachable',
 	'popStateVAsync500'=>	'internal server error',
-	'popStateProfTimeServ'=>	'server',
-	'popStateProfTimeTransfer'=>	'transfer',
+	'popStateProfTime'=>	'$:server, $:transfer',
 
 
 	'boardTools'=>	"Board tools",
@@ -55,10 +54,11 @@ $DIC= array(
 	'contYouWait'=>	"You Waiting",
 	'contLab'=>	"Contacts",
 
-	'uploadLimit'=>	"Error:<br><br>Your browser is not capable<br>of sending more than 14GB at once",
-	'uploadError'=>	"Uploading error",
+	'uploadLimit'=>	"Error:\n\nYour browser is not capable\nof sending more than 14GB at once",
+	'uploadError'=>	"Uploading error for\n$",
 	'uploadComplete'=>	"Complete",
-	
+	'uploadRestricted'=>	"Upload restricted for\n$",
+
 	'timeAgoSecs'=>	"$ sec ago,$ secs ago",
 	'timeAgoSecsRulz'=>	"(^|[^1])1$",
 	'timeAgoMins'=>	"a min ago,% min ago,mins ago",
@@ -121,9 +121,9 @@ $DIC= array(
 
 	'preCss'=> "wait a bit...",
 
-	'_got'=> 'Got',
-	'_in'=> 'In',
-	'_proccessed'=> 'proccessed',
+	'_got'=> 'Got: $',
+	'_in'=> 'Got: $ in $sec\n$FPS: $',
+	'_proccessed'=> '$\n$ms: proccessed',
 
 	'msgNoProfile'=> 'no profile info'
 );

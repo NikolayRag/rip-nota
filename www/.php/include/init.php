@@ -21,10 +21,11 @@ preg_match_all(
 	$siteSpecificConfig
 );
 $SALT=
- $DB_HOST =
- $DB_USER =
- $DB_PASS =
- $DB_NAME =
+ $DB_HOST=
+ $DB_USER=
+ $DB_PASS=
+ $DB_NAME=
+ $UPLOAD_DIR=
  '';
 foreach($siteSpecificConfig[1] as $key=>$sscName){
 	$sscValue= trim($siteSpecificConfig[2][$key]);
@@ -43,6 +44,9 @@ foreach($siteSpecificConfig[1] as $key=>$sscName){
 			break;
 		case 'DB_NAME':
 			$DB_NAME= $sscValue;
+			break;
+		case 'UPLOAD_DIR':
+			$UPLOAD_DIR= $sscValue;
 			break;
 	}
 }

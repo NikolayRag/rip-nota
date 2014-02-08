@@ -8,7 +8,7 @@
 
 UI.popW= new function(){
 
-this.tip= function(_tipMsg){
+this.tip= function(_src){
 	this.up(this.tipMsg);
 	this.DOM.upBar.style.display= 'none';
 	this.DOM.upWindow.style.left= (
@@ -19,23 +19,36 @@ this.tip= function(_tipMsg){
 	) +'px';
 
 	this.isTool= 1;
-	if (_tipMsg)
-	  tipSet(_tipMsg);
+	if (_src)
+	  tipSet(_src);
 }
 
-this.tipSet= function(_tipMsg){
-	this.tipMsg= _tipMsg;
+this.tipSet= function(_src){
+	this.tipMsg= _src;
 
 //todo: change to lazy
 	if (this.tipMsgTimeout)
 	  clearTimeout(this.tipMsgTimeout);
 	var _this= this;
 	this.tipMsgTimeout= setTimeout( function(){
-		if (_this.isTool) _this.DOM.upContent.elementText(_tipMsg,true)
+		if (_this.isTool){
+//todo: remove duplicate 1
+			if (_src instanceof Array)
+			  var putTxt= _src[0].subst(_src, 1);
+			else
+			  var putTxt= _src;
+			_this.DOM.upContent.elementText(putTxt.split("\n").join('<br>'),true);
+		}
 	}, TIMER_LENGTH.TIP_DELAY);
 }
 
 //todo: alternative buttons
+/*
+	src can be:
+		text 			just inlined
+		[text,v1,...] 	text's '$' substituted by v1 etc.
+		HTMLElement 	inlined
+*/
 this.up= function(_src,_okCode,_notCode,_focusOn){
 	this.isTool= 0;
 	this.focus= DOCUMENT.activeElement;
@@ -44,8 +57,14 @@ this.up= function(_src,_okCode,_notCode,_focusOn){
       this.DOM.upContent.removeChild(this.DOM.upContent.firstChild);
 	if (IS.instance(_src,HTMLElement))
 	  this.DOM.upContent.appendChild(_src);
-	else
-	  this.DOM.upContent.elementText(_src,true);
+	else {
+//todo: remove duplicate 2
+		if (_src instanceof Array)
+		  var putTxt= _src[0].subst(_src, 1);
+		else
+		  var putTxt= _src;
+		this.DOM.upContent.elementText(putTxt.split("\n").join('<br>'),true);
+	}
 
 	this.okCode= IS.fn(_okCode)? _okCode :undefined;
 	this.notCode= IS.fn(_notCode)? _notCode :undefined;

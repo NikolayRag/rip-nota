@@ -86,8 +86,11 @@ _saveData:	Array of POST data passed; SHOULD REMAIN ARRAY TYPE DUE TO MINIFYING
 _that:		caller context to call callbacks within
 _cbOk:		normal callback
 _cbErr:		error callback
+_sync:		1 for blocked call
+_binary:	send as binary
+_headersA:	additional headers
 */
-this.async= function(_saveMode, _saveData, _that, _cbOk, _cbError, _sync) {
+this.async= function(_saveMode, _saveData, _that, _cbOk, _cbError, _sync, _binary, _headersA) {
 	if (this.inAsync){
 		this.asyncQueue.push(arguments);
 		return;
@@ -97,29 +100,37 @@ this.async= function(_saveMode, _saveData, _that, _cbOk, _cbError, _sync) {
 
 	this.inAsync= true;
 
-	var _this= this;
-	this.httpRequest.onreadystatechange = function() {
-		if (this.readyState != 4)
+	this.httpRequest.onreadystatechange = function(_e) {
+		if (_e.target.readyState != 4)
 		  return;
 
-		if (this.status == 200)
-		  _cbOk.call(_that, this.responseText);
+		if (_e.target.status == 200)
+		  _cbOk.call(_that, _e.target.responseText);
 		else if (_cbError)
-		  _cbError.call(_that, this.status, _this.asyncStatusString(this.status), this.responseText);
+		  _cbError.call(_that, _e.target.status, this.asyncStatusString(_e.target.status), _e.target.responseText);
 
-		_this.inAsync= false;
+		this.inAsync= false;
 
-		if (_this.asyncQueue.length)
-		  _this.async.apply(_this,_this.asyncQueue.shift());
-	};
-
-	var saveData= [[ASYGN.MODE,_saveMode].join('=')];
-	for (var dName in _saveData)
-	  saveData.push([dName,_saveData[dName]].join('='));
+		if (this.asyncQueue.length)
+		  this.async.apply(this,this.asyncQueue.shift());
+	}.bind(this);
 
 	this.httpRequest.open('POST', '/', !_sync)
-	this.httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	this.httpRequest.send(saveData.join('&'));
+	this.httpRequest.setRequestHeader('Content-type', _binary? 'application/x-binary; charset=x-user-defined' : 'application/x-www-form-urlencoded');
+	this.httpRequest.setRequestHeader(ASYGN.MODE, _saveMode);
+	for (var iH in _headersA)
+	  this.httpRequest.setRequestHeader(_headersA[iH][0], _headersA[iH][1]);
+
+	if (_binary)
+	  this.httpRequest.sendAsBinary(_saveData);
+	else{
+		var saveData= [];
+		for (var dName in _saveData)
+		  saveData.push([dName,_saveData[dName]].join('='));
+
+		this.httpRequest.send(saveData.join('&'));
+	}
+
 	return this.httpRequest;
 }
 
@@ -225,4 +236,27 @@ this.board= null; //UI painting and interaction.
 
 this.bindEvt();
 
+}
+
+
+
+
+
+if (IS.DnD){
+	if (!XMLHttpRequest.prototype.sendAsBinary)
+	  XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
+		function byteValue(x) {
+			return x.charCodeAt(0) & 0xff;
+		}
+		var ords = Array.prototype.map.call(datastr, byteValue);
+		var ui8a = new Uint8Array(ords);
+		this.send(ui8a.buffer);
+	 }
+
+	if (!File.prototype.slice){
+		if (File.prototype.webkitSlice)
+		  File.prototype.slice= File.prototype.webkitSlice;
+		else if (File.prototype.mozSlice)
+		  File.prototype.slice= File.prototype.mozSlice;
+	}
 }

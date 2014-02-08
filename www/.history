@@ -262,12 +262,13 @@ b1.9:
 +upload:	legacy, rewriten
 		+ tdyn_upload.php added
 		+ async used; handle db logging
-		- create upload nData leafs
 		- pre-restrict upload
 +upload:	blobs, rewriten
-		- async used; handle db logging
-		- create upload leafs
+		+ async used; handle db logging
 		- pre-restrict upload
+		+ retries added on error
++upload:	public caller supports container leaf creation callback
++upload:	upload dir configured from www.privateCfg
 
 
 
@@ -377,6 +378,12 @@ Minor:
 			+ gap is now parameter
 +tool:		add Ndata toolset to TEXT data
 			+ dedicete Ndata toolset
++dic:		can have "\n"
++pop:		support [] as text argument: all '$' will be susbtituted with [] fields
+			+ String.prototype.subst([],startIdx) added
++pop:		support '\n'
++async:		binary mode sent within header
+			+ additional headers array supplied
 
 
 
@@ -499,6 +506,8 @@ Refactor:
 +general:		t_indexBot.php made nicer
 +html:			template's NOPROFILE-controlled comment now wiped out with kiMiniHTML()
 +Ncore:			.doKill() renamed to .removeCore()
++DIC:			uses '\n' and '$'
+
 
 
 Fix:
@@ -586,6 +595,7 @@ Fix:
 -update:		toggling implicit/normal should handle previous note/data removal
 +update:		sql calls outnumbered for logged on user: right groups reading; Speed up.
 -tools:			deleting unsaved created cause error
+-upload:		big legacy upload cause server heavy crash, it didnt. 
 
 
 

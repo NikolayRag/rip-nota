@@ -89,6 +89,7 @@ $CONSTANTS= array(
 
 	'ASYGN'=>	array(
 		'MODE'=>	'mode',
+		'MODE_SRV'=>	'HTTP_MODE',
 		'NFULL'=>	'N',
 		'NBREEF'=>	'n',
 		'NDATA'=>	'd',
@@ -107,7 +108,8 @@ $CONSTANTS= array(
 		'LOGON'=>	3,
 		'LOGVALIDATE'=>	4,
 		'UPLOAD_LEGACY'=>	5,
-		'UPLOADPROGRESS_LEGACY'=>	6
+		'UPLOADPROGRESS_LEGACY'=>	6,
+		'UPLOAD_BLOB'=>	7
 	),
 
 	'ASIDX_UPDCB'=>	array( 
@@ -168,7 +170,9 @@ $CONSTANTS= array(
 	'UPSET'=>	array( 
 		'LEGACY_MODESIGN'=>	'legUpMode',
 		'LEGACY_FILESIGN'=>	'legUpFiles',
-		'BLOB_SIZE'=>	1024*1024 //1mb chunk defaults
+		'BLOB_SIZE'=>	1024*1024, //1mb chunk defaults
+		'MAX_RETRIES'=>	2,
+		'RESTRICTED'=>	-1
 	),
 
 

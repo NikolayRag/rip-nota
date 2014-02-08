@@ -6,7 +6,7 @@ set_time_limit(0);
 
 $outA= Array();
 
-$filesDone= $_FILES[$UPLOAD->LEGACY_FILESIGN];
+$filesDone= $_FILES[$UPSET->LEGACY_FILESIGN];
 
 foreach ($filesDone['name'] as $fIndex=>$fName){
 	$err= $filesDone['error'][$fIndex];
@@ -21,10 +21,9 @@ foreach ($filesDone['name'] as $fIndex=>$fName){
 		  $guidString[14]="0"; //remove '.'
 
 //todo: move this to individual proccess
-		$uploaddir= '//Ki-master0/Inetpub$/nota/www/.upload';
 		if (!move_uploaded_file(
 			$filesDone['tmp_name'][$fIndex]
-			, "$uploaddir/$guidString.$fileExt"
+			, "$UPLOAD_DIR/$guidString.$fileExt"
 		))
 		  $err= 1;
 	}
@@ -34,12 +33,14 @@ foreach ($filesDone['name'] as $fIndex=>$fName){
 
 	$outA[]= $guidString;
 
-//todo: make bulk
-	$DB->apply('logUploadLegacy',
+	$DB->apply('logUploadInit',
 		$guidString, $fileName, $USER->id, 1, $filesDone['size'][$fIndex], $fileExt,1
 	);
 }
 
+
+//todo: handle upload error
+//todo: handle user restriction
 
 //???args
 echo implode($outA,"\n");

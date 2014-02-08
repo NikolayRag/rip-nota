@@ -94,6 +94,7 @@ Ncore.newId= -1;
 */	
 Ncore.allNotes= [];
 //todo: return filtered sets (unsaved, undrawed etc)
+//todo: handle and return UnitLink
 Ncore.all= function(_id, _filter){
 	if (arguments.length==0)
 	  return Ncore.allNotes;

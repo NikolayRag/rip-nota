@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD']=='GET'){
 	  : '';
 }
 
-if (array_key_exists($UPSET->LEGACY_MODESIGN, $_POST))
-  $_POST['mode']= $ASYNC_MODE->UPLOAD_LEGACY;
+if (array_key_exists($ASYGN->MODE_SRV, $_SERVER))
+  $_POST['mode']= $_SERVER[$ASYGN->MODE_SRV];
 
 ?>

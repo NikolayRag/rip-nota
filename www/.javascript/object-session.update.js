@@ -216,17 +216,17 @@ this.updateCB= function(_bData){
 	var splitData= _bData.split(ASYGN.D_UNIT);
 
 	var profTime= __PROFILE.profileTime();
-	var profSize= DIC._got +': ' +formatMeasures(_bData.length,1024,.1,'b');
+	var profSize= formatMeasures(_bData.length,1024,.1,'b');
 	var profTimeA= splitData[splitData.length>1?splitData.length-2:0].split(ASYGN.D_ITEM);
 	var profTimeMsg= profTimeA[0]=='t'?
-	  (profTimeA[2]*1000 +':' +DIC.popStateProfTimeServ +', ' +(profTime-profTimeA[2]*1000) +':' +DIC.popStateProfTimeTransfer)
+	  DIC.popStateProfTime.subst([profTimeA[2]*1000, profTime-profTimeA[2]*1000])
 	  : '';
 
 var ALERTFLAG= 1;
 if (ALERTFLAG) {	//profile request +CBtime +responce
-	ALERT(PROFILE.VERBOSE, 'Reloaded in', profTime/1000 +(profTimeMsg!=''? 's (' +profTimeMsg +')' :''));
+	ALERT(PROFILE.VERBOSE, 'Reloaded in', profTime/1000 +'s' +(profTimeMsg!=''? '(' +profTimeMsg +')' :''));
 	ALERT(PROFILE.VERBOSE, 'FPS', UI.fps);
-	ALERT(PROFILE.VERBOSE, profSize +': ', splitData.join("\n"));
+	ALERT(PROFILE.VERBOSE, DIC._got.subst([profSize]) +': ', splitData.join("\n"));
 //	ALERTFLAG= 0; //do once
 }
 
@@ -297,7 +297,11 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 
 
 	//no errors, fuckup is canceled and error state is reset
-	var profBreef= profSize +' ' +DIC._in.toLowerCase() +' ' +profTime/1000 +'s' +((profTimeMsg!=''? profTimeMsg +'<br> ' :'') +__PROFILE.profileTime() +'ms: ' +DIC._proccessed).decorateHTML(STR.IDENT) +'FPS: ' +UI.fps;
+	var profBreef= DIC._in.subst([
+		profSize, profTime/1000,
+			DIC._proccessed.subst([profTimeMsg, __PROFILE.profileTime()]).decorateHTML(STR.IDENT),
+		UI.fps
+	]);
 	this.setState(UPDATE_STATE.NORMAL,profBreef);
 }
 

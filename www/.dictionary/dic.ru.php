@@ -34,8 +34,7 @@ $DICLOC= array(
 	'popStateVAsyncHead'=>	'Ошибка соединения ',
 	'popStateVAsync0'=>	'сервер недоступен',
 	'popStateVAsync500'=>	'внутренняя ошибка сервера',
-	'popStateProfTimeServ'=>	'сервер',
-	'popStateProfTimeTransfer'=>	'передача',
+	'popStateProfTime'=>	'$:сервер, $:передача',
 
 	'boardTools'=>	"Инструменты",
 	'boardToolsUpload'=>	"Загрузить",
@@ -120,9 +119,9 @@ $DICLOC= array(
 
 	'preCss'=> "один момент...",
 
-	'_got'=> 'Получено',
-	'_in'=> 'За',
-	'_proccessed'=> 'обработано',
+	'_got'=> 'Получено: $',
+	'_in'=> 'Получено: $ за $сек\n$FPS: $',
+	'_proccessed'=> '$\n$ms: обработано',
 
 	'msgNoProfile'=> 'нет измерений'
 

@@ -34,8 +34,10 @@ function kiMiniDictionary(){
 		}
 
 		$LibFlatA= Array();
-		foreach($DIC as $n=>$v)
-		  $LibFlatA[]= "$n:\"{$v}\"";
+		foreach($DIC as $n=>$v){
+		$v= str_replace(Array("\t","\n",chr(13)), Array('\\t','\\n','\\n'), $v);
+			$LibFlatA[]= "$n:\"{$v}\"";
+		}
 
 		$outDict= "document['dic']= {\n\t". implode(",\n\t", $LibFlatA) ."\n};";
 
@@ -108,7 +110,7 @@ function kiMiniJs($_renameA=false){
 		if (is_array($cCont)){
 			$constVars= array();
 			foreach ($cCont as $cVar=>$cVal)
-			  $constVars[]= $cVar .':'. var_export($cVal,true); 
+			  $constVars[]= $cVar .':'. var_export($cVal,true);
 
 			$cCont= '{' .implode(',', $constVars) .'}';
 		}

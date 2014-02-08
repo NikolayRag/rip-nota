@@ -61,7 +61,7 @@ this.drawState= function(_state, _msgVerb){
 	this.popW.tipSet(
 		stateMsg +(
 			(!NOPROFILE && _msgVerb && _msgVerb!='')?
-			String(_msgVerb).decorateHTML(STR.DIV |STR.ITALIC |STR.QUOTE,75,[96,96,192])
+			_msgVerb.decorateHTML(STR.DIV |STR.ITALIC |STR.QUOTE,75,[96,96,192])
 			:''
 		)
 	);

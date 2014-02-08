@@ -3,7 +3,6 @@ include('.php/include/includeAll.php');
 include('.php/include/filterClient.php');
 include('.php/include/filterUrl.php');
 
-
 //todo: move to stored proc
 $DB->apply('logHttpAgent', $_SERVER['HTTP_USER_AGENT']);
 $agentId= $DB->lastInsertId();
@@ -16,6 +15,7 @@ if ($lastHttpLog && $_SERVER['REQUEST_URI']==$lastHttpLog['request'] && $_POST['
 	$DB->apply('logHttp', $_SERVER['REMOTE_ADDR'], $_SERVER['REMOTE_PORT'], $agentId, $_SERVER['REQUEST_URI'], $USER->id, $_POST['mode']?$_POST['mode']:0);
 	$httpId= $DB->lastInsertId();
 }
+
 
 ////FILTER DIFFERENT REQUEST BRANCHES
 
@@ -34,9 +34,15 @@ if (clientType()== $CLIENT_TYPE->BOT){
 }
 
 
+//branch: blob upload
+if ($_POST['mode']== $ASYNC_MODE->UPLOAD_BLOB){
+	include('.php/uploadBlob.php');
+	exit;
+}
+
 //branch: legacy upload
 if ($_POST['mode']== $ASYNC_MODE->UPLOAD_LEGACY){
-//todo: make normal upload restrictions
+//todo: make preventive upload restrictions
 	include('.php/uploadLegacy.php');
 	exit;
 }

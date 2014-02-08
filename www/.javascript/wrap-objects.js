@@ -112,21 +112,33 @@ String.prototype.base64_decode= function() {
 	return output.utf8_decode();
 }
 
-String.prototype.decorateHTML= function(mode,size,color) {
-	mode= mode ||0;
-	size= size ||100;
+String.prototype.decorateHTML= function(_mode,_size,_color) {
+	_mode= _mode ||0;
+	_size= _size ||100;
 
-	return (mode &STR.DIV? '<div' : '<span')
-	    +" style=font-size:" +size+'%;'
-	    +(mode &STR.ITALIC? 'font-style:italic;' :'')
-	    +(mode &STR.BOLD? 'font-weight:bold;' :'')
-	    +(color? 'color:' +new Color(color).hex() +';' :'')
+	return (_mode &STR.DIV? '<div' : '<span')
+	    +" style=font-_size:" +_size+'%;'
+	    +(_mode &STR.ITALIC? 'font-style:italic;' :'')
+	    +(_mode &STR.BOLD? 'font-weight:bold;' :'')
+	    +(_color? 'color:' +new Color(_color).hex() +';' :'')
 	  +">"
-	  	+(mode &STR.QUOTE? '&laquo' : '')
-	  	+((mode &STR.QUOTE) || (mode &STR.IDENT)? '<div style=margin-left:1em;>' :'')
+	  	+(_mode &STR.QUOTE? '&laquo' : '')
+	  	+((_mode &STR.QUOTE) || (_mode &STR.IDENT)? '<div style=margin-left:1em;>' :'')
 	  		+this
-	  	+((mode &STR.QUOTE) || (mode &STR.IDENT)? '</div>' :'')
-	  	+(mode &STR.QUOTE? '&raquo' : '')
-	  +(mode &STR.DIV? '</div>' : '</span>');
+	  	+((_mode &STR.QUOTE) || (_mode &STR.IDENT)? '</div>' :'')
+	  	+(_mode &STR.QUOTE? '&raquo' : '')
+	  +(_mode &STR.DIV? '</div>' : '</span>');
 }
 
+String.prototype.subst= function(_valuesA,_startI) {
+	_startI= _startI ||0;
+	var outTxtA= this.split('$');
+	
+	var cleanValuesA= _valuesA.slice(_startI);
+	cleanValuesA.unshift('');
+	var _outTxt= '';
+	for (var iT in outTxtA)
+	  _outTxt+= cleanValuesA[iT] +outTxtA[iT];
+
+	return _outTxt;
+}
