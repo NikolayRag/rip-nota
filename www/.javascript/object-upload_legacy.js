@@ -133,7 +133,7 @@ var UPLOAD= new function(){
 		var _this= this;
 		this.timeoutUpProgress= setInterval(
 			function(){
-				SESSION.async(ASYNC_MODE.UPLOADPROGRESS_LEGACY, [], _this, _this.fileProgressCB)
+				SESSION.async(ASYNC_MODE.UPLOADPROGRESS_LEGACY, [], _this.fileProgressCB)
 			}, 2000
 		);
 
@@ -204,7 +204,7 @@ return;
 			}
 		}
 */
-	};
+	}.bind(this);
 
 };
 

@@ -83,14 +83,13 @@ this.asyncInit= function(){
 /*
 _saveMode:	request identifier; see ASYNC_MODE
 _saveData:	Array of POST data passed; SHOULD REMAIN ARRAY TYPE DUE TO MINIFYING
-_that:		caller context to call callbacks within
 _cbOk:		normal callback
 _cbErr:		error callback
 _sync:		1 for blocked call
 _binary:	send as binary
 _headersA:	additional headers
 */
-this.async= function(_saveMode, _saveData, _that, _cbOk, _cbError, _sync, _binary, _headersA) {
+this.async= function(_saveMode, _saveData, _cbOk, _cbError, _sync, _binary, _headersA) {
 	if (this.inAsync){
 		this.asyncQueue.push(arguments);
 		return;
@@ -105,9 +104,9 @@ this.async= function(_saveMode, _saveData, _that, _cbOk, _cbError, _sync, _binar
 		  return;
 
 		if (_e.target.status == 200)
-		  _cbOk.call(_that, _e.target.responseText);
+		  _cbOk(_e.target.responseText);
 		else if (_cbError)
-		  _cbError.call(_that, _e.target.status, this.asyncStatusString(_e.target.status), _e.target.responseText);
+		  _cbError(_e.target.status, this.asyncStatusString(_e.target.status), _e.target.responseText);
 
 		this.inAsync= false;
 

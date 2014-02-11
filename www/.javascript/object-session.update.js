@@ -121,7 +121,7 @@ ALERT();
 
 
 ALERT(PROFILE.VERBOSE, 'Request', saveData);
-	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this, this.updateCB, this.updateCBErr);
+	this.HTTPReq= SESSION.async(ASYNC_MODE.UPDATE, saveData, this.updateCB, this.updateCBErr);
 }
 
 this.updateCBErr= function(_code, _err,_txt){
@@ -129,7 +129,7 @@ this.updateCBErr= function(_code, _err,_txt){
 
 	var resTxt= (_err+(_txt!=''? ': ' :'')).decorateHTML(STR.DIV |STR.BOLD)+ _txt;
 	this.setState(UPDATE_STATE.ERROR,resTxt);
-}
+}.bind(this)
 
 
 
@@ -303,7 +303,7 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 		UI.fps
 	]);
 	this.setState(UPDATE_STATE.NORMAL,profBreef);
-}
+}.bind(this);
 
 
 /*

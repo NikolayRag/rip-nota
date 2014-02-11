@@ -29,12 +29,12 @@ this.login= function(_mode,_username,_password) {
 		case SESSION_STATES.LOGOUT:
 			SESSION.update.coreCycle(false);
 	}
-	SESSION.async(asyncMode, saveData, this, this.loginCB, function(_code, _err,_txt){
+	SESSION.async(asyncMode, saveData, this.loginCB, function(_code, _err,_txt){
 ALERT(PROFILE.GENERAL, 'Login error: ' +saveData, _err +': ' +_txt);
 //todo: expand
 		console.log('Login error: ' +_err +': ' +_txt);
 		UI.popW.up('Login server unavailable');
-	});
+	}.bind(this));
 };
 
 
@@ -95,7 +95,7 @@ this.loginCB= function(_res){
 				UI.popW.up((parseInt(responce)>0)?logErrsA[responce-1]:responce);
 			}
 	}
-}
+}.bind(this);
 
 
 }

@@ -138,7 +138,7 @@ if (IS.dnd) {var UPLOAD= new function(){
 		var thisFile= this.queueNow.file;
 
 //todo: threat: check what is uploaded and where
-		SESSION.async(ASYNC_MODE.UPLOAD_BLOB, _e.target.result, this, this.blobSentCB, this.blobSentErrCB, false, true, [
+		SESSION.async(ASYNC_MODE.UPLOAD_BLOB, _e.target.result, this.blobSentCB, this.blobSentErrCB, false, true, [
 			['Filename', thisFile.name],
 			['File-guid', this.sliceOffset==0? 0: this.fileGuid], //reuse
 			['Filesize', thisFile.size],

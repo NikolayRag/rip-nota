@@ -69,7 +69,7 @@ this.saveGo= function(_sync){
 
 ALERT(PROFILE.GENERAL, 'SAVE', saveData);
 
-	return SESSION.async(ASYNC_MODE.SAVE, saveData, this, this.saveCB, this.saveCBErr, _sync);
+	return SESSION.async(ASYNC_MODE.SAVE, saveData, this.saveCB, this.saveCBErr, _sync);
 } 
 
 this.saveCB= function(_sData){
@@ -113,13 +113,13 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 	SESSION.board.draw();
 
 //todo: deal with accidentally unsaved
-} 
+}.bind(this);
 
 this.saveCBErr= function(_code, _err,_txt){
 alert(_err +': ' +_txt);
 ALERT(PROFILE.GENERAL,'Save error',_err +': ' +_txt);
 	this.save();
-} 
+}.bind(this);
 
 
 this.lazyCtx= {};

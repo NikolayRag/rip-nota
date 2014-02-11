@@ -272,7 +272,6 @@ b1.9:
 
 
 
-
 Minor:
 +org:	Dictionary flattering to js compilation added: kiMinimize.php/kiMiniDictionary()
 +org:	Css flattering added: kiMinimize.php/kiMiniCss()
@@ -507,6 +506,7 @@ Refactor:
 +html:			template's NOPROFILE-controlled comment now wiped out with kiMiniHTML()
 +Ncore:			.doKill() renamed to .removeCore()
 +DIC:			uses '\n' and '$'
++async:			_that argument depricated; .bind(this) used instead for CB
 
 
 
