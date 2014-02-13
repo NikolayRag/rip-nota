@@ -23,11 +23,14 @@
 			-procceed file queue
 */
 
-if (IS.dnd) {var UPLOAD= new function(){
+if (IS.dnd) {
+
+var UPLOAD= new function(){
 	var UploadFile= function(_file, _note){
 		this.file= _file;
 		this.note= _note;
 		this.retries= 0;
+		this.fileGuid= '';	//server-side file guid
 	}
 
   /*
@@ -46,7 +49,6 @@ if (IS.dnd) {var UPLOAD= new function(){
 	this.blobSize;
 	
 	this.fReader= new FileReader();
-	this.fileGuid;	//server-side file guid
 
 
 	/*
@@ -86,7 +88,7 @@ if (IS.dnd) {var UPLOAD= new function(){
 	this.pushQueue= function(_filesToUpload){
 		var filesA= [];
 		for (var f=0; f<_filesToUpload.length; f++)
-		  filesA.push(_filesToUpload[f].name);
+		  filesA.push({name:_filesToUpload[f].name, size:_filesToUpload[f].size});
 
 		var notesA= this.onPickedCB(filesA);
 		for (var f=0; f<_filesToUpload.length; f++)
@@ -140,7 +142,7 @@ if (IS.dnd) {var UPLOAD= new function(){
 //todo: threat: check what is uploaded and where
 		SESSION.async(ASYNC_MODE.UPLOAD_BLOB, _e.target.result, this.blobSentCB, this.blobSentErrCB, false, true, [
 			['Filename', thisFile.name],
-			['File-guid', this.sliceOffset==0? 0: this.fileGuid], //reuse
+			['File-guid', this.sliceOffset==0? 0: this.queueNow.fileGuid], //reuse
 			['Filesize', thisFile.size],
 			['Slice-From', this.sliceOffset],
 			['Slice-Size', this.blobSize]
@@ -155,7 +157,6 @@ if (IS.dnd) {var UPLOAD= new function(){
 	*/
 	this.blobSentCB= function(_res) {
 		if (_res==UPSET.RESTRICTED){
-//todo: proper reaction
 			UI.popW.up([DIC.uploadRestricted, this.queueNow.file.name]);
 			this.nextInQueue();
 			return;			
@@ -164,7 +165,7 @@ if (IS.dnd) {var UPLOAD= new function(){
 		//OK at least
 
 		if (this.sliceOffset==0) //first slice, store file names
-		  this.fileGuid= _res;
+		  this.queueNow.fileGuid= _res;
 		  
 		this.sliceOffset+= this.blobSize;
 
@@ -184,8 +185,7 @@ if (IS.dnd) {var UPLOAD= new function(){
 	this.blobSentErrCB= function() {
 		this.queueNow.retries+= 1;
 		if (this.queueNow.retries>UPSET.MAX_RETRIES){
-//todo: proper reaction
-			UI.popW.up([DIC.uploadError, this.queueNow.file.name]);
+			this.queueNow.note.uploadError();
 			this.isUploading= false;
 		} else
 		  this.blobCut();
@@ -195,12 +195,11 @@ if (IS.dnd) {var UPLOAD= new function(){
 		update upload progress value
 	*/
 	this.fileProgressCB= function(){
-console.log(this.queueNow.file.name +': '+ this.sliceOffset/this.queueNow.file.size);
+		var filePerc= this.sliceOffset;
 
-		this.queueNow.note.uploadPercent
-		&& this.queueNow.note.uploadPercent(
-		 	this.sliceOffset/this.queueNow.file.size
-		);
+		this.queueNow.note.uploadSetPos(this.sliceOffset);
+		if (this.sliceOffset==this.queueNow.file.size)
+		  this.queueNow.note.uploadFinish(this.queueNow.fileGuid);
 	}
 };
 
@@ -236,20 +235,49 @@ UPLOAD.formTry.pick.onchange= function(){
 
 
 
+var nnn= function(_file){
+	this.pos= -1;
+	this.finished= false;
+	this.err= false;
+	this.name= _file.name;
+	this.size= _file.size;
 
+console.log('added: '+ _file.name);
+
+	this.uploadSetPos= function(_filePos){
+		if (this.err || _filePos<=this.pos)
+		  return;
+
+		this.pos= _filePos;
+		console.log(this.name +': '+ (this.size? _filePos/this.size :0));
+	}
+
+	this.uploadFinish= function(_targ){
+		if (this.err || this.finished)
+		  return;
+		this.uploadSetPos(this.size);
+
+		this.finished= true;
+		console.log(this.name +' set to '+ _targ);
+	}
+
+	this.uploadError= function(){
+		if (this.err)
+		  return;
+		this.err= true;
+		console.log(this.name +' ERROR!');
+	}
+}
 
 
 var ccbb= function(_filesA,_place){
 console.log('at '+ _place.x +'x' +_place.y +':');
 	var fileNotesA= [];
 	for (var f=0; f<_filesA.length; f++){
-console.log('+'+ _filesA[f]);
 		fileNotesA.push(
-			{}
+			new nnn(_filesA[f])
 		);
 //		var tmpN= workFieldDbl(	{clientX:100+f*5, clientY:100+f*50}, _filesA.base64_encode() );
-//		fileNotesA.push(tmpN);
-//		tmpN.setState(C_progress,0);
 	}
 
 //	SESSION.board.PUB.ui.correct();

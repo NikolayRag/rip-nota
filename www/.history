@@ -269,6 +269,9 @@ b1.9:
 		+ retries added on error
 +upload:	public caller supports container leaf creation callback
 +upload:	upload dir configured from www.privateCfg
++upload:	note's progress, finalize and error interface is unified
+
+
 
 
 
@@ -595,7 +598,11 @@ Fix:
 -update:		toggling implicit/normal should handle previous note/data removal
 +update:		sql calls outnumbered for logged on user: right groups reading; Speed up.
 -tools:			deleting unsaved created cause error
--upload:		big legacy upload cause server heavy crash, it didnt. 
++upload:		big legacy upload cause server heavy crash, it didnt.
+				index.php branch misroute.
++sql:			note.version defaults to 1;
+				ndata.isdeleted defaults to 0
+
 
 
 

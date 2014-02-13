@@ -26,6 +26,11 @@ if (!IS.dnd){
 
 
 var UPLOAD= new function(){
+	var UploadFiles= function(_uploadForm,_notesA){
+		this.uploadForm= _uploadForm;
+		this.notesA= _notesA;
+	}
+
 	this.onPickedCB;
 
 	this.queueA= []; //forms/associated_notes
@@ -99,15 +104,12 @@ var UPLOAD= new function(){
 			}
 
 			for (var f=0; f<formUpFname.files.length; f++)
-			  filesA.push( formUpFname.files[f].name );
+			  filesA.push({name:formUpFname.files[f].name, size:formUpFname.files[f].size});
 		} else //veeeeery legacy, no multi-file
-		  filesA.push( formUpFname.value );
+		  filesA.push({name:formUpFname.value, size:0});
 
 		//add to queue and go if not yet
-		this.queueA.push({
-			uploadForm:_formTry,
-			notesA:this.onPickedCB(filesA)
-		});
+		this.queueA.push( new UploadFiles(_formTry, this.onPickedCB(filesA)) );
 		if (!this.isUploading)
 		  this.nextInQueue();
 	};
@@ -134,8 +136,9 @@ var UPLOAD= new function(){
 		this.timeoutUpProgress= setInterval(
 			function(){
 				SESSION.async(ASYNC_MODE.UPLOADPROGRESS_LEGACY, [], _this.fileProgressCB)
-			}, 2000
+			}, 500
 		);
+		this.fileProgressCB();
 
 		var thisForm= this.queueNow.uploadForm;
 //check: should click() call work in some browsers?
@@ -157,7 +160,7 @@ var UPLOAD= new function(){
 	*/
 	this.formUploadCB= function(_frame){
 		var result= _frame.contentDocument.firstChild.lastChild.innerHTML;
-		this.fileProgressCB(result);
+		this.fileProgressCB(result,true);
 
 		this.nextInQueue();
 	}
@@ -168,42 +171,29 @@ var UPLOAD= new function(){
 		When uploading files with forms, files are actually proccessed at once,
 		so some of files can be set to 100% but yet not be available.
 	
-		res= '' if progress is called after end of upload, skipped
-		res= [total%,[-1=err,0,1=done]:bytes,..]
+		res= '' returned by out-of-scope progress request, skipped
+		res= [[uid|bytes|-1=err],..]
 	*/
-	this.fileProgressCB= function(res){
+	this.fileProgressCB= function(res,_stop){
 		if (res=='') //blank when called after upload, skip
 		  return;
-console.log(res);
-return;
-/*..
-		if (!Array.isArray(res)) //filters out end of upload
-		  var resA= res.split(",");
+		if (!res) //filters out start of upload
+		  res= '';
 
-		var thisForm= this.queueNow[0].children[1];
-		var thisNotes= this.queueNow[1];
-
-		if (thisForm.files){
-			for (var fi=0; fi<thisForm.files.length; fi++){
-				if (resA){ //progress
-					var fs= resA[fi+1]!=undefined? resA[fi+1] :0;
-					thisNotes[fi].setState(C_progress,fs/thisForm.files[fi].size);
-				} else { //complete
-					thisNotes[fi].content("<a href='/file" +res[fi] +"'>" +thisForm.files[fi].name +"</a>");
-					thisNotes[fi].editAccept();
-//		this._note_.style.backgroundImage= "url(/file" +guidS +")";
-				}
-			}
-		} else { //one-file mode
-			if (resA){ //progress
-				thisNotes.setState(C_progress,resA[0]);
-			} else { //complete
-				thisNotes.content("<a href='/file" +res[0] +"'>" +thisForm.value +"</a>");
-				thisNotes.editAccept();
-//		this._note_.style.backgroundImage= "url(/file" +guidS +")";
+		var resA= res.split("\n");
+		for (var iN in this.queueNow.notesA){
+			var thisNote= this.queueNow.notesA[iN];
+			var resOne= resA[iN];
+//todo: constant
+			if (resOne==-1)
+			  thisNote.uploadError();
+			else {
+				if (_stop) //filters out end of upload
+				  thisNote.uploadFinish(resOne);
+				else
+				  thisNote.uploadSetPos((resOne |0) || 0);  //unlisted are assumed be at 0 pos
 			}
 		}
-*/
 	}.bind(this);
 
 };

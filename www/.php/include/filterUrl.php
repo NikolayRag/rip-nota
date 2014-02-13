@@ -29,6 +29,8 @@ Apache, iis
 */
 
 
+$_POST['mode']= '';
+
 if ($_SERVER['REQUEST_METHOD']=='GET'){
 
 	$_uriA= explode("?",$_SERVER["REQUEST_URI"]);
@@ -44,8 +46,6 @@ if ($_SERVER['REQUEST_METHOD']=='GET'){
 	//todo: switch on direct boardId request
 	//	if (count($_queryReqA)>0 && ("".(int)$_queryReqA[0])==$_queryReqA[0])
 	//	  $reqId= $_queryReqA[0];
-
-	$_POST['mode']= '';
 
 	$_POST['rId']= -1;
 	
@@ -69,5 +69,8 @@ if ($_SERVER['REQUEST_METHOD']=='GET'){
 
 if (array_key_exists($ASYGN->MODE_SRV, $_SERVER))
   $_POST['mode']= $_SERVER[$ASYGN->MODE_SRV];
+
+if (array_key_exists($UPSET->LEGACY_MODESIGN, $_POST))
+  $_POST['mode']= $ASYNC_MODE->UPLOAD_LEGACY;
 
 ?>
