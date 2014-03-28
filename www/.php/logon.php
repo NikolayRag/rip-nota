@@ -1,5 +1,4 @@
 <?
-include('sqTmpl/SQLTLogon.php');
 /*
 All-purpose logon async.
 
@@ -50,9 +49,30 @@ Return:
 		For STAY it is cookie sid	
 */
 	//synchronized with object-session.js
-echo "{$_POST['logMode']}", $ASYGN->D_ITEM;
+class LogArgs {
+	var $logMode=0, $username='', $password='';
 
-switch ($_POST['logMode']){
+	function LogArgs($_logMode, $_username, $_password){
+		global $SESSION_STATES;
+
+		$this->logMode= $_logMode? (int)$_logMode : $SESSION_STATES->NONE;
+		if ($_username)
+		  $this->username= $_username;
+		if ($_password)
+		  $this->password= $_password;
+	}
+}
+
+$args= new LogArgs(
+	arrGet($_POST, 'logMode', false),
+	arrGet($_POST, 'username', false),
+	arrGet($_POST, 'password', false)
+);
+
+
+echo $args->logMode, $ASYGN->D_ITEM;
+
+switch ($args->logMode){
 	case $SESSION_STATES->STAY:
 		$USER->getCookie();
 		return;
@@ -61,26 +81,29 @@ switch ($_POST['logMode']){
 		  $USER->logout();
 		break;
 	case $SESSION_STATES->UPDATE:
-		echo '0'; //todo: reserved
+//todo: reserved
+		echo '0';
 		return;
 	case $SESSION_STATES->VALIDATE:
-		$DB->apply('logonRegisterCheck', $_POST['username']);
-		echo !!$DB->fetch(0);
+		$DB->apply('logonRegisterCheck', $args->username);
+		echo $DB->fetch(0)? 1:0;
 		return;
 	case $SESSION_STATES->REGISTER: //with subsequent LOGIN
-		if(!$USER->signed && $_POST['username']!="" && $_POST['password']!=""){
+		if(!$USER->signed && $args->username!='' && $args->password!=''){
 			$USER->addValidation("first_name","0-15","/\w+/");
 			$USER->addValidation("last_name","0-15","/\w+/");
 			$USER->addValidation("website","0-50","@((https?://)?([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@");
-			$USER->register(Array('username'=>$_POST['username'], 'password'=>$_POST['password']));
+			$USER->register(Array('username'=>$args->username, 'password'=>$args->password));
 
 			if ($USER->error())
 			  break;
 		}
 	case $SESSION_STATES->LOGIN:
-		if (!$USER->signed && $_POST['username']!='' && $_POST['password']!='')
-		  $USER=new uFlex($_POST['username'], $_POST['password'], 1);
+		if (!$USER->signed && $args->username!='' && $args->password!='')
+		  $USER=new uFlex($args->username, $args->password, 1);
 		break;
+	default:
+//todo: arg error handling
 }
 if ($USER->error())
   foreach($USER->error() as $i=>$x)

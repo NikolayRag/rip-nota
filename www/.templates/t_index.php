@@ -29,6 +29,7 @@
 	<? include('.templates/tunit_plateBoard.php'); ?>
 	<? include('.templates/tunit_plateBoardOverview.php'); ?>
 	<? include('.templates/tunit_plateNote.php'); ?>
+	<? include('.templates/tunit_leaf.php'); ?>
 	<? include('.templates/tunit_leafText.php'); ?>
 	<? include('.templates/tunit_leafNote.php'); ?>
 </div>
@@ -36,7 +37,7 @@
 
 <div id='workField'></div>
 
-<table id='workToolbar' <?=($_POST['rEmbed']?'style=display:none':'')?>><tr>
+<table id='workToolbar' <?=($REQA->embed?'style=display:none':'')?>><tr>
 	<td id='barLogo'><? include('.templates/t_barLogo.php'); ?></td>
 	<td id='barBoardOwner' style='display:none'><? include('.templates/t_barBoardOwner.php'); ?></td>
 	<td id='barBoardTools' style='display:none'><? include('.templates/t_barBoardTools.php'); ?></td>
@@ -52,14 +53,14 @@
 	document.argsA= [<?=implode(',',Array(
 			$ARGS_PLACE->USERID=> $USER->id,
 			$ARGS_PLACE->USERNAME=> "'{$USER->data['first_name']}'",
-			$ARGS_PLACE->REQWHO=> "'{$_POST['rWho']}'",
-			$ARGS_PLACE->REQWHAT=> "'{$_POST['rWhat']}'",
-			$ARGS_PLACE->REQNOTEID=> $_POST['rId'],
-			$ARGS_PLACE->REQFILTER=> "'{$_POST['rFilter']}'",
-			$ARGS_PLACE->EMBED=> $_POST['rEmbed'],
+			$ARGS_PLACE->REQWHO=> "'$REQA->who'",
+			$ARGS_PLACE->REQWHAT=> "'$REQA->what'",
+			$ARGS_PLACE->REQNOTEID=> $REQA->rId,
+			$ARGS_PLACE->REQFILTER=> "'$REQA->filter'",
+			$ARGS_PLACE->EMBED=> $REQA->embed,
 		))?>];
 </script>
-<script src='/.mini/dic<?= $_POST['rLang'] ?>.js'></script>
+<script src='/.mini/dic.<?= $REQA->lang ?>.js'></script>
 <script src='/.mini/mini.js'></script>
 </body>
 </html>

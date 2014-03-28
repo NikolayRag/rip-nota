@@ -1,9 +1,12 @@
 <?
 
 function arrGet($_arr, $_field, $_default=false){
-	if ($_arr==0 || $_arr==1)
+	if (
+		!is_array($_arr)
+		|| empty($_arr[$_field])
+	)
 	  return $_default;
-	return (array_key_exists($_field, $_arr)? $_arr[$_field]: $_default);
+	return $_arr[$_field];
 }
 
 function encode64($_val){
@@ -19,13 +22,11 @@ function decode64($_val){
 class Collect{
 	var $collection= array();
 	function add($_id,$_itemIn,$_force=false) {
-		if ($_force || !array_key_exists($_id,$this->collection))
+		if ($_force || empty($this->collection[$_id]))
 		  $this->collection[$_id]= $_itemIn;
 	}
 	function get($_id,$_def=false) {
-		if (!array_key_exists($_id,$this->collection))
-		  return $_def;
-		return $this->collection[$_id];
+		return arrGet($this->collection, $_id, $_def);
 	}
 	function count() {
 		return count($this->collection);

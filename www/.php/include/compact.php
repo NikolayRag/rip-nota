@@ -13,6 +13,27 @@ function wasEdited($_dirsA, $_mini){
 	return (!file_exists($_mini)) || $timeEdited>filemtime($_mini);
 }
 
+function readDirFiles($_dir,$_fileList= null){
+	$content_= '';
+
+	if ($_fileList && file_exists("$_dir/$_fileList")){
+//todo: remove checking \n twice
+		$fileList= Array();
+		foreach(explode("\n",file_get_contents("$_dir/$_fileList")) as $entry){
+			$entry= explode(chr(13),$entry)[0];
+			if (preg_match('/^[^#].+$/',$entry) && is_file("$_dir/$entry"))
+			  $content_.= file_get_contents("$_dir/$entry");
+		}
+	} else {
+		$d = dir($_dir);
+		while ($entry = $d->read())
+		  if (is_file("$_dir/$entry"))
+		    $content_.= file_get_contents("$_dir/$entry");
+	}
+
+	return $content_;
+}
+
 function kiMiniDictionary(){
 	include(".dictionary/dic.php");
 	$origDic= $DIC;
@@ -53,17 +74,7 @@ function kiMiniCss($_renameA=false){
 	))
 	  return;
 
-	$outCss= 
-	 file_get_contents(".css/all.css").
-	 file_get_contents(".css/menu.css").
-	 file_get_contents(".css/popup.css").
-	 file_get_contents(".css/overview.css").
-	 file_get_contents(".css/notify.css").
-	 file_get_contents(".css/note.css").
-	 file_get_contents(".css/contacts.css").
-	 file_get_contents(".css/ndata.css").
-	 file_get_contents(".css/w-login.css").
-	 file_get_contents(".css/tool.css");
+	$outCss= readDirFiles('.css');
 
 	global 	$NOPROFILE;
 	if ($NOPROFILE)
@@ -85,7 +96,7 @@ function kiMiniCss($_renameA=false){
 	  $outCss= preg_replace_callback(
 			'/(?:(^|\}|\,)\s*(#|\.)([\d\w]+)([\s\{]))/',
 			function ($_in) use ($_renameA) {
-				$substV= ((array_key_exists($_in[3],$_renameA) && $_renameA[$_in[3]]!='')? $_renameA[$_in[3]] : $_in[3]);
+				$substV= (arrGet($_renameA, $_in[3], '')!=''? $_renameA[$_in[3]] : $_in[3]);
 				return $_in[1] .$_in[2] .$substV .$_in[4];
 			},
 			$outCss
@@ -120,75 +131,14 @@ function kiMiniJs($_renameA=false){
 	$constsA[]= '';
 
 	//collect js
-	$outJs= implode(";\n", $constsA).
-	 file_get_contents(".javascript/wrap-in.js").
-	 file_get_contents(".javascript/wrap-objects.js").
-	 file_get_contents(".javascript/wrap-ui.js").
-
-	 //libraries
-	 file_get_contents(".javascript/class-color.js").
-	 file_get_contents(".javascript/class-style.js").
-
-	 file_get_contents(".javascript/helpers.js").
-
-	 //core
-	 file_get_contents(".javascript/object-session.js").
-	 file_get_contents(".javascript/object-session.logon.js").
-	 file_get_contents(".javascript/object-session.update.js").
-	 file_get_contents(".javascript/object-session.save.js").	
-
-	 file_get_contents(".javascript/UNITS/UnitLink.js").
-
-	 file_get_contents(".javascript/UNITS/U.js").
-	 file_get_contents(".javascript/UNITS/N.js").
-
-	 file_get_contents(".javascript/UNITS/N-note.js").
-	 file_get_contents(".javascript/UNITS/N-note.ui.js").
-
-	 file_get_contents(".javascript/UNITS/N-board.js").
-	 file_get_contents(".javascript/UNITS/N-board.ui.js").
-	 file_get_contents(".javascript/UNITS/N-board.ui.overview.js").
-
-	 file_get_contents(".javascript/UNITS/D.js").
-	 //data ui
-	 file_get_contents(".javascript/UNITS/D.ui-unknown.js").
-	 file_get_contents(".javascript/UNITS/D.ui-text.js").
-	 file_get_contents(".javascript/UNITS/D.ui-note.js").
-
-	 //ui
-	 file_get_contents(".javascript/UI/ui.js").
-	 file_get_contents(".javascript/UI/W.login.js").
-	 file_get_contents(".javascript/UI/W.you.js").
-	 file_get_contents(".javascript/UI/W.owner.js").
-	 file_get_contents(".javascript/UI/W.boardlist.js").
-	 file_get_contents(".javascript/UI/W.tools.js").
-	 file_get_contents(".javascript/UI/W.logo.js").
-	 file_get_contents(".javascript/UI/W.pop.js").
-	 file_get_contents(".javascript/UI/W.palette.js").
-
-	 file_get_contents(".javascript/UI/tool.js").
-	 file_get_contents(".javascript/UI/tool.leafNote.js").
-	 file_get_contents(".javascript/UI/tool.leafNoteEdit.js").
-	 file_get_contents(".javascript/UI/tool.board.js").
-
-//		 file_get_contents(".javascript/object-ui.wrap-contacts.js").
-
-     //adds
-	 file_get_contents(".javascript/object-upload_legacy.js").
-	 file_get_contents(".javascript/object-upload.js").
-
-     file_get_contents(".javascript/Adds/canvas0.js").
-
-	 file_get_contents(".javascript/object-__profile.js").
-
-	 file_get_contents(".javascript/wrap-out.js");
-
+	$outJs= implode(";\n", $constsA)
+	  .readDirFiles('.javascript', '.list');
 
 	if ($_renameA)
 	  $outJs= preg_replace_callback(
 			'/(?:(DOM\(\'|case \'\.)([\d\w]+)\')/',
 			function ($_in) use ($_renameA) {
-				$substV= ((array_key_exists($_in[2],$_renameA) && $_renameA[$_in[2]]!='')? $_renameA[$_in[2]] : $_in[2]);
+				$substV= (arrGet($_renameA, $_in[2], '')!=''? $_renameA[$_in[2]] : $_in[2]);
 				return $_in[1] .$substV .'\'';
 			},
 			$outJs
@@ -210,10 +160,10 @@ function kiMiniHTML(&$HTMLDic){
 	return preg_replace_callback(
 		'/(?:(class|id)=\'([\d\w]+)\')|(<!--.*-->)/',
 		function ($_matches) use (&$substI,&$HTMLDic) {
-			if (array_key_exists(3, $_matches)) //blank, wipe
+			if (!empty($_matches[3])) //blank, wipe
 			  return;
 
-			if (!array_key_exists($_matches[2], $HTMLDic))
+			if (empty($HTMLDic[$_matches[2]]))
 			  $HTMLDic[$_matches[2]]= base_convert($substI++,10,36);;
 			return $_matches[1] .'=\'' .$HTMLDic[$_matches[2]] .'\'';
 		},

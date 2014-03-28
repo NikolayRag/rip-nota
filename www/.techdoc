@@ -10,9 +10,10 @@
 	-2.4.	core update
 	-2.5.	output format
 -3.	client (saving)
-	-3.1.	saving Notes
-	-3.2.	setting Note rights
-	-3.3.	Note/User interconectivity
+	-3.1.	class hierarchy
+	-3.2.	saving Notes
+	-3.3.	setting Note rights
+	-3.4.	Note/User interconectivity
 -4.	update
 	-4.1.	Ncore base data and format interpretation
 	-4.2.	Ucore base data and format interpretation
@@ -37,7 +38,7 @@
 	-7.3.	dictionary format
 	-7.4.	dictionary interface
 -8.	techniques
-	-8.1.	Ncore/Nroot/extenders logic
+	-8.1.	Ncore/NoteUI/extenders logic
 	-8.2.	naming
 	-8.3.	context saving
 	-8.4.	user/server reactions

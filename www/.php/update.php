@@ -22,26 +22,24 @@ $dbStamp= (int)$DB->fetch(0);
 //Macro:	1) Get requested Note (full) and User
 
 if (
-	array_key_exists('rId',$_POST)
-	&& $_POST['rId']>0
+	$REQA->rId>0
 ) { //use supplied exact Note by ID; fetch Who, What and whoId for non-NativeImps.
-	$brA= notesById(Array($_POST['rId']));
-	$boardReq= $brA[$_POST['rId']];
+	$brA= notesById(Array($REQA->rId));
+	$boardReq= $brA[$REQA->rId];
 	$whoId= $boardReq->ownerId;
 } else if (
-	array_key_exists('rWho',$_POST) && $_POST['rWho']!=''
-	&& array_key_exists('rWhat',$_POST) && $_POST['rWhat']!=''
+	$REQA->who!=''
+	&& $REQA->what!=''
 ) { //using both user/notename, get Note and User Id's
-	$brA= noteByNamed($_POST['rWho'],$_POST['rWhat']);
+	$brA= noteByNamed($REQA->who,$REQA->what);
 	$boardReq= $brA[0];
 	$whoId= $brA[1];
 } else { //partial request; entry for full imps
-	$brA= noteByImp(array_key_exists('rWho',$_POST)?$_POST['rWho']:'');
+	$brA= noteByImp($REQA->who);
 	$boardReq= $brA[0];
 	$whoId= $brA[1];
 }
-if (array_key_exists('rId',$_POST))
-  $boardReq->clientId= $_POST['rId'];
+$boardReq->clientId= $REQA->rId;
 
 notesUnbreef(Array($boardReq));
 
@@ -128,7 +126,7 @@ if ($USER->id && $DB->apply('contactsByUser', $USER->id, $USER->id)){
 			  $_him->stateOut= $rowC['state'];
 			else
 			  $_him->stateIn= $rowC['state'];
-			if (!array_key_exists($id_contact,$_you->contactLst)) //skip duplicate
+			if (empty($_you->contactLst[$id_contact])) //skip duplicate
 			  $_you->contactLst[$id_contact]= $id_contact;
 		}
 	}

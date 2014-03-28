@@ -2,7 +2,7 @@
 	Ncore object.
 	Performs Note+Ndata holding and saving.
 	Ncore acts as Note core for several referers and holds mantainance of referers mechanics.
-	Ncore thus shoudn't be called directly. Instead there's Nroot object to be called or build other Notes from.
+	Ncore thus shoudn't be called directly. Instead there's NoteUI object to be called or build other Notes from.
 
 	Creation:
 		Ncore is created with specified _id.
@@ -382,56 +382,57 @@ Ncore.prototype.dataForSave= function(_enum){
 
 
 //////////////////////////////
-//todo: decide to use this class at all
 
 
 /*
 	Root Note container instance without ui
 */
-var Nroot= function(_id){
+var NoteUI= function(_id){
 	var _this= this;
 
 	_this.Ncore= new Ncore(_id,_this);
 
 	_this.PUB= _this.Ncore.PUB;
+
+	_this.typeUI= null;
 }
 
 /*
 	!!!transparent public functions
 */
-Nroot.prototype.set= function(_setA){
+NoteUI.prototype.set= function(_setA){
 	return this.Ncore.set(_setA);
 }
 
-Nroot.prototype.setId= function(_id){
+NoteUI.prototype.setId= function(_id){
 	return this.Ncore.setId(_id);
 }
 
-Nroot.prototype.draw= function(_force){
+NoteUI.prototype.draw= function(_force){
 	return this.Ncore.draw(_force);
 }
 
-Nroot.prototype.owner= function(){
+NoteUI.prototype.owner= function(){
 	return this.Ncore.owner();
 }
 
-Nroot.prototype.editor= function(){
+NoteUI.prototype.editor= function(){
 	return this.Ncore.editor();
 }
 
-Nroot.prototype.inherit= function(){
+NoteUI.prototype.inherit= function(){
 	return this.Ncore.inherit();
 }
 
-Nroot.prototype.save= function(_val){
+NoteUI.prototype.save= function(_val){
 	return this.Ncore.save(_val);
 }
 
 
-Nroot.prototype.dataSet= function(_id, _setA){
+NoteUI.prototype.dataSet= function(_id, _setA){
 	return this.Ncore.dataSet(_id, _setA);
 }
-Nroot.prototype.dataContext= function(_id){
+NoteUI.prototype.dataContext= function(_id){
 	return this.Ncore.dataContext(_id);
 }
 
@@ -439,7 +440,7 @@ Nroot.prototype.dataContext= function(_id){
 /*
 	Public functions.
 */
-Nroot.prototype.kill= function(){
+NoteUI.prototype.kill= function(){
 	this.Ncore.unlink(this);
 	this.doKill();
 }
@@ -449,13 +450,13 @@ Nroot.prototype.kill= function(){
 	!!!private functions
 */
 
-//Should be leaved blank at Nroot to be safely overriden
-Nroot.prototype.doDraw= function(){
+//Should be leaved blank at NoteUI to be safely overriden
+NoteUI.prototype.doDraw= function(){
 	if (!this.PUB.forRedraw)
 	  return;
 
-ALERT(PROFILE.BREEF, "Nroot "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
+ALERT(PROFILE.BREEF, "NoteUI "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
 }
 
-Nroot.prototype.doKill= function(){
+NoteUI.prototype.doKill= function(){
 }

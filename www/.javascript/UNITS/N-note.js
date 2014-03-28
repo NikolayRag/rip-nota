@@ -1,8 +1,8 @@
 /*
-	Placed Note UI, inherits Nroot(and Ncore).
+	Placed Note UI, inherits NoteUI(and Ncore).
 */
 var Note= function(_id){
-	var thisNote= new Nroot(_id);
+	var thisNote= new NoteUI(_id);
 
 //todo: find place
 	thisNote.coreType= 1;
@@ -12,7 +12,7 @@ var Note= function(_id){
 	thisNote.doKill= Note.prototype.doKill;
 
 //todo: move ui out from PUB to this
-	thisNote.PUB.ui= null; //inited at draw(), coz all Notes UI depend of parent
+	thisNote.typeUI= thisNote.PUB.ui= null; //inited at draw(), coz all Notes UI depend of parent (NdataUI)
 
 	return thisNote;
 }
@@ -22,8 +22,8 @@ Note.prototype.doDraw= function(_force){
 	if (!rootData)
 	  return;
 
-	if (!this.PUB.ui)
-	  this.PUB.ui= new NoteUI(this,rootData.ui.DOM.context);
+	if (!this.typeUI)
+	  this.typeUI= this.PUB.ui= new NUINote(this,rootData.ui.DOM.context);
 
 	//update Data at its own condition
 	for(var iD in this.PUB.ndata){
@@ -37,7 +37,7 @@ Note.prototype.doDraw= function(_force){
 	  return true;
 
 //	UI.ownerW.draw(this);
-	this.PUB.ui.style();
+	this.typeUI.style();
 	rootData.ui.style(); //parent holder influenced
 
 ALERT(PROFILE.BREEF, "Note "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
@@ -65,5 +65,5 @@ Note.prototype.doSaved= function(){
 
 
 Note.prototype.doKill= function(){
-	this.PUB.ui && this.PUB.ui.kill();
+	this.typeUI && this.typeUI.kill();
 }

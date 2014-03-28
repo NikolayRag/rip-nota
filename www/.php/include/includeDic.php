@@ -2,14 +2,14 @@
 
 include(".dictionary/dic.php");
 
-switch ($_POST['rLang']){
-	case '.ru':
-		include(".dictionary/dic". $_POST['rLang'] .".php");
+switch ($REQA->lang){
+	case 'ru':
+		include(".dictionary/dic.$REQA->lang.php");
 		break;
 	default:
-	  $_POST['rLang']= '';
+	  $REQA->lang= '';
 }
-if ($_POST['rLang'] != '')
+if ($REQA->lang != '')
   $DIC= array_merge($DIC, $DICLOC); 
 
 $DIC= (object) $DIC;

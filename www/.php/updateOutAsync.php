@@ -9,22 +9,22 @@ if (!$NOPROFILE) foreach ($_profile as $curProfile) echo $curProfile;
 //todo:	document over return values
 //todo: exclude delimiters from values: \n ; , =
 
-$lastDbStamp= array_key_exists('last',$_POST)? $_POST['last'] :0;
+$lastDbStamp= arrGet($_POST, 'last', 0);
 
 //checklist: used only for deletion
 //todo: depricate, replace with timestamp compare, hash, whatever
 $checkNotesA= Array();
-if (array_key_exists('chkN',$_POST) && $_POST['chkN'])
+if (arrGet($_POST, 'chkN', false))
   foreach (explode($ASYGN->D_LIST, $_POST['chkN']) as $tmpI=>$chkNote)
     $checkNotesA[$chkNote]= true;
 
 $checkDataA= Array();
-if (array_key_exists('chkD',$_POST) && $_POST['chkD'])
+if (arrGet($_POST, 'chkD', false))
   foreach (explode($ASYGN->D_LIST, $_POST['chkD']) as $tmpI=>$chkData)
     $checkDataA[$chkData]= true;
 
 $checkUsersA= Array();
-if (array_key_exists('chkU',$_POST) && $_POST['chkU'])
+if (arrGet($_POST, 'chkU', false))
   foreach (explode($ASYGN->D_LIST, $_POST['chkU']) as $tmpI=>$chkUsers)
     $checkUsersA[$chkUsers]= true;
 

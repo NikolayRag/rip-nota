@@ -1,10 +1,10 @@
 /*
-	Global board UI class, inherits Nroot(and Ncore).
+	Global board UI class, inherits NoteUI(and Ncore).
 */
 var Board= function(_id){
-	var thisNote= new Nroot(_id);
+	var thisNote= new NoteUI(_id);
 
-//todo: find place
+//todo: use level
 	thisNote.coreType= 0;
 
 	thisNote.doDraw= Board.prototype.doDraw;
@@ -15,7 +15,7 @@ var Board= function(_id){
 	thisNote.draw= Board.prototype.draw;
 
 //todo: move ui out from PUB to this
-	thisNote.PUB.ui= new BoardUI(thisNote,UI.DOM.workField);
+	thisNote.typeUI= thisNote.PUB.ui= new NUIBoard(thisNote,UI.DOM.workField);
 
 	return thisNote;
 }
@@ -44,16 +44,16 @@ Board.prototype.doDraw= function(_force){
 	}
 
 	if (_force || this.PUB.forRedraw){
-		this.PUB.ui.correct();
-		this.PUB.ui.style();
+		this.typeUI.correct();
+		this.typeUI.style();
 		UI.style(); //parent holder influenced
 
 //todo: set point of interest
-		if (!this.PUB.ui.lookat.done){
+		if (!this.typeUI.lookat.done){
 			var coords= SESSION.cookieGet('bpos' +this.PUB.id).split('_');
 			if (coords!=''){
-				this.PUB.ui.lookat(coords[0], coords[1]);
-				this.PUB.ui.lookat.done= true;
+				this.typeUI.lookat(coords[0], coords[1]);
+				this.typeUI.lookat.done= true;
 			} else {
 
 			}

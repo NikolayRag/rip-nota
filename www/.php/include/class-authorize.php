@@ -1,4 +1,6 @@
 <?
+include('.php/sqTmpl/SQLTLogon.php');
+
 // For Support visit http://sourceforge.net/projects/uflex/support
 // ---------------------------------------------------------------------------
 // 	  uFlex - An all in one authentication system PHP class
@@ -490,8 +492,8 @@ Returns false on error
     }
 
     function hash_pass($pass){
-        global $SALT;
-        return md5($SALT.$pass.$SALT);
+        global $SITECFG;
+        return md5($SITECFG->salt.$pass.$SITECFG->salt);
     }
 
     function logger($log){

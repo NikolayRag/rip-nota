@@ -117,7 +117,7 @@ String.prototype.decorateHTML= function(_mode,_size,_color) {
 	_size= _size ||100;
 
 	return (_mode &STR.DIV? '<div' : '<span')
-	    +" style=font-_size:" +_size+'%;'
+	    +" style=font-size:" +_size+'%;'
 	    +(_mode &STR.ITALIC? 'font-style:italic;' :'')
 	    +(_mode &STR.BOLD? 'font-weight:bold;' :'')
 	    +(_color? 'color:' +new Color(_color).hex() +';' :'')
@@ -130,6 +130,9 @@ String.prototype.decorateHTML= function(_mode,_size,_color) {
 	  +(_mode &STR.DIV? '</div>' : '</span>');
 }
 
+/*
+subst '$' signs in string with supplied array values
+*/
 String.prototype.subst= function(_valuesA,_startI) {
 	_startI= _startI ||0;
 	var outTxtA= this.split('$');

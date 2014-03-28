@@ -63,7 +63,7 @@ function svFetchData($_dataA,$_notesA){
 	foreach($_dataA->all() as $curData){
 		if ($curData->id>0){ //existent Data
 			//db-unexistent Data
-			if (!array_key_exists($curData->id, $rDataA)){
+			if (empty($rDataA[$curData->id])){
 				$curData->saveRes= $SAVE_RES->NOTHIS_ERR;
 				$curData->forSave= $SAVE_STATES->IDLE;
 				continue;
@@ -129,7 +129,7 @@ function svFetchNotes($_notesA){
 	foreach($_notesA->all() as $curNote){
 		if ($curNote->id>0){ //existent Note
 			//db-unexistent Note
-			if (!array_key_exists($curNote->id, $rNoteA)){
+			if (empty($rNoteA[$curNote->id])){
 				$curNote->saveRes= $SAVE_RES->NOTHIS_ERR;
 				$curNote->forSave= $SAVE_STATES->IDLE;
 				continue;
@@ -152,7 +152,7 @@ function svFetchNotes($_notesA){
 			$curNote->inherit= $dbNote->inherit;
 		} else { //creation mod:
 			//Referenced ancestor should exist or be supplied.
-			if ($curNote->inherit>0 && !array_key_exists($curNote->inherit, $rNoteA)){
+			if ($curNote->inherit>0 && empty($rNoteA[$curNote->inherit])){
 				$curNote->saveRes= $SAVE_RES->PARAM_ERR;
 				$curNote->forSave= $SAVE_STATES->IDLE;
 				continue;

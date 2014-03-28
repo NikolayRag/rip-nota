@@ -34,13 +34,14 @@ ToolBoardLeaf.prototype.build= function(_parentEl){
 	};
 	NOID(cClone);
 
+//tmp
 	cRoot.tInner.elementText('Leaf ' +this.ndata.id);
 
 	_parentEl.appendChild(cClone);
 
-	cRoot.context.focus();
+	cRoot.context.focus(); //focus prior to set size to allow in-transition
 	var ctx= cRoot.context.style;
-//+++classname
+//todo: classname
 	  ctx.top= '-30px';
 	  ctx.left= '-30px';
 	  ctx.width= '200px';
@@ -53,7 +54,7 @@ ToolBoardLeaf.prototype.build= function(_parentEl){
 
 ToolBoardLeaf.prototype.kill= function(){
 	var ctx= this.DOM.context.style;
-//+++classname
+//todo: classname
 	  ctx.top= '';
 	  ctx.left= '';
 	  ctx.width= '';
@@ -64,7 +65,7 @@ ToolBoardLeaf.prototype.kill= function(){
 	var _this= this;
 	setTimeout(function(){
 	  _this.rootW.removeChild(_this.DOM.root);
-	},CSS.TOOL_TRANSITIONTIME*1000);
+	}, CSS.TOOL_TRANSITIONTIME*1000);
 }
 
 

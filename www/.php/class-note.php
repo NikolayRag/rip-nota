@@ -63,7 +63,7 @@ function notesById($_idWhatA){
 	noteAssignRights($rNoteA,false); //2.1, 2.2: rights; leave id's alone
 
 	foreach ($_idWhatA as $idWhat) //1: no requested Note
-	 if (!array_key_exists($idWhat,$rNoteA)){ //subst absent
+	 if (empty($rNoteA[$idWhat])){ //subst absent
 		$_tmpn= formSubst('noBoard');
 		$_tmpn->id= $idWhat;
 		$rNoteA[]= $_tmpn;
@@ -241,7 +241,7 @@ function notesGetRights($_noteInA, $_notesCacheA=false){
 	foreach ($_noteInA as $noteIn)
 	  if (
 	  	$noteIn->inherit>0
-	  	&& !array_key_exists($noteIn->inherit, $ancestorsIdA)
+	  	&& empty($ancestorsIdA[$noteIn->inherit])
 	  	&& !$innerCache->get($noteIn->inherit)
 	  )
 	    $ancestorsIdA[$noteIn->inherit]= $noteIn->inherit;
@@ -249,7 +249,7 @@ function notesGetRights($_noteInA, $_notesCacheA=false){
 
 	//get ancestors: fillup rest of supplied
 	foreach ($_noteInA as $noteIn)
-	  if ($noteIn->inherit>0 && $innerCache->get($noteIn->inherit) && !array_key_exists($noteIn->inherit, $ancestorsA))
+	  if ($noteIn->inherit>0 && $innerCache->get($noteIn->inherit) && empty($ancestorsA[$noteIn->inherit]))
 		$ancestorsA[$noteIn->inherit]= $innerCache->get($noteIn->inherit);
 
 	

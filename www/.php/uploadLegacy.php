@@ -17,13 +17,13 @@ foreach ($filesDone['name'] as $fIndex=>$fName){
 		  $fileName= $upFileA['filename'];
 		  $fileExt= $upFileA['extension'];
 
-		$guidString= uniqid("",true) .rand();
-		  $guidString[14]="0"; //remove '.'
+		$guidString= uniqid('',true) .rand();
+		  $guidString[14]='0'; //remove '.'
 
 //todo: move this to individual proccess
 		if (!move_uploaded_file(
 			$filesDone['tmp_name'][$fIndex]
-			, "$UPLOAD_DIR/$guidString.$fileExt"
+			, "$SITECFG->upload_dir/$guidString.$fileExt"
 		))
 		  $err= 1;
 	}
@@ -34,7 +34,13 @@ foreach ($filesDone['name'] as $fIndex=>$fName){
 	$outA[]= $guidString;
 
 	$DB->apply('logUploadInit',
-		$guidString, $fileName, $USER->id, 1, $filesDone['size'][$fIndex], $fileExt,1
+		$guidString,
+		$fileName,
+		$USER->id,
+		1,
+		$filesDone['size'][$fIndex],
+		$fileExt,
+		1
 	);
 }
 

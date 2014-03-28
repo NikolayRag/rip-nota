@@ -1,4 +1,4 @@
-var BoardUIOverview= function(_board,_rootW){
+var BoardOverviewUI= function(_board,_rootW){
 	var _this= this;
 
 	_this.board= _board;
@@ -13,22 +13,22 @@ var BoardUIOverview= function(_board,_rootW){
 }
 
 
-BoardUIOverview.prototype.bindEvt= function(){
+BoardOverviewUI.prototype.bindEvt= function(){
 	var _this= this;
 	this.DOM.root.onmousedown=	function(e){UI.mouseContext(e,_this,_this.mouseMove,_this.mouseMove)};
 	this.DOM.root.ondblclick=	noBubbles;
 }
 
-BoardUIOverview.prototype.mouseMove= function(_e){
+BoardOverviewUI.prototype.mouseMove= function(_e){
 	this.board.PUB.ui.lookXY(
 		(_e.clientX -this.DOM.root.offsetLeft)/this.DOM.root.offsetWidth,
 		(_e.clientY -this.DOM.root.offsetTop)/this.DOM.root.offsetHeight
 	);
 }
 
-BoardUIOverview.tmpl= DOM('overviewTmpl');
-BoardUIOverview.prototype.build= function(_parentEl){
-	var cRoot= BoardUIOverview.tmpl.cloneNode(true);
+BoardOverviewUI.tmpl= DOM('overviewTmpl');
+BoardOverviewUI.prototype.build= function(_parentEl){
+	var cRoot= BoardOverviewUI.tmpl.cloneNode(true);
 	var cBG= DOM('overViewBG',cRoot);
 	var cFrame= DOM('overViewFrame',cRoot);
 	NOID(cRoot);
@@ -45,7 +45,7 @@ BoardUIOverview.prototype.build= function(_parentEl){
 ////functions
 
 //resize overview window itself
-BoardUIOverview.prototype.resize= function(){
+BoardOverviewUI.prototype.resize= function(){
 	var aspect= DOCUMENT.scrollWidthF()/DOCUMENT.scrollHeightF();
 	var ovw= aspect>1?STYLE.OVERVIEW_BASESIZE*aspect:STYLE.OVERVIEW_BASESIZE;
 	var ovh= aspect>1?STYLE.OVERVIEW_BASESIZE:STYLE.OVERVIEW_BASESIZE/aspect;
@@ -61,7 +61,7 @@ BoardUIOverview.prototype.resize= function(){
 	this.DOM.root.style.height= ovh +'px';
 }
 
-BoardUIOverview.prototype.correct= function(){
+BoardOverviewUI.prototype.correct= function(){
 //todo: +make also for non-html5 scroll
 	var curWidth= DOCUMENT.scrollWidthF()/100;
 	var curHeight= DOCUMENT.scrollHeightF()/100;
@@ -77,7 +77,7 @@ BoardUIOverview.prototype.correct= function(){
 //onresize, resize() used instead
 //todo: use arbitrary nId to update only one note.
 //todo: make update lazy
-BoardUIOverview.prototype.draw= function(_redrawDelay){
+BoardOverviewUI.prototype.draw= function(_redrawDelay){
 	clearTimeout(this.redrawTimeout);
 //todo: validate context (???)
 	var _this= this;
@@ -92,7 +92,7 @@ BoardUIOverview.prototype.draw= function(_redrawDelay){
 
 ////PRIVATE
 //todo: add one atom redrawing
-BoardUIOverview.prototype.drawField= function(){
+BoardOverviewUI.prototype.drawField= function(){
 	this.atoms= [];
 	while (this.DOM.bg.childNodes.length>0)
 	  this.DOM.bg.removeChild(this.DOM.bg.lastChild);

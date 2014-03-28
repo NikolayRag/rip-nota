@@ -5,7 +5,7 @@
 </span>
 
 <span class='toolWidget'>
-	<input id='youStay' type='checkbox' <?=( (array_key_exists('notaCook',$_COOKIE) && $_COOKIE['notaCook']!='') && $USER->id>0)?'checked="checked"':'';?>>
+	<input id='youStay' type='checkbox' <?= (arrGet($_COOKIE,'notaCook','')!='' && $USER->id>0)?'checked="checked"':''; ?>>
 	<span  id='youStayLab'><?=$DIC->labLogHold?></span>
 </span>
 

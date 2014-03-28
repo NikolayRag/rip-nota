@@ -1,3 +1,5 @@
+###devision/moment/[time]/[name]
+
 
 /todo:
 -save:	hold while-in-save editing
@@ -33,8 +35,9 @@ b1.9:
 -GLOB:	document spots at .techdocs
 -js:	finalize Update sequence
 +note:	made Board UI object (ro), embed board-related UI and navigation
--note:	made Note UI object (ro)
++note:	made Note UI object (ro)
 +note:	made Ndata object (ro)
+-note:	made Ndata UI object
 +note:	introduced Ndata UI templates mechanism
 +php:	inefficient secGet4Board() replaced with notesSecA()
 +php:	notesFillRights() now recursively fetch inheritants at once to get root rights
@@ -270,7 +273,9 @@ b1.9:
 +upload:	public caller supports container leaf creation callback
 +upload:	upload dir configured from www.privateCfg
 +upload:	note's progress, finalize and error interface is unified
-
++file:	mime is read form db
+		-mime is stored in db
+		+download URI switch &dl=[0|1] added
 
 
 
@@ -386,6 +391,9 @@ Minor:
 +pop:		support '\n'
 +async:		binary mode sent within header
 			+ additional headers array supplied
++URI:		(ReqURI)$REQA global holds filtered URI
+			+(LogArgs)$args fold filtered arguments
+
 
 
 
@@ -510,6 +518,21 @@ Refactor:
 +Ncore:			.doKill() renamed to .removeCore()
 +DIC:			uses '\n' and '$'
 +async:			_that argument depricated; .bind(this) used instead for CB
++php:			added reading source files by readDirFiles(dir,fileListFile)
++JS:			NoteDB object dedicated
++JS:			NdataDB object dedicated, Ndata.PUB used
+-Unit:			reorganize hierarchy to (Unit->DB; Unit->UI; UI->TypeUI)
+				+ NoteUI renamed to NUINote
+				+ BoardUI renamed to NUIBoard
+				+ BoardUIOverview renamed to BoardOverviewUI
+				+ Nroot renamed to NoteUI
++php:			more straight selection of Client and Mode
+				+ added default Client and Mode
+				+ added wrong Client and Mode branches
++php:			array_key_exists() replaced widely
++php:			site specific config moved to (SiteCfg)$SITECFG global
+				site specific key names made lowcase
+
 
 
 
@@ -602,6 +625,7 @@ Fix:
 				index.php branch misroute.
 +sql:			note.version defaults to 1;
 				ndata.isdeleted defaults to 0
++logon:			SQL template actually included from class-authorize.php
 
 
 

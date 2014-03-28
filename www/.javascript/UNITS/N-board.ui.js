@@ -2,13 +2,13 @@
 	Board UI.
  	called at Board.draw() to guarantee parent UI element is defined
 */
-var BoardUI= function(_note,_rootW){
+var NUIBoard= function(_note,_rootW){
 	var _this= this;
 
 	_this.note= _note;
 
 	_this.DOM= _this.build(_rootW);
-	_this.overview= new BoardUIOverview(_this.note,_rootW);
+	_this.overview= new BoardOverviewUI(_this.note,_rootW);
 
 	_this.bound= {
 		xmin: null,	xmax: null, width: null,
@@ -25,7 +25,7 @@ var BoardUI= function(_note,_rootW){
 }
 
 
-BoardUI.prototype.place= function(_data,_uiRoot){
+NUIBoard.prototype.place= function(_data,_uiRoot){
 	_uiRoot.style.left= _data.place.x +"px";
 	_uiRoot.style.top= _data.place.y +"px";
 	_uiRoot.style.width= _data.place.w +"px";
@@ -33,7 +33,7 @@ BoardUI.prototype.place= function(_data,_uiRoot){
 }
 
 ////PRIVATE
-BoardUI.prototype.bindEvt= function(){
+NUIBoard.prototype.bindEvt= function(){
 	var _this= this;
 	this.DOM.root.onmousedown= function(_e){UI.mouseContext(_e,_this,_this.mouseDown,_this.mouseMove,undefined,USER_REACTION.POINTER_DEAD_SPOT)};
 	this.DOM.root.onmouseup= function(_e){if (!_e.toolFlag && _this.note.PUB.rights>=NOTA_RIGHTS.RW) UI.toolSet.make(ToolBoard,_this.DOM.tool,_this.note)};
@@ -41,12 +41,12 @@ BoardUI.prototype.bindEvt= function(){
 	UI.bindDeep(this.onWndScroll.bind(this),this.onWndResize.bind(this));
 }
 
-BoardUI.prototype.mouseDown= function(_e){
+NUIBoard.prototype.mouseDown= function(_e){
 	this.mouseInitialX= DOCUMENT.scrollLeftF() +_e.clientX;
 	this.mouseInitialY= DOCUMENT.scrollTopF() +_e.clientY;
 }
 
-BoardUI.prototype.mouseMove= function(_e){
+NUIBoard.prototype.mouseMove= function(_e){
 	DOCUMENT.scrollXY(
 		this.mouseInitialX -_e.clientX,
 		this.mouseInitialY -_e.clientY
@@ -54,9 +54,9 @@ BoardUI.prototype.mouseMove= function(_e){
 }
 
 
-BoardUI.tmpl= DOM('plateBoardTmpl');
-BoardUI.prototype.build= function(_parentEl){
-	var cRoot= BoardUI.tmpl.cloneNode(true);
+NUIBoard.tmpl= DOM('plateBoardTmpl');
+NUIBoard.prototype.build= function(_parentEl){
+	var cRoot= NUIBoard.tmpl.cloneNode(true);
 	var cBG= DOM('plateBoardBG',cRoot);
 	var cCanvas= DOM('plateBoardCanvas',cRoot);
 	var cRootover= DOM('plateBoardRoot',cRoot);
@@ -77,7 +77,7 @@ BoardUI.prototype.build= function(_parentEl){
 	};
 }
 
-BoardUI.prototype.canvasSet= function(){
+NUIBoard.prototype.canvasSet= function(){
 	var canvas= this.DOM.canvas;
 	if ((canvas.width == canvas.offsetWidth) && (canvas.height == canvas.offsetHeight))
 	  return;
@@ -105,7 +105,7 @@ BoardUI.prototype.canvasSet= function(){
 	  canvasImgRepaint(this.bgimg);
 }
 
-BoardUI.prototype.style= function() {
+NUIBoard.prototype.style= function() {
 	var curStyle= this.note.PUB.style;
 
 	this.canvasSet();
@@ -124,7 +124,7 @@ BoardUI.prototype.style= function() {
 
 
 //todo: unify full and partial redraw
-BoardUI.prototype.onWndScroll= function(){
+NUIBoard.prototype.onWndScroll= function(){
 	this.overview.correct();
 	this.canvasMove();
 
@@ -135,7 +135,7 @@ BoardUI.prototype.onWndScroll= function(){
 	);
 }
 
-BoardUI.prototype.onWndResize= function(){
+NUIBoard.prototype.onWndResize= function(){
 	this.canvasMove();
 	this.correct(1);
 }
@@ -143,7 +143,7 @@ BoardUI.prototype.onWndResize= function(){
 
 /*
 */
-BoardUI.prototype.canvasMove= function() {
+NUIBoard.prototype.canvasMove= function() {
 	var  canvasGapW= this.DOM.canvas.clientWidth-DOCUMENT.clientWidthF(1)
 		,canvasGapH= this.DOM.canvas.clientHeight-DOCUMENT.clientHeightF(1)
 		,frameGapW= DOCUMENT.scrollWidthF()-DOCUMENT.clientWidthF()
@@ -159,7 +159,7 @@ BoardUI.prototype.canvasMove= function() {
 
 
 //0-1 range of ENTIRE workfield span
-BoardUI.prototype.lookXY= function(_x,_y){
+NUIBoard.prototype.lookXY= function(_x,_y){
 	DOCUMENT.scrollXY(
 		1.*_x*DOCUMENT.scrollWidthF() -DOCUMENT.clientWidthF()*.5
 		,1.*_y*DOCUMENT.scrollHeightF() -DOCUMENT.clientHeightF()*.5
@@ -168,7 +168,7 @@ BoardUI.prototype.lookXY= function(_x,_y){
 
 //0-1 range inside notes block ONLY
 //todo: need at all?
-BoardUI.prototype.lookat= function(_lookX,_lookY){
+NUIBoard.prototype.lookat= function(_lookX,_lookY){
 	var bound= this.getBound();
 	DOCUMENT.scrollXY(
 		bound.width*(_lookX*2-1)*.5
@@ -179,7 +179,7 @@ BoardUI.prototype.lookat= function(_lookX,_lookY){
 		 -DOCUMENT.clientHeightF()*.5
 	);
 }
-BoardUI.prototype.blocksXY= function(){
+NUIBoard.prototype.blocksXY= function(){
 	var bound= this.getBound();
 	return {
 		x:
@@ -195,7 +195,7 @@ BoardUI.prototype.blocksXY= function(){
 
 
 //todo: remove f'n redrawdelay
-BoardUI.prototype.correct= function(redrawDelay){
+NUIBoard.prototype.correct= function(redrawDelay){
 	this.canvasSet();
 	this.correctField();
 
@@ -204,7 +204,7 @@ BoardUI.prototype.correct= function(redrawDelay){
 
 //todo: maybe: check for real changes, before applying
 //todo: issue: Board.BG moved out from Board.context and placed earlier. POSSIBLE correctField errors.
-BoardUI.prototype.correctField= function(){
+NUIBoard.prototype.correctField= function(){
 	if (this.note.PUB.ndata.length==0) { //blank field
 		this.DOM.root.style.width=
 		  this.DOM.root.style.height= '100%';
@@ -232,7 +232,7 @@ BoardUI.prototype.correctField= function(){
 }
 
 
-BoardUI.prototype.getBound= function(){
+NUIBoard.prototype.getBound= function(){
 //todo: bound should be updated as leafs changed, use dirtyBound()
 //	if (0 &&  !this.bound.dirty)
 //	  return this.bound;
@@ -269,11 +269,11 @@ BoardUI.prototype.getBound= function(){
 	return this.bound;
 }
 
-BoardUI.prototype.dirtyBound= function(){
+NUIBoard.prototype.dirtyBound= function(){
 	this.bound.dirty= true;
 }
 
-BoardUI.prototype.saveBrowse= function(){
+NUIBoard.prototype.saveBrowse= function(){
 	var xy= this.blocksXY();
 	SESSION.cookieSet(xy.x +'_' +xy.y, 'bpos' +this.note.PUB.id);
 }

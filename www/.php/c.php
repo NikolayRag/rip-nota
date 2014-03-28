@@ -4,7 +4,7 @@
 $CONSTANTS= array(
 ////////Engine
 	'CLIENT_TYPE'=>	array(
-		'MODERN'=>	0,
+		'DEFAULT'=>	0,
 		'MINI'=>	1,
 		'LEGACY'=>	2,
 		'DUMB'=>	3,
@@ -23,6 +23,7 @@ $CONSTANTS= array(
 	),
 
 	'SESSION_STATES'=>	array(
+		'NONE'=>	0,
 		'LOGOUT'=>	1,
 		'UPDATE'=>	2,
 		'VALIDATE'=>	3,
@@ -103,13 +104,15 @@ $CONSTANTS= array(
 	),
 
 	'ASYNC_MODE'=>	array( 
+		'DEFAULT'=>	'',
 		'UPDATE'=>	1,
 		'SAVE'=>	2,
 		'LOGON'=>	3,
 		'LOGVALIDATE'=>	4,
 		'UPLOAD_LEGACY'=>	5,
 		'UPLOADPROGRESS_LEGACY'=>	6,
-		'UPLOAD_BLOB'=>	7
+		'UPLOAD_BLOB'=>	7,
+		'DOWNLOAD'=>	8
 	),
 
 	'ASIDX_UPDCB'=>	array( 
@@ -175,6 +178,14 @@ $CONSTANTS= array(
 		'RESTRICTED'=>	-1
 	),
 
+	'MIME'=>	array( 
+		'm0'=>	'application/octet-stream',
+		'm1'=>	'image/jpeg'
+	),
+
+	'DEFAULT'=>	array(
+		'LANG'=>	'ru'
+	),
 
 
 

@@ -11,7 +11,7 @@ function clientType() {
 	if (preg_match("/$crawlerNames/i", $_SERVER['HTTP_USER_AGENT']))
 	  return $CLIENT_TYPE->BOT;
 
-	return $CLIENT_TYPE->MODERN;
+	return $CLIENT_TYPE->DEFAULT;
 }
 
 ?>

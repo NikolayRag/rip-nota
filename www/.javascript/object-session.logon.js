@@ -7,7 +7,7 @@ SESSION.logon= new function(){
 
 this.login= function(_mode,_username,_password) {
 	var saveData= [];
-	saveData['logMode']= _mode;
+	saveData['logMode']= _mode || SESSION_STATES.NONE;
 	var asyncMode= ASYNC_MODE.LOGON;
 	switch (_mode) {
 		case SESSION_STATES.LEAVE:

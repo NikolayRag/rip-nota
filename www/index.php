@@ -8,83 +8,65 @@ $DB->apply('logHttpAgent', $_SERVER['HTTP_USER_AGENT']);
 $agentId= $DB->lastInsertId();
 $DB->apply('logHttpLast', $_SERVER['REMOTE_ADDR'], $_SERVER['REMOTE_PORT'], $agentId, $USER->id);
 $lastHttpLog= $DB->fetch();
-if ($lastHttpLog && $_SERVER['REQUEST_URI']==$lastHttpLog['request'] && $_POST['mode']==$lastHttpLog['mode']){
+if ($lastHttpLog && $_SERVER['REQUEST_URI']==$lastHttpLog['request'] && $REQA->mode==$lastHttpLog['mode']){
 	$DB->apply('logHttpRe', $lastHttpLog['id']);
 	$httpId= $agentId;
 } else {
-	$DB->apply('logHttp', $_SERVER['REMOTE_ADDR'], $_SERVER['REMOTE_PORT'], $agentId, $_SERVER['REQUEST_URI'], $USER->id, $_POST['mode']?$_POST['mode']:0);
+	$DB->apply('logHttp', $_SERVER['REMOTE_ADDR'], $_SERVER['REMOTE_PORT'], $agentId, $_SERVER['REQUEST_URI'], $USER->id, $REQA->mode?$REQA->mode:0);
 	$httpId= $DB->lastInsertId();
 }
 
 
-////FILTER DIFFERENT REQUEST BRANCHES
 
-//branch: restricted
-if (clientType()== $CLIENT_TYPE->SCANNER){
-	header('HTTP/1.1 403 Forbidden');
-	exit;
+switch (clientType()){
+	case $CLIENT_TYPE->SCANNER: //branch: restricted
+		header('HTTP/1.1 403 Forbidden');
+		exit;
+	case $CLIENT_TYPE->BOT: //branch: crawler
+		include('.php/update.php');
+		include('.templates/t_indexBot.php');
+		exit;
 }
 
 
-//branch: crawler
-if (clientType()== $CLIENT_TYPE->BOT){
-	include('.php/update.php');
-	include('.templates/t_indexBot.php');
-	exit;
-}
-
-
-//branch: blob upload
-if ($_POST['mode']== $ASYNC_MODE->UPLOAD_BLOB){
-	include('.php/uploadBlob.php');
-	exit;
-}
-
-//branch: legacy upload
-if ($_POST['mode']== $ASYNC_MODE->UPLOAD_LEGACY){
+switch ($REQA->mode){
+	case $ASYNC_MODE->UPLOAD_BLOB: //branch: blob upload
+		include('.php/uploadBlob.php');
+		exit;
+	case $ASYNC_MODE->UPLOAD_LEGACY: //branch: legacy upload
 //todo: make preventive upload restrictions
-	include('.php/uploadLegacy.php');
-	exit;
-}
-
-//branch: legacy upload progress
-if ($_POST['mode']== $ASYNC_MODE->UPLOADPROGRESS_LEGACY){
-	include('.php/uploadProgressLegacy.php');
-	exit;
-}
-
-//branch: async update
-if ($_POST['mode']== $ASYNC_MODE->UPDATE){
-	include('.php/update.php');
-	include('.php/updateOutAsync.php');
-	exit;
-}
-
-
-//branch: async save
-if ($_POST['mode']== $ASYNC_MODE->SAVE){
-	include('.php/save.php');
-	exit;
-}
-
-
-//branch: async logon
-if ($_POST['mode']== $ASYNC_MODE->LOGON || $_POST['mode']==$ASYNC_MODE->LOGVALIDATE){
-	include('.php/logon.php');
-	exit;
-}
-
-//branch: get file; /?=xxx
-if ($_queryReqA[0]=='' && isSet($_GET[''])){
-	include('.php/grab.php');
-	exit;
+		include('.php/uploadLegacy.php');
+		exit;
+	case $ASYNC_MODE->UPLOADPROGRESS_LEGACY: //branch: legacy upload progress
+		include('.php/uploadProgressLegacy.php');
+		exit;
+	case $ASYNC_MODE->UPDATE: //branch: async update
+		include('.php/update.php');
+		include('.php/updateOutAsync.php');
+		exit;
+	case $ASYNC_MODE->SAVE: //branch: async save
+		include('.php/save.php');
+		exit;
+	case $ASYNC_MODE->LOGON: //branch: async logon
+	case $ASYNC_MODE->LOGVALIDATE:
+		include('.php/logon.php');
+		exit;
+	case $ASYNC_MODE->DOWNLOAD: //branch: get file; /?=xxx
+		include('.php/include/kiGrab.php');
+		exit;
+	case $ASYNC_MODE->DEFAULT:
+		break;
+	default:
+//todo: errorpage
+		echo 'Wrong request';
+		exit;
 }
 
 
 //branch: blank-redirect-to-homepage
 //todo:	check for HTML5 compatibility
-if ($_POST['rWho']=='' && $_POST['rId']==-1 && $_POST['rFilter']=='' && $USER->signed){
-	header( 'Location: /'. $USER->username .($_POST['rEmbed']==1?'#embed=1':'') );
+if ($REQA->who=='' && $REQA->rId==-1 && $REQA->filter=='' && $USER->signed){
+	header( 'Location: /'. $USER->username .($REQA->embed==1?'#embed=1':'') );
 	exit;
 }
 

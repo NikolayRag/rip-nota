@@ -16,7 +16,9 @@ function grabEnd($_data){
 	To avoid timeout on time consuming downloading, set
 	  fCGIext.ini: ActivityTimeout=xxx 
 */
-$_reqId= $_GET[''];
+$_reqId= $REQA->getFname;
+$_isAttach= $REQA->getDload;
+
 //depricated out from function:
 //global $DB, $USER, $TIMER_LENGTH;
 $userId= $USER->id;
@@ -49,8 +51,7 @@ if (
 	|| !($fileH = fopen($fullName, "rb"))
 ){
 	header("HTTP/1.1 404 Not Found");
-	header('Content-Type: application/octet-stream');
-	header('Content-Disposition: attachment; filename=" ";');
+	header('Content-Disposition: filename=" ";');
 	header('Content-Length: 0');
 	return;
 }
@@ -80,14 +81,16 @@ if (!isset($_SERVER['HTTP_RANGE']) || !$BIGfEnd) {
 if (!$BIGfEnd)
   $BIGfEnd= arrGet($qOrig,'size',0);
 
-$DB->apply('logDl',arrGet($qOrig,'id',0),$_SERVER['REMOTE_ADDR'],$userId,floatval($BIGfStart),floatval($BIGfEnd));
+$DB->apply('logDl', arrGet($qOrig,'id',0), $_SERVER['REMOTE_ADDR'], $userId, floatval($BIGfStart), floatval($BIGfEnd));
 $endData->dlId= $DB->lastInsertId();
 
 $BIGfEnd= bcsub($BIGfEnd,$BIGfStart);
+$mtype= arrGet($qOrig,'mime',0);
+
 header("Connection: close");
 header('Content-Length: ' .$BIGfEnd);
-header('Content-Type: application/octet-stream');
-header("Content-Disposition: attachment; filename=\"$fileOrig.$fileExt\"");
+header('Content-Type: ' .$MIME->{"M$mtype"} );
+header("Content-Disposition: " .($_isAttach?'attachment;':''). " filename=\"$fileOrig.$fileExt\"");
 	header('Last-Modified: ' .date('D, d M Y H:i:s T', filemtime($fullName)) );
 header('Pragma: public'); 
 header('Content-Transfer-Encoding: binary');

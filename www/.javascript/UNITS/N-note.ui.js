@@ -2,7 +2,7 @@
 	Note UI
 	called at Note.draw() after bulk Notes update to guarantee parent UI element is defined
 */
-var NoteUI= function(_note,_rootW){
+var NUINote= function(_note,_rootW){
 	var _this= this;
 
 	_this.note= _note;
@@ -14,11 +14,11 @@ var NoteUI= function(_note,_rootW){
 }
 
 
-NoteUI.prototype.place= function(){
+NUINote.prototype.place= function(){
 }
 
 //todo: make stilyze affecting only own UI elements
-NoteUI.prototype.style= function(){
+NUINote.prototype.style= function(){
 	var _style= this.note.PUB.style;
 
 	this.DOM.bg.style.background= _style.main.hex();
@@ -31,12 +31,12 @@ NoteUI.prototype.style= function(){
 	    thisData[i].ui.style();
 }
 
-NoteUI.prototype.bindEvt= function(_parentEl){
+NUINote.prototype.bindEvt= function(_parentEl){
 }
 
-NoteUI.tmpl= DOM('plateNoteTmpl');
-NoteUI.prototype.build= function(_parentEl){
-	var cRoot= NoteUI.tmpl.cloneNode(true);
+NUINote.tmpl= DOM('plateNoteTmpl');
+NUINote.prototype.build= function(_parentEl){
+	var cRoot= NUINote.tmpl.cloneNode(true);
 	var cBg= DOM('plateNoteBg',cRoot);
 	var cObg= DOM('plateNoteOverbg',cRoot);
 	var cCtx= DOM('plateNoteContext',cRoot);
@@ -54,6 +54,6 @@ NoteUI.prototype.build= function(_parentEl){
 	};
 }
 
-NoteUI.prototype.kill= function(){
+NUINote.prototype.kill= function(){
 	this.rootW.removeChild(this.DOM.root);
 }

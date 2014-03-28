@@ -20,7 +20,7 @@ this.registerCheck= function(){
 	UI.popW.up(this.DOM.reg,
 		function(){
 			if (_this.DOM.regPass.value==_this.DOM.pass.value)
-			  _this.login(1);
+			  _this.login(true);
 			else
 			  setTimeout(function(){UI.popW.up(DIC.errrPrePassMismatch)},0);
 		},

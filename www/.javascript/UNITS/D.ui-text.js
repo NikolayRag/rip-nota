@@ -61,7 +61,7 @@ DataUIText.prototype.build= function(_parentEl,_curDI){
 		_parentEl.appendChild(cRoot);
 		cRoot.focus();
 		cRoot.style.opacity= 1;
-	},_curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
+	}, _curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
 
 	return {
 		root:cRoot,

@@ -1,5 +1,39 @@
+/*
 //todo: make parent Unit class for all units to mantain flat lists;
-//		Maybe ((Ncore<-Nroot) + Ndata + Ucore) turn to (Unit<-(Nroot+Ndata+Ucore))
+
+1. Ndata(+.vals)
+1.1.	.ui
+
+ should be 
+
+0. UnitList[id]
+1. Unit
+1.1.	db (.vals)
+1.2.	ui[] (.ui)
+1.2.1.		typeUi
+
+------
+
+1. Ncore(+.PUB)
+1.1.	.reference[]
+1.1.1.		.ui
+
+ should be 
+
+0. UnitList[id]
+1. Unit
+1.1.	db (.PUB)
+1.2.	ui[] (.referrence[])
+1.2.1.		typeUi
+
+
+
+Unit: root external interface; creation, reparent, reid, kill
+	(Unit.DB) NoteDB, NdataDB, UserDB: implements save/update/set
+	(Unit.UI[]) NoteUI, NdataUI: UI placeholter, Tool Context
+		(NoteUI.typeUI) NUINote, NUIBoard
+		(NdataUI.typeUI) DUIUnknown, DUIText, DUINote, DUIFile, DUIPaint
+*/
 
 /*
 	Data atom for notes.
@@ -21,7 +55,8 @@ var Ndata= function(_root,_id)
 
 //todo: ref; use objects, make .changed(obj) reactor
 	_this.rootNote= _root;
-	_this.ui= null; //inited at draw(), coz all Notes UI depend of parent
+	_this.ui= new NdataUI(this);
+//	_this.ui= null; //inited at draw(), coz all Notes UI depend of parent
 	_this.forRedraw= 0;
 	_this.forSave= SAVE_STATES.IDLE;
 	_this.forDelete= false;
@@ -89,7 +124,8 @@ Ndata.prototype.kill= function(){
 	if (this.forSave!= SAVE_STATES.IDLE) //unsaved
 	  return false;
 
-	this.ui && this.ui.kill();
+	this.ui.kill();
+//kill:	this.ui && this.ui.kill();
 
 //todo: this is alien call for future Unit object
 	if (this.dtype==DATA_TYPE.NOTE)
@@ -138,25 +174,15 @@ Ndata.prototype.draw= function(_curDI){
 //	if (this.ver==CORE_VERSION.INIT)
 //	  return;
 
-	if (!this.ui){
-//todo: deal with multi-instancing (Ncore .referers)
-		var newTemplate= [];
-		  newTemplate[DATA_TYPE.UNKNOWN]= DataUIUnknown;
-		  newTemplate[DATA_TYPE.TEXT]= DataUIText;
-		  newTemplate[DATA_TYPE.NOTE]= DataUINote;
-
-		this.ui= new (newTemplate[this.dtype] || DataUIUnknown)(this,this.rootNote.PUB.ui.DOM.context,_curDI||0);
-	}
-
 	if (this.forRedraw)
-	  this.ui.draw();
+	  this.ui.draw(_curDI);
 
 	if (this.dtype==DATA_TYPE.NOTE) //go deeper
 	  Ncore.all(this.content) && Ncore.all(this.content).draw();
 
-	var retRedraw= this.forRedraw;
+	var forRedraw_= this.forRedraw;
 	this.forRedraw= 0;
-	return retRedraw;
+	return forRedraw_;
 }
 
 
@@ -172,7 +198,8 @@ Ndata.prototype.save= function(_vals){
 		if (this.ver == CORE_VERSION.INIT) //shorthand for unsaved yet
 		  return this.saved(0);
 
-		this.ui && this.ui.unbind();
+		this.ui.unbind();
+//		this.ui && this.ui.unbind();
 		this.forDelete= true;
 	}
 
@@ -232,3 +259,97 @@ Ndata.prototype.canSave= function(_enum){
 		this.forSave= SAVE_STATES.HOLD;
 	return(curState);
 }
+
+
+////////////////////////////////
+
+
+
+
+
+/*
+Leafs are drawn at separate path
+
+*/
+
+var NdataUI= function(_rootNdata){
+
+	this.rootNdata= _rootNdata;
+	this.rootUI= null;
+
+	this.level= 0;
+
+	this.typeUI= null;
+
+	this.DOM= this.build();
+
+	this.newTemplate= [];
+	 this.newTemplate[DATA_TYPE.UNKNOWN]= DataUIUnknown;
+	 this.newTemplate[DATA_TYPE.TEXT]= DataUIText;
+	 this.newTemplate[DATA_TYPE.NOTE]= DataUINote;
+}
+
+//todo: _resizeSpot to be removed at all
+//todo: make complex leafSign
+//todo: redesign comments
+NdataUI.tmpl= DOM('leafTmpl');
+NdataUI.prototype.build= function(){
+	var cClone= NdataUI.tmpl.cloneNode(true);
+	var cRoot= {
+		root:	cClone,
+		sign:	DOM('leafSign',cClone),
+		shadow:	DOM('leafSignShadow',cClone),
+		mark:	DOM('leafSignMark',cClone),
+		stamp:	DOM('leafSignStamp',cClone),
+		ref:	DOM('leafSignCustom',cClone),
+		context:	DOM('leafContext',cClone),
+		tool:	DOM('leafToolHolder',cClone),
+		cover:	DOM('leafFrameCover',cClone)
+	};
+	NOID(cClone);
+
+//cClone.style.transform= 'rotate('+(Math.random()-.5)*5+'deg)';
+
+	return cRoot;
+}
+
+
+NdataUI.prototype.draw= function(_curDI){
+//todo: deal with multi-instancing (Ncore .referers)
+	if (!this.rootUI){ //bind once
+		this.rootUI= this.rootNdata.rootNote.PUB.ui;
+
+		var cCtx= this.rootUI.DOM.context;
+		var cRoot= this.DOM.root;
+
+//todo: make internally managed grain adding instead of supplied _curDI
+		setTimeout(function(){
+			cCtx.appendChild(cRoot);
+			cRoot.focus();
+			cRoot.style.opacity= 1;
+		}, _curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
+
+//		this.typeUI= new (this.newTemplate[this.rootNdata.dtype] || DataUIUnknown)(this.rootNdata,cCtx,_curDI||0);
+	}
+
+//	this.typeUI.draw();
+	this.rootUI.place(this.rootNdata, this.DOM.root); //container decides how to arrange in fact
+}
+
+
+NdataUI.prototype.style= function(){}
+
+
+NdataUI.prototype.unbind= function(){
+	if (!this.typeUI)
+	  return;
+
+	this.typeUI.unbind();
+}
+
+NdataUI.prototype.kill= function(){
+//	this.typeUI && this.typeUI.kill();
+
+	this.rootUI.DOM.context.removeChild(this.DOM.root);
+}
+

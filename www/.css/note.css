@@ -12,17 +12,6 @@
 	text-shadow: -1px -1px 0px rgba(0,0,0,.5), 1px 1px 0px rgba(255,255,255,.5);
 }
 
-.leafNote {
-	position: absolute;
-	overflow:visible;
-
-	opacity:0;
-	border:1px transparent solid;
-	border-radius: 7px;
-
-	transition: border .15s, opacity .2s;
-
-}
 .noteComments {
 	position:absolute;
 	top:0;
@@ -50,39 +39,12 @@
 	font-size:16px;
 	color:#888;
 }
-.leafNoteSign {
-	position:absolute;
-	top:-14px;
-	left:2px;
-	font-size:9px;
-	color:#888;
-}
-.leafNoteMark {
-	position:relative;
-	top:5px;
-	line-height:0;
-	font-size:200%;
-	color:#f00;
-}
-.noteRef {
-	position:absolute;
-	top:-15px;
-	left:0;
-	font-size:9px;
-	color:#888;
-}
 
 .leafNoteShadow {
 	position:absolute;
 	background:#006;
 	border-radius:6px;
 }
-.leafNoteContext {
-	position:absolute;
-	width:100%;
-	height:100%;
-}
-
 .noteCaption {
     border: 0 solid;
     top:-18px;

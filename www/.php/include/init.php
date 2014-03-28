@@ -6,52 +6,57 @@
 	It is described as colon-separated key:value.
 	Fields used are:
 
-	SALT: xx
-	DB_HOST: xx
-	DB_USER: xx
-	DB_PASS: xx
-	DB_NAME: xx
+	salt: xx
+	db_host: xx
+	db_user: xx
+	db_pass: xx
+	db_name: xx
 
 */
-$siteSpecificConfig= Array();
+class SiteCfg {
 
-preg_match_all(
-	'/(\S+)\s*:([^\n\r]+)/',
-	file_get_contents("./../www.privateCfg"),
-	$siteSpecificConfig
-);
-$SALT=
- $DB_HOST=
- $DB_USER=
- $DB_PASS=
- $DB_NAME=
- $UPLOAD_DIR=
- '';
-foreach($siteSpecificConfig[1] as $key=>$sscName){
-	$sscValue= trim($siteSpecificConfig[2][$key]);
-	switch ($sscName){
-		case 'SALT':
-			$SALT= $sscValue;
-			break;
-		case 'DB_HOST':
-			$DB_HOST= $sscValue;
-			break;
-		case 'DB_USER':
-			$DB_USER= $sscValue;
-			break;
-		case 'DB_PASS':
-			$DB_PASS= $sscValue;
-			break;
-		case 'DB_NAME':
-			$DB_NAME= $sscValue;
-			break;
-		case 'UPLOAD_DIR':
-			$UPLOAD_DIR= $sscValue;
-			break;
+	var $salt='', $db_host='', $db_user='', $db_pass='', $db_name='', $upload_dir='';
+
+	function SiteCfg(){
+		$cfgFile= './../www.privateCfg';
+		$siteSpecificConfig= Array();
+
+		preg_match_all(
+			'/(\S+)\s*:([^\n\r]+)/',
+			file_get_contents($cfgFile),
+			$siteSpecificConfig
+		);
+
+		foreach($siteSpecificConfig[1] as $key=>$sscName){
+			$sscValue= trim($siteSpecificConfig[2][$key]);
+			switch ($sscName){
+				case 'salt':
+					$this->salt= $sscValue;
+					break;
+				case 'db_host':
+					$this->db_host= $sscValue;
+					break;
+				case 'db_user':
+					$this->db_user= $sscValue;
+					break;
+				case 'db_pass':
+					$this->db_pass= $sscValue;
+					break;
+				case 'db_name':
+					$this->db_name= $sscValue;
+					break;
+				case 'upload_dir':
+					$this->upload_dir= $sscValue;
+					break;
+			}
+		}
+
 	}
 }
 
-$DB = new kiSQL($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+$SITECFG= new SiteCfg();
+
+$DB = new kiSQL($SITECFG->db_host, $SITECFG->db_name, $SITECFG->db_user, $SITECFG->db_pass);
 if ($DB->dbErr){
 	include('.templates/t_dbError.php');
 	exit;
