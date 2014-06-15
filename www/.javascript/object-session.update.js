@@ -91,7 +91,7 @@ ALERT();
 
 //checklist: used only for deletion
 //todo: depricate block
-	this.completeRequest= true; //depricete too
+	this.completeRequest= true; //depricate too
 	var checkNotes= [];
 	var allNotes= Ncore.all();
 	for (var iN in allNotes)
@@ -230,7 +230,7 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 //	ALERTFLAG= 0; //do once
 }
 
-	var newDbStamp= 0;
+	var newDbStamp= 0; //if server dont return stamp, then ALL be updated next time
 	var updSuccess= true;
 
 	//Update all changes prior to any redraw

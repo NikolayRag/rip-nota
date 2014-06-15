@@ -3,6 +3,7 @@ include('.php/include/includeAll.php');
 include('.php/include/filterClient.php');
 include('.php/include/filterUrl.php');
 
+
 //todo: move to stored proc
 $DB->apply('logHttpAgent', $_SERVER['HTTP_USER_AGENT']);
 $agentId= $DB->lastInsertId();
@@ -17,7 +18,6 @@ if ($lastHttpLog && $_SERVER['REQUEST_URI']==$lastHttpLog['request'] && $REQA->m
 }
 
 
-
 switch (clientType()){
 	case $CLIENT_TYPE->SCANNER: //branch: restricted
 		header('HTTP/1.1 403 Forbidden');
@@ -27,7 +27,6 @@ switch (clientType()){
 		include('.templates/t_indexBot.php');
 		exit;
 }
-
 
 switch ($REQA->mode){
 	case $ASYNC_MODE->UPLOAD_BLOB: //branch: blob upload

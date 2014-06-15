@@ -8,7 +8,6 @@ include('sqTmpl/SQLTUpdate.php');
 $notesA= new Collect();
 $usersA= new Collect();
 
-
 $_profile= array();
 $_profile[]= "t;start;". round((microtime(true) -$__startTime)*1000)/1000 .$ASYGN->D_UNIT;
 $__startTime= microtime(true);

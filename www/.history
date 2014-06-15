@@ -532,8 +532,8 @@ Refactor:
 +php:			array_key_exists() replaced widely
 +php:			site specific config moved to (SiteCfg)$SITECFG global
 				site specific key names made lowcase
-
-
++dic:			add checking of language provided
++php:			SiteCfg made smaller and loads all it can load
 
 
 Fix:

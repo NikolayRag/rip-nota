@@ -12,7 +12,6 @@ $sqlTemplate= array_merge($sqlTemplate, array(
 	'logonRegisterConfirm'=> "
 		UPDATE users SET confirmation=?, activated=0 WHERE user_id=?
 	",
-
 //inconsistent (unused yet)
 	'logonUpdate'=> "
 		UPDATE users SET x=?, y=? WHERE user_id=?

@@ -4,6 +4,7 @@
 	Form prepared update data for Async responce
 */
 
+
 if (!$NOPROFILE) foreach ($_profile as $curProfile) echo $curProfile;
 
 //todo:	document over return values
