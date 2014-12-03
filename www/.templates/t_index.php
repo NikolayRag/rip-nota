@@ -60,7 +60,7 @@
 			$ARGS_PLACE->EMBED=> $REQA->embed,
 		))?>];
 </script>
-<script src='/.mini/dic.<?= $REQA->lang ?>.js'></script>
+<script src='/.mini/dic.<?= $REQA->lang!=''?"$REQA->lang.":'' ?>js'></script>
 <script src='/.mini/mini.js'></script>
 </body>
 </html>

@@ -27,15 +27,13 @@ Apache, iis
 	/id
 	_GET (?embed=x)
 */
-
 class ReqURI {
-	var $mode, $rId=-1, $who='', $what='', $embed=0, $lang='en', $filter='';
+	var $mode, $rId=-1, $who='', $what='', $embed=0, $lang='', $filter='';
 
-	function ReqURI($_get, $_mode, $_lang){
-		global $ASYNC_MODE;
+	function ReqURI($_get, $_mode){
+		global $ASYNC_MODE, $DEFAULT;
 
 		$this->mode= $_mode;
-		$this->lang= $_lang;
 
 		if (!$_get){
 			  $this->rId= arrGet($_POST, 'rId', $this->rId);
@@ -46,8 +44,10 @@ class ReqURI {
 			  $this->lang= arrGet($_POST, 'rLang', $this->lang);
 		} else {
 
-			$_uriA= explode("?",$_SERVER["REQUEST_URI"]);
-			$_queryReqA= array_slice( explode("/",$_uriA[0]) ,1);
+			$_uriA= explode("?", $_SERVER["REQUEST_URI"]);
+			$_queryReqA= array_slice(
+				explode("/",$_uriA[0]), 1
+			);
 			
 //spike:
 			if (isset($_uriA[1]))
@@ -55,8 +55,7 @@ class ReqURI {
 				$xSpl= explode("=",$x);
 				$_GET[$xSpl[0]]= $xSpl[1];
 			  }
-			
-			
+
 			//todo: switch on direct boardId request
 			//	if (count($_queryReqA)>0 && ("".(int)$_queryReqA[0])==$_queryReqA[0])
 			//	  $reqId= $_queryReqA[0];
@@ -71,8 +70,8 @@ class ReqURI {
 			  $this->embed= ($_GET['embed']==1);
 
 			if (!empty($_GET['lang']))
-			  $this->lang= urldecode($_GET['lang']);
-
+			  $this->lang= $_GET['lang'];
+			
 			if (!empty($_GET['filter']))
 			  $this->filter= urldecode($_GET['filter']);
 
@@ -89,14 +88,14 @@ class ReqURI {
 
 $mode= arrGet($_SERVER, $ASYGN->MODE_SRV, $ASYNC_MODE->DEFAULT);
 
-//legacy:
 if (!empty($_POST[$UPSET->LEGACY_MODESIGN])) //legacy upload
   $mode= $ASYNC_MODE->UPLOAD_LEGACY;
 
 $REQA= new ReqURI(
 	$_SERVER['REQUEST_METHOD']=='GET',
-	$mode,
-	$DEFAULT->LANG
+	$mode
 );
 
+
 ?>
+
