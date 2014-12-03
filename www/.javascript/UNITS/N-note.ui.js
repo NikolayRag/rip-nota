@@ -1,8 +1,8 @@
 /*
 	Note UI
-	called at Note.draw() after bulk Notes update to guarantee parent UI element is defined
+	called at NUI_note.draw() after bulk Notes update to guarantee parent UI element is defined
 */
-var NUINote= function(_note,_rootW){
+var NUI_noteFUI= function(_note,_rootW){
 	var _this= this;
 
 	_this.note= _note;
@@ -14,11 +14,11 @@ var NUINote= function(_note,_rootW){
 }
 
 
-NUINote.prototype.place= function(){
+NUI_noteFUI.prototype.place= function(){
 }
 
 //todo: make stilyze affecting only own UI elements
-NUINote.prototype.style= function(){
+NUI_noteFUI.prototype.style= function(){
 	var _style= this.note.PUB.style;
 
 	this.DOM.bg.style.background= _style.main.hex();
@@ -31,12 +31,12 @@ NUINote.prototype.style= function(){
 	    thisData[i].ui.style();
 }
 
-NUINote.prototype.bindEvt= function(_parentEl){
+NUI_noteFUI.prototype.bindEvt= function(_parentEl){
 }
 
-NUINote.tmpl= DOM('plateNoteTmpl');
-NUINote.prototype.build= function(_parentEl){
-	var cRoot= NUINote.tmpl.cloneNode(true);
+NUI_noteFUI.tmpl= DOM('plateNoteTmpl');
+NUI_noteFUI.prototype.build= function(_parentEl){
+	var cRoot= NUI_noteFUI.tmpl.cloneNode(true);
 	var cBg= DOM('plateNoteBg',cRoot);
 	var cObg= DOM('plateNoteOverbg',cRoot);
 	var cCtx= DOM('plateNoteContext',cRoot);
@@ -54,6 +54,6 @@ NUINote.prototype.build= function(_parentEl){
 	};
 }
 
-NUINote.prototype.kill= function(){
+NUI_noteFUI.prototype.kill= function(){
 	this.rootW.removeChild(this.DOM.root);
 }

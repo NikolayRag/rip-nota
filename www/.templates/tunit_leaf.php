@@ -7,7 +7,7 @@
 		<span id='leafSignName' class='leafSignName'></span>
 		<span id='leafSignStamp' class='leafSignStamp'></span>
 	</span>
-	<span id='leafContext' class='leafContext'>leaf context</span>
+	<span id='leafContext' class='leafContext'></span>
 	<span id='leafCover' class='freezeIn'></span>
 	<span id='leafToolHolder' class='joint'></span>
 </div>

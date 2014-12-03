@@ -20,7 +20,7 @@ BoardOverviewUI.prototype.bindEvt= function(){
 }
 
 BoardOverviewUI.prototype.mouseMove= function(_e){
-	this.board.PUB.ui.lookXY(
+	this.board.nFrontUI.lookXY(
 		(_e.clientX -this.DOM.root.offsetLeft)/this.DOM.root.offsetWidth,
 		(_e.clientY -this.DOM.root.offsetTop)/this.DOM.root.offsetHeight
 	);
@@ -97,8 +97,8 @@ BoardOverviewUI.prototype.drawField= function(){
 	while (this.DOM.bg.childNodes.length>0)
 	  this.DOM.bg.removeChild(this.DOM.bg.lastChild);
 
-	var curLeft= this.board.PUB.ui.DOM.context.offsetLeft;
-	var curTop= this.board.PUB.ui.DOM.context.offsetTop;
+	var curLeft= this.board.nFrontUI.DOM.context.offsetLeft;
+	var curTop= this.board.nFrontUI.DOM.context.offsetTop;
 	var curWidth= DOCUMENT.scrollWidthF()/100;
 	var curHeight= DOCUMENT.scrollHeightF()/100;
 

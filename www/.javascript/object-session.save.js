@@ -18,7 +18,7 @@ this.save= function(){
 		, this.lazyCtx
 	);
 
-	SESSION.board.draw();
+	SESSION.board.uiA[0].nFrontUI.draw();
 
 ALERT(PROFILE.BREEF, 'SAVE attempt', '');
 }
@@ -110,7 +110,7 @@ ALERT(PROFILE.BREEF, 'SAVE RES', _sData);
 		  console.log('Error saving Data ' +iD +': ' +(cData? resDataA[iD] :'undefined'));
 	}
 
-	SESSION.board.draw();
+	SESSION.board.draw(true);
 
 //todo: deal with accidentally unsaved
 }.bind(this);

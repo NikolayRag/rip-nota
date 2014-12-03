@@ -1,20 +1,15 @@
 /*
 	ui class for unknown Note data
 */
-var DataUIUnknown= function(_ndata,_context){
-	var _this= this;
-
-	_this.ndata= _ndata;
-	_this.context= _context;
-
-	_this.DOM= _this.build(_context);
+var DataUIUnknown=
+ NdataUI.newTemplate[DATA_TYPE.UNKNOWN]=
+ function(_UI){
+	this.UI= _UI;
+	this.DOM= this.build(_UI.DOM.context);
 }
 
 DataUIUnknown.prototype.draw = function() {
-	this.DOM.root.elementText(this.ndata.content);
-
-//todo: add directly-linked parent ui
-	this.ndata.rootNote.PUB.ui.place(this.ndata, this.DOM.root);
+	this.DOM.root.elementText(this.UI.rootNdata.content);
 }
 
 DataUIUnknown.prototype.style= function(){}
@@ -38,5 +33,4 @@ DataUIUnknown.prototype.unbind= function(){
 }
 
 DataUIUnknown.prototype.kill= function(){
-	this.context.removeChild(this.DOM.root);
 }

@@ -97,14 +97,14 @@ ToolBoard.prototype.opNewNote= function(){
 	var _this= this;
 
 	var newPlace= {
-		x: UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft,
-		y: UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop
+		x: UI.mouseX +DOCUMENT.scrollLeftF() -this.board.nFrontUI.DOM.context.offsetLeft,
+		y: UI.mouseY +DOCUMENT.scrollTopF() -this.board.nFrontUI.DOM.context.offsetTop
 //depricated
 		,w:300,h:100
 	}
 
 
-	var newNote= new Note();
+	var newNote= new NUI_note();
 	newNote.save({inherit:this.board.PUB.id});
 
 	var newData= this.board.dataSet(0,{
@@ -128,8 +128,8 @@ ToolBoard.prototype.opNewData= function(){
 	var _this= this;
 
 	var newPlace= {
-		x: UI.mouseX +DOCUMENT.scrollLeftF() -this.board.PUB.ui.DOM.context.offsetLeft,
-		y: UI.mouseY +DOCUMENT.scrollTopF() -this.board.PUB.ui.DOM.context.offsetTop
+		x: UI.mouseX +DOCUMENT.scrollLeftF() -this.board.nFrontUI.DOM.context.offsetLeft,
+		y: UI.mouseY +DOCUMENT.scrollTopF() -this.board.nFrontUI.DOM.context.offsetTop
 //depricated
 		,w:300,h:100
 	}

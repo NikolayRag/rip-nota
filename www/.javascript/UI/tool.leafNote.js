@@ -91,7 +91,7 @@ ToolBoardLeaf.prototype.opMouseUp= function(){
 		x:this.ndata.ui.DOM.root.offsetLeft,
 		y:this.ndata.ui.DOM.root.offsetTop
 	}});
-	SESSION.board.PUB.ui.correct(1);
+	SESSION.board.uiA[0].nFrontUI.correct(1);
 }
 
 ToolBoardLeaf.prototype.opInnerTool= function(){

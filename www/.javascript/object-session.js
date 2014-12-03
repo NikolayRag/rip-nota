@@ -188,7 +188,7 @@ this.onWindowHashChanged= function(){
 this.onWindowUnload= function(_e){
 	_e= _e||WINDOW.event;
 
-	SESSION.board.PUB.ui.saveBrowse();
+	SESSION.board.uiA[0].nFrontUI.saveBrowse();
 
 //todo: catch update http err
 	this.update.coreCycle(false);

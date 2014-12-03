@@ -8,6 +8,7 @@
 //window to BOARD
 //todo: ON
 
+//cleanup DOM
 DOCUMENT.bodyEl.removeChild(DOM('templates'));
 
 //window['argsA']= [0 |0,'','ki','ss',-1 |0,'',0 |0];
@@ -16,7 +17,7 @@ var argsA= DOCUMENT['argsA'];
 
 SESSION.owner(argsA[ARGS_PLACE.USERID], argsA[ARGS_PLACE.USERNAME]);
 
-SESSION.board= new Board(argsA[ARGS_PLACE.REQNOTEID]>0? argsA[ARGS_PLACE.REQNOTEID] :0);
+SESSION.board= new Ncore(argsA[ARGS_PLACE.REQNOTEID]>0? argsA[ARGS_PLACE.REQNOTEID] :0);
 
 SESSION.reqWho= argsA[ARGS_PLACE.REQWHO];
 SESSION.reqWhat= argsA[ARGS_PLACE.REQWHAT];

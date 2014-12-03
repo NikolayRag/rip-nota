@@ -1,53 +1,30 @@
 /*
-	Placed Note UI, inherits NoteUI(and Ncore).
+	Placed Note UI, inherits NUI
 */
-var Note= function(_id){
-	var thisNote= new NoteUI(_id);
+var NUI_note= function(_rootN, _ctx){
+	var thisNote= new NUI(_rootN);
 
-//todo: find place
-	thisNote.coreType= 1;
+	thisNote.doDraw= NUI_note.prototype.doDraw;
+	thisNote.doSaved= NUI_note.prototype.doSaved;
 
-	thisNote.doDraw= Note.prototype.doDraw;
-	thisNote.doSaved= Note.prototype.doSaved;
-	thisNote.doKill= Note.prototype.doKill;
-
-//todo: move ui out from PUB to this
-	thisNote.typeUI= thisNote.PUB.ui= null; //inited at draw(), coz all Notes UI depend of parent (NdataUI)
+	thisNote.nFrontUI= new NUI_noteFUI(thisNote, _ctx);
 
 	return thisNote;
 }
 
-Note.prototype.doDraw= function(_force){
-	var rootData= SESSION.board.dataContext(this.PUB.id);
-	if (!rootData)
-	  return;
 
-	if (!this.typeUI)
-	  this.typeUI= this.PUB.ui= new NUINote(this,rootData.ui.DOM.context);
-
-	//update Data at its own condition
-	for(var iD in this.PUB.ndata){
-		var cData= this.PUB.ndata[iD];
-
-		_force= _force || cData.forRedraw;
-		cData.draw();
-	}
-
-	if (!_force && !this.PUB.forRedraw)
-	  return true;
-
+NUI_note.prototype.doDraw= function(){
 //	UI.ownerW.draw(this);
-	this.typeUI.style();
-	rootData.ui.style(); //parent holder influenced
+	this.nFrontUI.style();
+	this.parentUI.dFrontUI.style(); //parent holder influenced
 
 ALERT(PROFILE.BREEF, "Note "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
 	return true;
 }
 
 
-Note.prototype.doSaved= function(){
-	var rootData= SESSION.board.dataContext(this.PUB.id);
-	if (!rootData || !rootData.ui)
+NUI_note.prototype.doSaved= function(){
+	if (!this.parentUI.dFrontUI)
 	  return;
 
 //todo: inspect, obsolete code?
@@ -60,10 +37,5 @@ Note.prototype.doSaved= function(){
 	  }
 */
 
-	rootData.ui.setState(this.PUB.forSave!=SAVE_STATES.IDLE || rootData.forSave!=SAVE_STATES.IDLE);
-}
-
-
-Note.prototype.doKill= function(){
-	this.typeUI && this.typeUI.kill();
+	rootData.dFrontUI.setState(this.PUB.forSave!=SAVE_STATES.IDLE ||  this.parentUI.rootNdata.forSave!=SAVE_STATES.IDLE);
 }

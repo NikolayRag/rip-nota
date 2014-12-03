@@ -280,7 +280,7 @@ console.log('at '+ _place.x +'x' +_place.y +':');
 //		var tmpN= workFieldDbl(	{clientX:100+f*5, clientY:100+f*50}, _filesA.base64_encode() );
 	}
 
-//	SESSION.board.PUB.ui.correct();
+//	SESSION.board.nFrontUI.correct();
 	return fileNotesA;
 }
 

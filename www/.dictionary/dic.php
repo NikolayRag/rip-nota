@@ -61,7 +61,7 @@ $DIC= array(
 
 	'timeAgoSecs'=>	"$ sec ago,$ secs ago",
 	'timeAgoSecsRulz'=>	"(^|[^1])1$",
-	'timeAgoMins'=>	"a min ago,% min ago,mins ago",
+	'timeAgoMins'=>	"a min ago,$ min ago,$ mins ago",
 	'timeAgoMinsRulz'=>	"^1$,[^1]1$",
 	'timeAgoHours'=>	"a hour ago,$ hour ago,$ hours ago",
 	'timeAgoHoursRulz'=>	"^1$,[^1]1$",

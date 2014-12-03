@@ -2,7 +2,7 @@
 	Ncore object.
 	Performs Note+Ndata holding and saving.
 	Ncore acts as Note core for several referers and holds mantainance of referers mechanics.
-	Ncore thus shoudn't be called directly. Instead there's NoteUI object to be called or build other Notes from.
+	Ncore thus shoudn't be called directly. Instead there's NUI object to be called or build other Notes from.
 
 	Creation:
 		Ncore is created with specified _id.
@@ -14,19 +14,10 @@
 	Ncore object is added to NOTES[_id] without override.
 
 
-	Inheritants:
-	To inherit Ncore, inheritant must:
-		- transparently hold local public variables as references ([0])
-		- transparently support core public methods with same arguments and with call to originals
-		- at creation:
-			- request/create Ncore
-			- Link itself to Ncore referers list by calling Ncore.link()
-		- unlink itself from Ncore at deletion by calling Ncore.unlink()
-			
-
+	Ncore stores array of UI's attached and provide methods using it.
 */
 
-var Ncore= function(_id,_referer){
+var Ncore= function(_id){
 	var _this= this;
 
 	if (!IS.instance(_this,Ncore) && !Ncore.all(_id)) //static call
@@ -39,10 +30,8 @@ var Ncore= function(_id,_referer){
 
 
 	var oldN= Ncore.all(_id);
-	if (oldN){ //reuse existing Ncore
-		oldN.link(_referer);
-		return oldN;
-	}
+	if (oldN) //reuse existing Ncore
+	  return oldN;
 
 	//Procceed New
 ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
@@ -67,32 +56,41 @@ ALERT(PROFILE.GENERAL,"Ncore new", 'id: ' +_id, 1);
 		ndata:		[], //[id]= Ndata;
 
 		//operating
-		forRedraw: 0,
+		forRedraw: true,
 		forSave: SAVE_STATES.IDLE,
 		forSaveRts: SAVE_STATES.IDLE,
 		saveCB: null
 	};
 
-	//private
-	_this.referers= []; //all who refers to this ncore
+	//Array of UI instances.
+	//Each instance holds set of ndata UI instances as well
+	//nData itself DONT hold its UI, but refers to by NCore->NUI->DUI(id)
+	_this.uiA= [];
 
-	Ncore.allNotes[_id]= _this;
+	Ncore.cache(_id, _this);
 //todo: do also something with data Ndata additional storage properties
-	_this.link(_referer);
 }
 
 
-////static
-
+//todo: move out
 Ncore.newId= -1;
-
+////cache
 /*
 	global notes array.
-	Positive indices holds normal and Subst Notes.
+	Positive indices holds normal and Subst Notes (referenced directly).
 	Negative indices holds Imps and unsaved Notes, that also only have different rights (0|3). 
-	Notes automatically set unsupplied id to negative-1 (-1,-2,-3...)
+	Notes automatically set unsupplied id to negative (-1,-2,-3...)
 */	
 Ncore.allNotes= [];
+Ncore.cache= function(_id, _note){
+//todo: should reuse instead of deleting
+	if (Ncore.allNotes[_id]) //wipe duplicating Ncore
+	  Ncore.allNotes[_id].kill();
+	Ncore.allNotes[_id]= _note;
+}
+Ncore.uncache= function(_id){
+	delete Ncore.allNotes[_id];
+}
 //todo: return filtered sets (unsaved, undrawed etc)
 //todo: handle and return UnitLink
 Ncore.all= function(_id, _filter){
@@ -105,6 +103,8 @@ Ncore.all= function(_id, _filter){
 		  return curNote;
 	}
 }
+/////-cache
+
 
 
 /*
@@ -112,54 +112,18 @@ Ncore.all= function(_id, _filter){
 	Called to wipe out all Note referers
 */
 Ncore.prototype.kill= function(){
-	for (var ir in this.referers)
-	  if (this.referers[ir]){
-		this.referers[ir].doKill();
-		this.referers[ir]= undefined; //unlink here instead of calling multiple unlink()
+	for (var ir in this.uiA)
+	  if (this.uiA[ir]){
+		this.uiA[ir].doKill();
+		this.uiA[ir]= undefined; //unlink here instead of calling multiple unlink()
 	  }
-	this.removeCore();
+	Ncore.uncache(this.PUB.id);
 }
+
 
 
 /*
-	local destructor
-	Mantain global Ncore.all list
-*/
-Ncore.prototype.removeCore= function(){
-	delete Ncore.allNotes[this.PUB.id];
-}
-
-
-Ncore.prototype.link= function(_ref){
-	if (!_ref)
-	  return;
-	var flag= 0;
-	for (var ir in this.referers) //check for existing
-	  if (this.referers[ir]==_ref){
-		flag= 1;
-		break;
-	  }
-	if (!flag)
-	  this.referers.push(_ref);
-if (this.referers.length!=1) ALERT(PROFILE.VERBOSE,'instances for ' +this.PUB.id +':', this.referers.length);
-}
-
-
-Ncore.prototype.unlink= function(_ref){
-	var flag= 0;
-	for (var ir in this.referers){ //seek and destroy
-		if (this.referers[ir]==_ref)
-		  this.referers[ir]= undefined;
-		if (this.referers[ir]!=undefined)
-		  flag= 1;
-	}
-	if (!flag) //cleanup Ncore itself
-	  this.removeCore();
-}
-
-
-/*
-	!!!transparent functions
+	!!!transparent functions (from ui)
 */
 
 //change .id
@@ -171,15 +135,12 @@ Ncore.prototype.setId= function(_id){
 
 ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +' re-id ', 'id: '+ _id);
 
-	this.removeCore();
+	Ncore.uncache(this.PUB.id);
 
 	_id= _id |0;
 	this.PUB.id= _id; //change id of provided Ncore
 
-//todo: should reuse instead of deleting
-	if (Ncore.allNotes[_id]) //wipe duplicating Ncore
-	  Ncore.allNotes[_id].kill();
-	Ncore.allNotes[_id]= this; //fill in existent Ncore
+	Ncore.cache(_id, this);
 }
 
 /*
@@ -230,17 +191,7 @@ if (!this.PUB.forRedraw) ALERT(PROFILE.BREEF, "Ncore "+ this.PUB.id +"("+ this.P
 }
 
 
-Ncore.prototype.draw= function(_force){
-//	if (this.PUB.ver==CORE_VERSION.INIT)
-//	  return;
 
-	var success= 1;
-	for (var ir in this.referers)
-	  if (this.referers[ir] && !this.referers[ir].doDraw(_force))
-	    success= 0;
-		
-	this.PUB.forRedraw= !success;
-}
 
 
 Ncore.prototype.owner= function(){
@@ -291,11 +242,6 @@ Ncore.prototype.save= function(_vals, _okCB, _immediate){
 	}
 
 
-//todo: meaningless
-//	for (var ir in this.referers)
-//	  if (this.referers[ir])
-//		this.referers[ir].doSaved();
-
 	if (_immediate)
 	  SESSION.save.saveGo();
 	else
@@ -320,9 +266,7 @@ Ncore.prototype.saved= function(_res){
 	  this.saveCB(_res);
 	this.saveCB= null;
 
-	for (var ir in this.referers)
-	  if (this.referers[ir])
-		this.referers[ir].doSaved();
+	this.uiSaved();
 }
 
 
@@ -356,16 +300,6 @@ Ncore.prototype.dataSet= function(_id, _setA){ //{ver: , dtype: , content: , edi
 	return curData.set(_setA)? curData :false;
 }
 
-//fetch Data that refers specified Note(_id)
-//check: for multi-ref
-Ncore.prototype.dataContext= function(_id){
-	for (var iD in this.PUB.ndata){
-		var testData= this.PUB.ndata[iD];
-		if (testData.dtype==DATA_TYPE.NOTE && testData.content==_id)
-		  return testData;
-	}
-}
-
 Ncore.prototype.dataForSave= function(_enum){
 	var outDataA= [];
 	for (var d in this.PUB.ndata)
@@ -377,6 +311,104 @@ Ncore.prototype.dataForSave= function(_enum){
 
 
 
+//ui
+
+Ncore.prototype.uiLink= function(_ui){
+	if (!_ui)
+	  return;
+	var flag= 0;
+	for (var ir in this.uiA) //check for existing
+	  if (this.uiA[ir]==_ui){
+		flag= 1;
+		break;
+	  }
+else console.log('trying to link multiple UI');
+
+	if (!flag)
+	  this.uiA.push(_ui);
+
+if (this.uiA.length!=1) ALERT(PROFILE.VERBOSE,'instances for ' +this.PUB.id +':', this.uiA.length);
+}
+
+
+Ncore.prototype.uiUnlink= function(_ui){
+	var flag= 0;
+	for (var ir in this.uiA){ //seek and destroy
+		if (this.uiA[ir]==_ui)
+		  this.uiA[ir]= undefined;
+		if (this.uiA[ir]!=undefined)
+		  flag= 1;
+	}
+	if (!flag) //cleanup Ncore itself
+	  Ncore.uncache(this.PUB.id);
+}
+
+
+Ncore.prototype.uiSaved= function(){
+	for (var ir in this.uiA)
+	  if (this.uiA[ir])
+		this.uiA[ir].doSaved();
+}
+
+/*macro:
+
+	get UI for _parentUI
+	  create if none
+	draw children within UI
+	draw (correct) UI
+*/
+//_parentUI provides parent data UI of TRUE for topmost (board)
+Ncore.prototype.draw= function(_parentUI){
+	if (!_parentUI)
+	  return;
+
+	var thisUI= false;
+	for (var ir in this.uiA)
+	  if (this.uiA[ir].parentUI == _parentUI){
+	  	thisUI= this.uiA[ir];
+	  	break;
+	  }
+
+	if (!thisUI){ //must create
+		var uiLevel= _parentUI===true? 1:(_parentUI.level+1);
+
+		switch (uiLevel) {
+			case 1:
+//todo: change to NUI(); remove NUI_* derived classes
+				thisUI= new NUI_board(this, UI.DOM.workField);
+				break;
+			case 2:
+				thisUI= new NUI_note(this, _parentUI.DOM.context);
+		}
+		this.uiLink(thisUI);
+
+		thisUI.parentUI= _parentUI;
+		thisUI.level= uiLevel;
+	}
+
+
+//todo: define limit
+	if (thisUI.level <= 2){
+		//update Data at its own condition
+		var curDI= 1;
+		var dataDrawed= false;
+		for(var iD in this.PUB.ndata){
+			var cData= this.PUB.ndata[iD];
+
+			dataDrawed= dataDrawed || cData.forRedraw;
+			if (cData.draw(thisUI, thisUI.level==1?curDI:0)) //only toplevel should bind sequentaly delayed
+			  curDI++;
+		}
+	}
+	else console.log('stop!');
+
+
+	var success= true;
+	if (dataDrawed || this.PUB.forRedraw)
+	  success= thisUI.doDraw();
+		
+	this.PUB.forRedraw= !success;
+}
 
 
 
@@ -385,64 +417,39 @@ Ncore.prototype.dataForSave= function(_enum){
 
 
 /*
-	Root Note container instance without ui
+	Root Note UI container
+
+	NUI should be called only within NUI_<instance> construction.
+
+	*No explicit NoteUi-DataUi link is used,
+	 while everithing is redrawed from root
 */
-var NoteUI= function(_id){
-	var _this= this;
+var NUI= function(_rootN){
+	this.Ncore= _rootN;
 
-	_this.Ncore= new Ncore(_id,_this);
+//todo: get rid
+	this.PUB= this.Ncore.PUB;
 
-	_this.PUB= _this.Ncore.PUB;
-
-	_this.typeUI= null;
+	this.nFrontUI= {};
+	this.level= 0;
+	this.parentUI= false; //will be TRUE for topmost (board)
+	//Each Note UI instance holds its Data instances referenced by ID.
+	//Mantaining changing ID's (e.g. while first saving)
+	// is propagated from Ncore and is called from Data:
+	//<Data>.parent.setUiId(newId)
+	this.dUI= [];
 }
-
-/*
-	!!!transparent public functions
-*/
-NoteUI.prototype.set= function(_setA){
-	return this.Ncore.set(_setA);
-}
-
-NoteUI.prototype.setId= function(_id){
-	return this.Ncore.setId(_id);
-}
-
-NoteUI.prototype.draw= function(_force){
-	return this.Ncore.draw(_force);
-}
-
-NoteUI.prototype.owner= function(){
-	return this.Ncore.owner();
-}
-
-NoteUI.prototype.editor= function(){
-	return this.Ncore.editor();
-}
-
-NoteUI.prototype.inherit= function(){
-	return this.Ncore.inherit();
-}
-
-NoteUI.prototype.save= function(_val){
-	return this.Ncore.save(_val);
-}
-
-
-NoteUI.prototype.dataSet= function(_id, _setA){
-	return this.Ncore.dataSet(_id, _setA);
-}
-NoteUI.prototype.dataContext= function(_id){
-	return this.Ncore.dataContext(_id);
-}
-
 
 /*
 	Public functions.
 */
-NoteUI.prototype.kill= function(){
-	this.Ncore.unlink(this);
+NUI.prototype.kill= function(){
+	this.Ncore.uiUnlink(this);
 	this.doKill();
+}
+
+NUI.prototype.doKill= function(){
+	this.nFrontUI.kill && this.nFrontUI.kill();
 }
 
 
@@ -450,13 +457,10 @@ NoteUI.prototype.kill= function(){
 	!!!private functions
 */
 
-//Should be leaved blank at NoteUI to be safely overriden
-NoteUI.prototype.doDraw= function(){
+//Should be leaved blank at NUI to be safely overriden
+NUI.prototype.doDraw= function(){
 	if (!this.PUB.forRedraw)
 	  return;
 
-ALERT(PROFILE.BREEF, "NoteUI "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
-}
-
-NoteUI.prototype.doKill= function(){
+ALERT(PROFILE.BREEF, "NUI "+ this.PUB.id +"("+ this.PUB.inheritId +") draw ", 'ver: ' +this.PUB.ver);
 }

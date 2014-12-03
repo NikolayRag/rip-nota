@@ -292,8 +292,24 @@ if (ALERTFLAG) {	//profile request +CBtime +responce
 	UI.drawWindow();
 	UI.youW.draw();
 
+	if (SESSION.board.owner().forRedraw)
+	  UI.ownerW.draw(SESSION.board);
+	if (SESSION.board.owner().forRedrawBoards)
+	  UI.ownerW.boardlistW.draw(SESSION.board);
+	UI.ownerW.drawBRight(SESSION.board.PUB.rights);
+
 //todo: mantain cached Ncore/Ndata .redrawList[]
-	SESSION.board.draw();
+	clearTimeout(this.drawTimeout);
+	this.drawTimeout= setTimeout(function(){
+		SESSION.board.draw(true);
+//todo: move elsewhere
+			for (var nU in Ucore.all){ //reset redraw flag for Users
+				var curUcore= Ucore.all[nU];
+				curUcore.forRedraw= 0;
+				curUcore.forRedrawBoards= 0;
+				curUcore.forRedrawContacts= 0;
+			}
+		},0);
 
 
 	//no errors, fuckup is canceled and error state is reset
@@ -334,20 +350,19 @@ this.respondN= function(_sign, _oldId, _id, _ver, _name, _style, _owner, _editor
 		stamp: new Date(new Date() -_stamp*1000)
 	};
 
-//todo: plug; remove after incrementals implemented
-//????? watthis
-if (!_oldId && _id>0 && Ncore(_id)) _oldId= _id;
-
 	//use existing or CREATE appropriate. Board assumed to exist
+/*
 	var ctxNote;
 	if (_oldId)
 	  ctxNote= new Ncore(_oldId); //only fetch
 	else {
 		if (_sign==ASYGN.NFULL)
-		  ctxNote= new Note(_id);
+		  ctxNote= new NUI_note(_id);
 		else
 		  ctxNote= new Ncore(_id);
 	}
+*/
+	var ctxNote= new Ncore(_oldId || _id);
 
 	ctxNote.setId(_id); //resolve ID for found named request
 
@@ -424,4 +439,5 @@ this.HTTPReq= null;
 this.updateState= UPDATE_STATE.NORMAL;
 this.timeOut= null;
 
+this.drawTimeout= null;
 }

@@ -3,41 +3,32 @@
 /*
 	ui class for framed Note data
 */
-var DataUIText= function(_ndata,_context){
-	var _this= this;
+var DataUIText=
+ NdataUI.newTemplate[DATA_TYPE.TEXT]=
+ function(_UI){
+	this.UI= _UI;
+	this.DOM= this.build(_UI.DOM.context);
 
-	_this.ndata= _ndata;
-	_this.context= _context;
-
-//todo: make UI and reference be well-defined
-	_this.rootUi= _ndata.rootNote.PUB.ui;
-
-	_this.DOM= _this.build(_context);
-
-	_this.bindEvt();
+	this.bindEvt();
 }
 
 DataUIText.prototype.draw = function() {
-	this.DOM.content.elementText(this.ndata.content, true);
+	this.DOM.content.elementText(this.UI.rootNdata.content, true);
 
 //todo: reduce multicall; called for every data within Note
 //	this.setState();
 
 
-	var curCtx= this.rootUi.note.coreType;
-
 //todo: introduce parents visual modifiers
-	if (!curCtx)
+	if (this.UI.level==1)
 	  this.DOM.content.style.fontSize= '20pt';
-
-	this.rootUi.place(this.ndata, this.DOM.root);
 }
 
 DataUIText.prototype.style= function(){}
 
 DataUIText.prototype.bindEvt= function(){
 	var _this= this;
-	var rts= this.ndata.rootNote.PUB.rights;
+	var rts= this.UI.rootNdata.rootNote.PUB.rights;
 
 //todo: different behaviors for different user rights
 
@@ -50,25 +41,19 @@ DataUIText.prototype.bindEvt= function(){
 }
 ////PRIVATE
 DataUIText.tmpl= DOM('leafTextTmpl');
-DataUIText.prototype.build= function(_parentEl,_curDI){
-	var cRoot= DataUIText.tmpl.cloneNode(true);
-	var cPlate= DOM('leafTextPlate',cRoot);
-	var cCtx= DOM('leafTextContext',cRoot);
-	var cTool= DOM('leafTextToolHolder',cRoot);
-	NOID(cRoot);
-
-	setTimeout(function(){
-		_parentEl.appendChild(cRoot);
-		cRoot.focus();
-		cRoot.style.opacity= 1;
-	}, _curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
-
-	return {
-		root:cRoot,
-		plate:cPlate,
-		content:cCtx,
-		tool:cTool
+DataUIText.prototype.build= function(_parentCtx){
+	var cClone= DataUIText.tmpl.cloneNode(true);
+	var cRoot= {
+		root:		cClone,
+		plate:		DOM('leafTextPlate',cClone),
+		content:	DOM('leafTextContext',cClone),
+		tool:		DOM('leafTextToolHolder',cClone)
 	};
+	NOID(cClone);
+
+	_parentCtx.appendChild(cClone);
+
+	return cRoot;
 }
 
 DataUIText.prototype.content= function(_newValue){
@@ -80,7 +65,7 @@ DataUIText.prototype.editMode= function(_edit,_onkeypress){
 
 	if (_edit){
 		editField.contentEditable= 'true';
-		editField.style.background= this.ndata.rootNote.PUB.style.editfieldActive.hex();
+		editField.style.background= this.UI.rootNdata.rootNote.PUB.style.editfieldActive.hex();
 		editField.focus();
 	
 		//place cursor at end
@@ -99,7 +84,7 @@ DataUIText.prototype.editMode= function(_edit,_onkeypress){
 		}
 
 		editField.onkeypress= _onkeypress;
-		this.ndata.rootNote.PUB.ui.DOM.context.onmousedown= noBubbles;
+		this.UI.dFrontUI.DOM.context.onmousedown= noBubbles;
 		return this.content();
   	} else {
 		editField.contentEditable= 'false';
@@ -107,7 +92,7 @@ DataUIText.prototype.editMode= function(_edit,_onkeypress){
 		editField.blur();
 
 		editField.onkeypress=
-		this.ndata.rootNote.PUB.ui.DOM.context.onmousedown=
+		this.UI.dFrontUI.DOM.context.onmousedown=
 		  null;
 	}
 }
@@ -120,7 +105,7 @@ DataUIText.prototype.toolShow= function(_show){
 
 	if (_show){
 		if (!UI.toolSet.tool || this.tool!=UI.toolSet.tool)
-		  this.tool= UI.toolSet.make(ToolBoardLeaf,this.DOM.tool,this.ndata);
+		  this.tool= UI.toolSet.make(ToolBoardLeaf,this.DOM.tool,this.UI.rootNdata);
 	} else {
 		UI.toolSet.kill(this.tool);
 		this.tool= null;
@@ -137,5 +122,4 @@ DataUIText.prototype.unbind= function(){
 }
 
 DataUIText.prototype.kill= function(){
-	this.context.removeChild(this.DOM.root);
 }

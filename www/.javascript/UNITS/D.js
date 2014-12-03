@@ -1,38 +1,31 @@
 /*
 //todo: make parent Unit class for all units to mantain flat lists;
 
-1. Ndata(+.vals)
-1.1.	.ui
-
- should be 
-
-0. UnitList[id]
-1. Unit
-1.1.	db (.vals)
-1.2.	ui[] (.ui)
-1.2.1.		typeUi
-
-------
-
-1. Ncore(+.PUB)
-1.1.	.reference[]
-1.1.1.		.ui
-
- should be 
-
-0. UnitList[id]
-1. Unit
-1.1.	db (.PUB)
-1.2.	ui[] (.referrence[])
-1.2.1.		typeUi
-
-
-
 Unit: root external interface; creation, reparent, reid, kill
 	(Unit.DB) NoteDB, NdataDB, UserDB: implements save/update/set
-	(Unit.UI[]) NoteUI, NdataUI: UI placeholter, Tool Context
-		(NoteUI.typeUI) NUINote, NUIBoard
-		(NdataUI.typeUI) DUIUnknown, DUIText, DUINote, DUIFile, DUIPaint
+	(Unit.UI[]) NUI, NdataUI: UI placeholter, Tool Context
+		(NUI.nFrontUI) NUI_noteFUI, NUI_boardFUI
+		(NdataUI.dFrontUI) DUIUnknown, DUIText, DUINote, DUIFile, DUIPaint
+*/
+
+
+/*
+Class hierarchy:
+
+0. ndataList[id]
+1. Ndata +vals
+2. .rootNote.ui[].dUI[id]
+2.1.	.frontUI
+
+0. notesList[id]
+1. Ncore
+1.1.	.PUB (db slice)
+1.2.	.ui[] (.referrence[])
+1.2.1.		.frontUI
+
+!!!-> so Ndata doesnt contain its multiple UIs, but instead they
+ stored within respective Note multiple UIs
+
 */
 
 /*
@@ -55,8 +48,6 @@ var Ndata= function(_root,_id)
 
 //todo: ref; use objects, make .changed(obj) reactor
 	_this.rootNote= _root;
-	_this.ui= new NdataUI(this);
-//	_this.ui= null; //inited at draw(), coz all Notes UI depend of parent
 	_this.forRedraw= 0;
 	_this.forSave= SAVE_STATES.IDLE;
 	_this.forDelete= false;
@@ -155,6 +146,7 @@ ALERT(PROFILE.BREEF, "Ndata "+ this.id +' re-id ', 'id: '+ _id);
 	if (parentCollection[_id]) //wipe duplicating Ncore
 	  parentCollection[_id].kill();
 	parentCollection[_id]= this; //fill in existent Ncore
+//todo: !!! re-id ndata UI
 }
 
 Ndata.prototype.sibling= function(){
@@ -170,15 +162,18 @@ Ndata.prototype.editor= function(){
 
 
 //uiTemplateA varies dependent to context Data is in.
-Ndata.prototype.draw= function(_curDI){
-//	if (this.ver==CORE_VERSION.INIT)
-//	  return;
+Ndata.prototype.draw= function(_parentUI, _curDI){
+	var thisUI= _parentUI.dUI[this.id];
+	if (!thisUI){
+		thisUI= _parentUI.dUI[this.id]= new NdataUI(this, _parentUI, _curDI); //link ui instance to root data ui array
+		thisUI.level= _parentUI.level;
+	}
 
 	if (this.forRedraw)
-	  this.ui.draw(_curDI);
+	  thisUI.draw();
 
 	if (this.dtype==DATA_TYPE.NOTE) //go deeper
-	  Ncore.all(this.content) && Ncore.all(this.content).draw();
+	  Ncore.all(this.content) && Ncore.all(this.content).draw(thisUI);
 
 	var forRedraw_= this.forRedraw;
 	this.forRedraw= 0;
@@ -238,17 +233,13 @@ Ndata.prototype.saved= function(_res, _resNotesA){
 	  this.ver= _res;
 
 //todo: will be simplified after dedication of Unit
-	//affect container
-	for (var ir in this.rootNote.referers)
-	  if (this.rootNote.referers[ir])
-		this.rootNote.referers[ir].doSaved();
-	//affect contained
+	//affect uplink
+	this.rootNote.uiSaved();
+	//affect downlink
 	if (this.dtype==DATA_TYPE.NOTE){
 		var curN= _resNotesA[this.content] || Ncore.all(this.content);
 		this.content= curN.PUB.id;
-		for (var ir in curN.referers)
-		  if (curN.referers[ir])
-			curN.referers[ir].doSaved();
+		curN.uiSaved();
 	}
 }
 
@@ -272,28 +263,23 @@ Leafs are drawn at separate path
 
 */
 
-var NdataUI= function(_rootNdata){
+var NdataUI= function(_rootD, _parentUI, _curDI){
+	this.rootNdata= _rootD;
 
-	this.rootNdata= _rootNdata;
-	this.rootUI= null;
-
+	this.rootUI= _parentUI;
 	this.level= 0;
 
-	this.typeUI= null;
-
-	this.DOM= this.build();
-
-	this.newTemplate= [];
-	 this.newTemplate[DATA_TYPE.UNKNOWN]= DataUIUnknown;
-	 this.newTemplate[DATA_TYPE.TEXT]= DataUIText;
-	 this.newTemplate[DATA_TYPE.NOTE]= DataUINote;
+	this.DOM= this.build(_curDI);
+	this.dFrontUI= new (NdataUI.newTemplate[this.rootNdata.dtype] || NdataUI.newTemplate[DATA_TYPE.UNKNOWN])(this);
 }
+
+NdataUI.newTemplate= [];
 
 //todo: _resizeSpot to be removed at all
 //todo: make complex leafSign
 //todo: redesign comments
 NdataUI.tmpl= DOM('leafTmpl');
-NdataUI.prototype.build= function(){
+NdataUI.prototype.build= function(_curDI){
 	var cClone= NdataUI.tmpl.cloneNode(true);
 	var cRoot= {
 		root:	cClone,
@@ -310,30 +296,22 @@ NdataUI.prototype.build= function(){
 
 //cClone.style.transform= 'rotate('+(Math.random()-.5)*5+'deg)';
 
+	var cCtx= this.rootUI.nFrontUI.DOM.context; //link created ui to parents' ui
+
+//todo: make internally managed grain adding instead of supplied _curDI
+	setTimeout(function(){
+		cCtx.appendChild(cClone);
+		cClone.focus();
+		cClone.style.opacity= 1;
+	}, _curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
+
 	return cRoot;
 }
 
 
-NdataUI.prototype.draw= function(_curDI){
-//todo: deal with multi-instancing (Ncore .referers)
-	if (!this.rootUI){ //bind once
-		this.rootUI= this.rootNdata.rootNote.PUB.ui;
-
-		var cCtx= this.rootUI.DOM.context;
-		var cRoot= this.DOM.root;
-
-//todo: make internally managed grain adding instead of supplied _curDI
-		setTimeout(function(){
-			cCtx.appendChild(cRoot);
-			cRoot.focus();
-			cRoot.style.opacity= 1;
-		}, _curDI*TIMER_LENGTH.LEAF_CREATION_PERIOD);
-
-//		this.typeUI= new (this.newTemplate[this.rootNdata.dtype] || DataUIUnknown)(this.rootNdata,cCtx,_curDI||0);
-	}
-
-//	this.typeUI.draw();
-	this.rootUI.place(this.rootNdata, this.DOM.root); //container decides how to arrange in fact
+NdataUI.prototype.draw= function(){
+	this.dFrontUI.draw();
+	this.rootUI.nFrontUI.place(this.rootNdata, this.DOM.root); //container decides how to arrange in fact
 }
 
 
@@ -341,15 +319,15 @@ NdataUI.prototype.style= function(){}
 
 
 NdataUI.prototype.unbind= function(){
-	if (!this.typeUI)
+	if (!this.dFrontUI)
 	  return;
 
-	this.typeUI.unbind();
+	this.dFrontUI.unbind();
 }
 
 NdataUI.prototype.kill= function(){
-//	this.typeUI && this.typeUI.kill();
+//	this.dFrontUI && this.dFrontUI.kill();
 
-	this.rootUI.DOM.context.removeChild(this.DOM.root);
+	this.rootUI.nFrontUI.DOM.context.removeChild(this.DOM.root);
 }
 

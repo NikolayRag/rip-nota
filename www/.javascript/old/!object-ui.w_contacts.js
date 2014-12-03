@@ -27,7 +27,7 @@ function userUpdateCB(cData){
 	var boardsA= sArr[1].split(",");
 	for (var ib in boardsA){
 		var boardEntryPair= boardsA[ib].split("=");
-		var tBoard= new Board();
+		var tBoard= new NUI_board();
 		tBoard.id= boardEntryPair[0];
 		tBoard.name= decodeURIComponent(boardEntryPair[1]);
 		tBoard.owner= SESSION.owner;

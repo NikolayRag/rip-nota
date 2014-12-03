@@ -121,8 +121,8 @@ ToolBoardLeafEdit.prototype.opNewData= function(){
 	var dTarget= this.ndata.sibling();
 
 	var newPlace= {
-		x: UI.mouseX +DOCUMENT.scrollLeftF() -dTarget.PUB.ui.DOM.context.offsetLeft,
-		y: UI.mouseY +DOCUMENT.scrollTopF() -dTarget.PUB.ui.DOM.context.offsetTop
+		x: UI.mouseX +DOCUMENT.scrollLeftF() -dTarget.uiA[0].nFrontUI.DOM.context.offsetLeft,
+		y: UI.mouseY +DOCUMENT.scrollTopF() -dTarget.uiA[0].nFrontUI.DOM.context.offsetTop
 //depricated
 		,w:300,h:100
 	}

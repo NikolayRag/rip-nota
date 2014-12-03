@@ -1,8 +1,5 @@
 .leafText {
 	position:absolute;
-
-	opacity:0;
-	transition: border .15s, opacity .2s;
 }
 .leafTextTxt {
 	font-size:8pt;

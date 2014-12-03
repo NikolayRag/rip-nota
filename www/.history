@@ -1,8 +1,8 @@
-###devision/moment/[time]/[name]
+###division/moment/[time]/[name]
 
 
 /todo:
--save:	hold while-in-save editing
+-save:	check editing while in-save
 -js:	make Board reusable in Board and Update for html5
 
 -async:	update.php exports incremental data
@@ -32,6 +32,28 @@ Fix:
 
 
 b1.9:
+-ui:	check at deletion
+-ui:	check at creation
+-ui:	check using .forRedraw
+-ui:	check if UI creation should be duplicated after instance-splitting
+-org:	stop using of SESSION.board.uiA[0]
++Ncore:	.dataContext() obsolete
++nui:	constructor accepts Ncore instead of Ncore ID
++nui:	.coreType obsolete and removed
++ui:	board-related UI, but not board itself draw moved out to SESSION.update
++nui:	transparent functions becomes obsolete and removed
++model:	move instanced UI collection to Ncore.uiA[] and Ncore.uiA[].dUi[]
++org:	NUI abstract UI field .typeUI renamed to .nFrontUI
+		NdataUI abstract UI field .ndataTypeUI renamed to .dFrontUI
++org:	classes renamed:
+		NUINote -> NUI_noteFUI
+		NUIBoard -> NUI_boardFUI
+		Note -> NUI_note
+		Board -> NUI_board
+		NoteUI -> NUI
+
+-note:	cleared use of ui array, ensure not to run into loop
+		+	linking moved out from Ncore to NoteUI
 -GLOB:	document spots at .techdocs
 -js:	finalize Update sequence
 +note:	made Board UI object (ro), embed board-related UI and navigation
@@ -516,6 +538,7 @@ Refactor:
 +general:		t_indexBot.php made nicer
 +html:			template's NOPROFILE-controlled comment now wiped out with kiMiniHTML()
 +Ncore:			.doKill() renamed to .removeCore()
+				+.removeCore() moved to Ncore.allNotes.uncache()
 +DIC:			uses '\n' and '$'
 +async:			_that argument depricated; .bind(this) used instead for CB
 +php:			added reading source files by readDirFiles(dir,fileListFile)
