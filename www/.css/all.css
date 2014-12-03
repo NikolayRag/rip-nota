@@ -9,7 +9,7 @@
 }
 
 body {
-	background:$MAIN_BG;
+	background: $MAIN_BG;
 	top:0;
 	left:0;
 	height:100%;

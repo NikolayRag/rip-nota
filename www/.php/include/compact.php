@@ -2,6 +2,8 @@
 
 function wasEdited($_dirsA, $_mini){
 	$timeEdited= filemtime(".php/c.php");
+	$timeEdited= max($timeEdited, filemtime(".php/c-ui.php"));
+	$timeEdited= max($timeEdited, filemtime(".php/c-engine.php"));
 
 	foreach($_dirsA as $dn){
 		$d = dir($dn);
@@ -76,7 +78,7 @@ function kiMiniCss($_renameA=false){
 
 	$outCss= readDirFiles('.css');
 
-	global 	$NOPROFILE;
+	global $NOPROFILE;
 	if ($NOPROFILE)
 	  $outCss= str_replace(Array(' {',': ',"\t","\n",chr(13)), Array('{',':'), $outCss);
 
@@ -158,14 +160,21 @@ function kiMiniHTML(&$HTMLDic){
 	$HTMLDic= Array();
 	$substI= 360; //decimal for 'a1' base 36 (0-z) to start from
 	return preg_replace_callback(
-		'/(?:(class|id)=\'([\d\w]+)\')|(<!--.*-->)/',
+		'/(?:(class|id)=\'([\d\w\s]+)\')|(<!--.*-->)/i',
 		function ($_matches) use (&$substI,&$HTMLDic) {
 			if (!empty($_matches[3])) //blank, wipe
 			  return;
-
-			if (empty($HTMLDic[$_matches[2]]))
-			  $HTMLDic[$_matches[2]]= base_convert($substI++,10,36);;
-			return $_matches[1] .'=\'' .$HTMLDic[$_matches[2]] .'\'';
+			  
+			$replaced= preg_replace_callback(
+			  '/[\d\w]+/i',
+			  function ($_matches) use (&$substI,&$HTMLDic) {
+				if (empty($HTMLDic[$_matches[0]]))
+				  $HTMLDic[$_matches[0]]= base_convert($substI++,10,36);
+				  return $HTMLDic[$_matches[0]];
+			  },
+			  $_matches[2]
+			);
+			return $_matches[1] .'=\'' .$replaced .'\'';
 		},
 		$html
 	);

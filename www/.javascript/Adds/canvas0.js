@@ -9,7 +9,7 @@ var paintC = function(_canvas){
 	function loop(){
 		var prev = context.globalCompositeOperation;
 		context.globalCompositeOperation = "destination-in";
-		context.fillStyle= "rgba(0, 0, 0, 0.997)";
+//		context.fillStyle= "rgba(0, 0, 0, 0.997)";
 		context.fillRect(0,0,_canvas.offsetWidth,_canvas.offsetHeight);
 		context.globalCompositeOperation = prev;
 
