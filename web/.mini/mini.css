@@ -1,0 +1,667 @@
+* {
+	padding: 0;
+	margin: 0;
+	border-spacing: 0;
+	border: 0 solid;
+	font: 100% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
+
+	transition: color .15s;
+}
+
+body {
+	background: #ddd;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	overflow:auto;
+	position:absolute;
+}
+
+hr {
+	height: 2px;
+	background-color: #444;
+}
+
+input {
+    border: 1px solid #999;
+    border-radius:3px;
+}
+select {
+	background:#ccc;
+	font-size:inherit;
+}
+input[type="submit"] {
+	background:#eee;
+}
+input[type="submit"][disabled] {
+	color:#aaa;
+}
+input[type="reset"] {
+	background:transparent;
+	border-color:#ddd;
+}
+
+
+
+.leftBar{
+	width:100%;
+	text-align:right;
+}
+
+.bigTxt {
+	font-weight: bold;
+}
+.smallTxt {
+	font-size: 80%;
+	color: #888;
+}
+
+.freezeIn {
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	display:none;
+}
+.freezeOut {
+}
+
+
+#workToolbar {
+	position:fixed;
+	left:0;
+	right:0;
+	top:0;
+	background-color:#a5a5a5;
+
+	transition: background 1s;
+}
+#workToolbar td {
+	white-space:nowrap;
+	border:0 solid #888;
+}
+
+
+#testEl {
+	height:100px;
+	width:100px;
+	top:-1000px;
+	left:-1000px;
+	overflow:scroll;
+	position:fixed;
+}
+.plateBoardRoot {
+	top:0;
+	left:0;
+	height:0;
+	width:0;
+	overflow:hidden;
+	position:absolute;
+}
+.plateBoardContext {
+	height:0;
+	width:0;
+	overflow:visible;
+	position:absolute;
+
+	transition: transform 1s;
+}
+.plateBoardBG {
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	overflow:visible;
+	position:fixed;
+
+	transition: background 1s;
+}
+.plateBoardCanvas {
+	position:relative;
+	top:0;
+	left:0;
+	width:110%;
+	height:110%;
+}
+.joint {
+	height:0;
+	width:0;
+	overflow:visible;
+	position:absolute;
+}
+.toolWidget {
+	background:#ddd;
+	padding:2px 0 2px 0;
+	border:1px solid #ddd;
+	margin:5px;
+	font-size:14px;
+	line-height:24px;
+	white-space:nowrap;
+}
+.toolWidgetOff {
+	padding:2px;
+	line-height:24px;
+}
+.toolActiveButton {
+	background:white;
+	padding:5px;
+	cursor:pointer;
+}
+
+.logoPlate {
+	width:34px;
+	height:34px;
+	text-align:center;
+	padding:8px;
+
+	transition: background-color .5s;
+}
+.logoCover {
+	top:0;
+	left:0;
+	width:34px;
+	height:34px;
+	padding:8px;
+	position:absolute;
+}
+
+.hidden {
+	display:none;
+}#contactList {
+	position:fixed;
+	top:90px;
+	bottom:25px;
+	right:25px;
+	width:200px;
+	white-space:nowrap;
+	padding:10px;
+
+	background:#fff;
+    border: 1px solid #aaa;
+
+    z-index: 10;
+}
+#contactsContent {
+	position:absolute;
+	top:55px;
+	bottom:10px;
+	left:10px;
+	right:10px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+.contactItemGroup{
+	color:#00f;
+}
+.contactItemUser{
+	text-align:right;
+}
+.leaf {
+	position: absolute;
+	overflow:visible;
+
+	opacity:0;
+	border:1px transparent solid;
+	border-radius: 7px;
+
+	transition: border .15s, opacity .2s;
+
+}
+.leafSign {
+	position:absolute;
+	top:-14px;
+	left:2px;
+	font-size:9px;
+	color:#888;
+}
+
+.leafSignName {
+}
+.leafSignStamp {
+}
+
+.leafSignMark {
+	position:relative;
+	top:5px;
+	line-height:0;
+	font-size:200%;
+	color:#f00;
+}
+.leafSignCustom {
+}
+
+.leafContext {
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+.menu{
+	position:relative;	left:-35px;
+	margin:0;	padding:0;
+	font-size:14px;
+}
+.menu ul{
+	line-height:30px;	list-style:none;	margin:0;
+}
+.menu li{
+	float:left;
+}
+.menu li hr {
+	height:2px;	padding:0;	margin:0;	background-color:#888;
+	border:0;
+}
+.menu li a{
+	background:#ddd bottom right no-repeat;
+	color:#333;	display:block;	font-weight:normal;
+	margin:0;	padding:0 20px;
+	text-align:center;	text-decoration:none;
+}
+.menu li a:hover,
+.menu ul li:hover a{
+	background: #888 bottom center no-repeat;
+	color:#fff;	text-decoration:none;
+}
+.menu li ul{
+	background:#999;	display:none;	height:auto;	padding:0;
+	margin:0;
+    border: 1px solid #888;
+    position:absolute;	width:150px;	z-index:200;
+}
+.menu li:hover ul{
+	display:block;
+}
+.menu li li {
+	display:block;	float:none;	margin:0;	padding:0;
+	width:100%;
+}
+.menu li:hover li a{
+	background:none;
+}
+.menu li ul a{
+	display:block;	margin:0;	text-align:left;
+}
+.menu li ul a:hover,
+.menu li ul li:hover a{
+	background:#ddd center left no-repeat;
+	border:0;	color:#333;	text-decoration:none;
+}
+.menu p{
+	margin:0;	clear:left;	color:#777;	padding:0 20px;
+}
+.dataCtx{
+	margin:1px;
+	padding:1px;
+}
+
+.dataAtom {
+	font-size:9px;
+	color:#888;
+}.leafText {
+	position:absolute;
+}
+.leafTextTxt {
+	font-size:8pt;
+	color:rgba(64,64,64,1);
+
+	opacity: .8;
+	text-shadow: -1px -1px 0px rgba(0,0,0,.5), 1px 1px 0px rgba(255,255,255,.5);
+}
+
+.noteComments {
+	position:absolute;
+	top:0;
+	left:-105px;
+	width:100px;
+	font-size:9px;
+	color:#888;
+	text-align:right;
+}
+.commentDiv {
+	margin-bottom: 4px;
+}
+.commentStamp {
+	font-weight:bold;
+}
+.commentData {
+	font-weight:normal;
+}
+
+.noteComment {
+	position:absolute;
+	bottom:-24px;
+	left:0;
+	width:100%;
+	font-size:16px;
+	color:#888;
+}
+
+.leafNoteShadow {
+	position:absolute;
+	background:#006;
+	border-radius:6px;
+}
+.noteCaption {
+    border: 0 solid;
+    top:-18px;
+	width:100%;
+	left:0;
+	position:absolute;
+}
+.noteToolbarNorm {
+	background:#def;
+	height:18px;
+	width:100%;
+	position:absolute;
+}
+.noteToolbarEdit {
+	background:#f40;
+	width:100%;
+	position:absolute;
+}
+.noteTBlock {
+}
+.noteTBut {
+	top:-3px;
+	position:relative;
+    border: 1px solid #88a;
+    background:#abc;
+	font-size:12px;
+}
+.noteResizeSpot {
+	position:absolute; right:-14px; bottom:-22px;
+	cursor:move;
+	font-size:30px; background:#f00;
+}
+.noteState {
+	position:absolute;
+	right:0;
+	top:0;
+	color:#f00;
+	font-size:55px;
+
+	transition: .5s;
+}
+
+.noteGlueL {
+	right:-32px;
+	width:30px;
+	top:10px;
+	bottom:10px;
+	position:absolute;
+}
+.noteGlueR {
+	left:-32px;
+	width:30px;
+	top:10px;
+	bottom:10px;
+	position:absolute;
+}
+.noteGlueU {
+	left:10px;
+	right:10px;
+	height:30px;
+	bottom:-32px;
+	position:absolute;
+}
+.noteGlueD {
+	left:10px;
+	right:10px;
+	height:30px;
+	top:-32px;
+	position:absolute;
+}
+.noteGlueLPic {
+	right:27px;
+	left:0;
+	top:0;
+	bottom:0;
+	background:#88f;
+	position:absolute;
+	display:none;
+}
+.noteGlueRPic {
+	right:0;
+	left:27px;
+	top:0;
+	bottom:0;
+	background:#88f;
+	position:absolute;
+	display:none;
+}
+.noteGlueUPic {
+	right:0;
+	left:0;
+	top:0;
+	bottom:27px;
+	background:#88f;
+	position:absolute;
+	display:none;
+}
+.noteGlueDPic {
+	right:0;
+	left:0;
+	top:27px;
+	bottom:0;
+	background:#88f;
+	position:absolute;
+	display:none;
+}
+
+
+
+.plateNote{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+.plateNoteBg{
+	color: #ddd;
+	opacity:1;
+
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	border-width: 1px;
+	border-radius: 6px;
+
+	transition: background 1s, border-color 1s;
+}
+
+.plateNoteOverbg{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	padding: 0;
+	margin: 0;
+	border-radius: 6px;
+
+	background: linear-gradient(170deg, rgba(255,255,255,.4) 0%, rgba(192,192,192,0) 50%, rgba(0,0,0,.1) 100%);
+}
+
+.plateNoteContext{
+	font-size: 80%;
+
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	padding: 2px;
+	margin: 2px;
+	overflow: auto;
+}.notifier {
+	padding:2px;
+	margin:0;
+	position:relative;
+	background:#d90;
+	white-space:nowrap;
+	border-width:0;
+}
+
+.knobAdd {
+	padding:2px 5px 2px 5px; 
+	background:#9d0;
+	white-space:nowrap;
+}
+
+.knobDel {
+	padding:2px 5px 2px 5px; 
+	background:#d90;
+	white-space:nowrap;
+}
+.overView {
+	position:fixed;
+	bottom:25px;
+	left:5px;
+	margin:0;
+	padding:0;
+
+	background:#ddd;
+    border: 2px solid #888;
+
+    z-index: 10;
+
+	transition: background 1s;
+}
+.overViewBG {
+	position:absolute;
+	top:0;
+	height:100%;
+	left:0;
+	width:100%;
+	margin:0;
+	padding:0;
+
+	transition: background 1s;
+}
+.overViewAtomBG {
+	position:absolute;
+}
+.overViewAtom {
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+
+	background:#fff8ee;
+    border: 1px solid #dfdcb9;
+}
+
+.overViewFrame {
+	position:absolute;
+	width:100%;
+	height:100%;
+
+	margin:0;
+	padding:0;
+	border-width:0;
+}
+
+.overViewFrameCage {
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+
+	border:1px solid #f40;
+}
+#popUpWindow {
+	position:fixed;
+	border-radius:3px;
+	background:white;
+	border:1px solid black;
+	padding:15px;
+	z-index: 10;
+}
+#popUpContent{
+	white-space:nowrap;
+	font-size:14px;
+}
+
+
+#popUpCover {
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background:#ccc;
+	opacity:.7;
+	z-index: 10;
+}
+.tool {
+	position:fixed;
+}
+
+.toolContext {
+	top:0;
+	left:0;
+	width:0;
+	height:0;
+	position:absolute;
+	overflow:hidden;
+
+	background:#eee;
+	padding:0;
+	border-radius:40px;
+	border:4px solid transparent;
+
+	transition-property: top, left, width, height, padding, border-color;
+	transition-duration: 0.2s;
+}
+
+.toolItem {
+	border: 1px dotted black;
+}.loginForm{
+	height:100%;
+	width:200px;
+	overflow:hidden;
+}
+
+.loginForm table{
+	width:100%;
+	height:100%
+}
+
+.loginForm table div{
+	position:relative;
+}
+
+#logUname {
+	position:relative;
+	width:97%;
+}
+#logUnameCover {
+	position:absolute;
+	left:4px;
+	color:#aaa;
+}
+
+#logPass {
+	position:relative;
+	width:97%;
+	font-size:67%;
+}
+#logPassCover {
+	position:absolute;
+	left:5px;
+	top:5px;
+	color:#aaa;
+	font-size:67%;
+}
+
+#logSubmit {
+	width:75px;
+	height:100%;
+}

@@ -1,0 +1,20 @@
+.notifier {
+	padding:2px;
+	margin:0;
+	position:relative;
+	background:#d90;
+	white-space:nowrap;
+	border-width:0;
+}
+
+.knobAdd {
+	padding:2px 5px 2px 5px; 
+	background:#9d0;
+	white-space:nowrap;
+}
+
+.knobDel {
+	padding:2px 5px 2px 5px; 
+	background:#d90;
+	white-space:nowrap;
+}

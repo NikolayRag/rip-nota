@@ -1,4 +1,0 @@
-Sitemap: /.sitemap
-
-User-agent: *
-Disallow: /anti-robots.txt

@@ -1,0 +1,784 @@
+###division/moment/[time]/[name]
+
+
+/todo:
+-save:	check editing while in-save
+-js:	make Board reusable in Board and Update for html5
+
+-async:	update.php exports incremental data
+-SQL:	Manage additional cached table only with recent versions and without deleted.
+-usa:	Show short username for logged User, otherwher use full name
+-usa:	unify Note UI style
+-ogr:	decide what to do with SESSION.board()/.boardId after Note changes .id
+-ui:	boardlist selector
+-ui:	logo
+-ui:	rights
+-ui:	change navigation to unified; global pan + click-select/click-create
+-org:	review php includes. especially for index.php and update.php
+-org:	review async urls. maybe move them all to index.php. or maybe not
+-dataui:	make dynamic-parented tools instead of duplicating them serially
+-todo!	develop and document implicits addressing and updating
+-update:	make note availability derived on ancestor
+-ui:	feature: hint-based positioning and sizing
+-Units: make parent Unit class for all units to mantain flat lists;
+		((Ncore<-Nroot), Ndata, Ucore) turn to (Unit<-(N, D, U))
+-node:	make cached key-object arrays, which key changes when objects ID changes
+
+Fix:
+-upload:	blobs dont work with anon
+-ui:	top edge of board is always hidden under toolbar. Add exact space only for showing full board
+-GLOB:	check right changing when new version of note/data is created by different user
+
+
+
+b1.9:
++ndata:	.setId() also re-id Ncore().uiA[].dUi[id]
+		-test
++unit:	.setId() dont override existing id nomore for both Ncore and Ndata
+-data:	make setId() change respectable dUi[]'s id
+-ui:	check at deletion
+-ui:	check at creation
+-ui:	check using .forRedraw
+-ui:	check if UI creation should be duplicated after instance-splitting
+-org:	stop using of SESSION.board.uiA[0]
++Ncore:	.dataContext() obsolete
++nui:	constructor accepts Ncore instead of Ncore ID
++nui:	.coreType obsolete and removed
++ui:	board-related UI, but not board itself draw moved out to SESSION.update
++nui:	transparent functions becomes obsolete and removed
++model:	move instanced UI collection to Ncore.uiA[] and Ncore.uiA[].dUi[]
++org:	NUI abstract UI field .typeUI renamed to .nFrontUI
+		NdataUI abstract UI field .ndataTypeUI renamed to .dFrontUI
++org:	classes renamed:
+		NUINote -> NUI_noteFUI
+		NUIBoard -> NUI_boardFUI
+		Note -> NUI_note
+		Board -> NUI_board
+		NoteUI -> NUI
+
+-note:	cleared use of ui array, ensure not to run into loop
+		+	linking moved out from Ncore to NoteUI
+-GLOB:	document spots at .techdocs
++js:	finalize Update sequence
++note:	made Board UI object (ro), embed board-related UI and navigation
++note:	made Note UI object (ro)
++note:	made Ndata object (ro)
++note:	not needed: made Ndata UI object
++note:	introduced Ndata UI templates mechanism
++php:	inefficient secGet4Board() replaced with notesSecA()
++php:	notesFillRights() now recursively fetch inheritants at once to get root rights
++php:	formSubst() uses its own cache
+-php:	get all returned inheritants from notesFillRights() cache instead of separate pass
++update:	reuse requested (old) id to pin implicits
++org:	Constants introduced in .include/constants.php;
+		+	Constants are parsed into js automatically in kiMiniJs()
++org:	functional interface blocks are wrapped with js in object-ui.wrapper-[].js 
++org:	event on* assignments moved to wrappers
++org:	basic PHP error handling made (disabled).
++org:	update.php moved to other included file
++org:	index.php split to included .php's
++org:	HTML from index.php moved to t_index.php template
++mode:	ui linked together: Ncore+N*UI+Ndata+DataUI
++ui:	introduced mouse global context mechanism
++ui:	overview mouse reaction
++ui:	pan mouse reaction
++ui:	workfield margins added for non-owned boards
++note:	"unit-nBoard(nNote).js"; "update.php"; added support for serialized Data UI
++SQL:	data datatype acts as real datatype. See Constants for types.
+		+	initial types: 1 for text, 2 for note (id is stored in data).
++note:	general Board/Text Data UI added
++note:	general Board and Note Unknown Data UI added
++SQL:	noBoard and noUser Note's sibling Notes are flatterened out into inlined Data
++dict:	numericals format changed to suit context assigning; see libCtx() doc
++DOM:	DOM elements are moved to widget classes from global 'DOM'
+		+	DOM becomes alias for document.getElementById()
++org:	GCC-compliant
++org:	minification of all HTML tags id's; mini.js and mini.css are involved
++org:	minification of all HTML classnames;  mini.js and mini.css are involved
+		+	fixed: wrong multiple matches of one class
+		+	fixed: transparent Notes style assignment become invalid
+-org:	JS error handling
++ui:	Workfield rewriten totally and made clearer
+		+	fixed: workfield snaps at second update if clipped; scrollbars varies clientWidth
++ui:	testEl introduced to gather real browser capabilities: scrollbars width
++update:	http request killed on timeout
++update:	http request made not sent over before timeout
++org:	introduce dynamic DOM branching from HTML template. DOM() altered.
++ui:	move overview to Board/dynamic
++ui:	register window template bacame dynamic 
++note:	board/note generation moved to template
+		+	fixed: first note doesnt fill up: iframe.src assignment issue, subject to //todo:
++note:	note's iframe creation moved to NoteUI to properly separate leaf ui and leaf content
++org:	constants become CSS-declared
++org:	constants can be non-arrays
++ui:	Note inner styling completely moved to Note
+		-	issue: styling dont uses css, in reason of slow visible loading; use templates
++ui:	outer Note styling is called from Note.style(): stamp, shadow, ref
+		-	issue: false owner of referenced Notes fetched; Need Data[0]'s instead of Note's
++ui:	move shadows to workBG; partial: moved to div within Note branch
+		-	issue: move completely FROM Note branch
++ui:	workfield renamed to board; Board moved to template
++php:	error handler switched on
++scope:	introducing bots support; only <p> blocks of note data contents emited
++update:	current update async canceled and update stopped prior to reloading board
+		+	fix: debugged; also update canceled on leaving page
++SQL:	moved to PDO; using templates and binding
++ui:	Note moved out from IFrames
+		-	issue: temporary or not
++ui:	showing Board data leafs done sequentally delayed
++ui:	introduced transitioned Notes creation
+		+	issue: immediate setting of transitioned style right afted parenting ignores transition
+		+	fix: wrong css declaration
++noteui:	note tools moved out to template (ntools, not yet implemented); note's mouseovers becomes fully edit-safe
++ui:	IS.hover config flag added to indicate mouse cursor existence
+		-	not inited
+-ui:	note tools displayed active on note click
+-ui:	hinted note size and position
++css:	variables introduced: $var substituted from php $CSS->var global (see constants.php)
++login:	update stopped PRIOR to login, logout and register
++note:	build from template
++ui:	UI.TOOLSET object introduced;
++tools:	tool appearence logic reviewed
+		+	pointer position passed
+ 		+	spike: Note mouseup adds e.toolFlag for suppress Boards tool
+ 		+	css: tool class added
+ 		+	logic reviewed; to be continued...
+ 		-	v4 fix tool within mouseover; related to Note
+ 		+	added basic in-out (demo) transition
+ 		+	note: [joint] and [context] moved to [plate]; depricated z-indexes removed;
+ 		-	popW used for cancel edit
++tools:	ToolBoardLeaf tool class prepared
++tools: ToolBoardLeafEdit tool class prepared
++tools: ToolBoard tool class prepared; HTML template added
++org:	NOID() added for unidentifying elements
++org:	ordinary element (not note) moved to template
++seq:	http requests for index.php/404 logging added; dbase:loghttp
++seq:	file download logging moved to dbase:logdl
+		+	added 'finished' timestamp in addition to starting
+		-	issue: finishing is not properly set at partial download when client "successfully cancels" parts when downloaded enough
+		-	bug(php/iis): ignore_user_abort() not working
++dload:	added partial download support
+		+	improved partial sending; several wrong position values while string to int converting
+		-	issue: wrong range calculation if filsize>MAXINT(32bit); ranged downloading is disabled for that files
+		-	issue: (404 redirect?) only "/?=id" addressing supports partial download.
++seq:	all files and folders made direct unreadable except .async/ .images/ .mini/ index.php sitemap robots.txt 
+		-	split components access
+-note:	wut?: change the way note cover works...
++tool:	gc checking moved from notes mouseout
++ui:	initial tool mouse gap set
+		-	check for mousedown-mousemove e.clientXY jumps
++ui:	selection removed at mousemove
+		-	and restored later
++css:	z-indexes removed at all
+		-	need back for top-levels not to interfere with focused notes
++ndata:	DataUINoteEl get editMode()
++data:	close note's data[0] inner save cycle
++edit:	setState() saved note's data up to parent's (board) data setState()
++edit:	setState() saved note's up to parent's (board) data setState()
+-noteui:	setState() implimentation
+-noteui:	add unified boards note state/stamp ui template
+		+	state/sign/stamp split
++noteui:	editMode suppress note's mousedown gc
++note:	close note's inner save cycle; including redraw
++note:	added save(): Ncore, Nroot; Note (doSaved())
++org:	browser wrappings moved to wrap-ui.js
++note:	implicits and substs triggers .rights to INIT (virtual)
++edit:	redraw stamp at note's data change
++seq:	http scanners filtered out
+		-	mantain list
++style:	added function for combining style string
++login:	input fields hints remain till typing
++misc:	keyCode(event) global function added
+-style:	compute several colors based on .colorMain; use default colors
++note:	check for .forRedraw moved out from Core to make available data redraw
++note:	added stamp auto update
++color:	added support for alpha as ([r,g,b,a]), (r,g,b,a), ('rgba transparent'), (gray,a), ('#rgba') and ('#rrggbbaa') notations
++color:	.hex(defvalue) returns 'transparent' for those or defvalue
++board:	added simple browse position storing to cookies
++tools:	rights selector initially moved to tool
+		+	performing save; different forSave flag
++tools:	board stilyze added
+-tools:	add board and note renaming
+		-	for board: redraw url, title, boardlist
+		-	for note: set title
+-tools:	add note (+leaf) creation
+-tools:	add note referencing
+-tools:	add note (leaf) deletion
++save:	SESSION.save introduced
+		+	gather data to send
++async:	requests move to index.php/POST; branches defined by 'mode'
++org:	logon.php, update.php, save.php moved to /.include and index.php branches;
+		+	/.async path is depricated
++SQL:	Notes .id_users split to .id_owner and .id_editor
++SQL:	Data .id_users renamed to id_editor
++update:	include .id_editor field
++update:	depricated: both Note .owner and .editor are fetched
++misc:	added pre-css splashscreen styled inline;
+		switched off on css loaded
++save:	php:	correct Note and Data change
++save:	js cb: Note and Data change
++Board: background image replaced with canvas; perf boost
++php:	PDO persistent connection used
++board:	canvas movement made fully reasonable; 'px' negative offset used to avoid bugs
+		+even MORE reasonable
++sql:	logagents table, added counter
++sql:	added loglogon table
++sql:	users table, stamp become db internal timestamp;
+		+ lastlogin moved to loglogon table
++seq:	added site-specific constants; see init.php
++palette:	introduced functionality
++palette:	.show(pop,cb) made shown with pop.up();
+			else used embedded
++pop:	dont clone supplied element to enable appending events outside
++save:	Note inline Data save support
++async:	concurrent calls queued
+		+ .asyncState() depricated
+		+ .asyncStop() depricated
++save:	supports creating nData
+		+Ncore:	.setData() corrected to handle auto-decrement creation;
+		+js:	SESSION.save sends new nData's parent
+		+sql:	nData save statement to SQLTSave.php
+		+php:	handle savind nData
+		+nData:	.setId() added
+		+nData:	draw ui (unsaved state) at very creation
+		+nData:	redraw ui (saved state) after save
+		+nData:	base64 decoding moved out to SESSION.update
+-nData:	introduce locked/unlocked ui (editmode)
++tool:	Note/Leaf 'new Data' option
++save:	added creation of top-level Notes
+		+ SESSION.save accepts immediate save
+		+ Ncore stores CB for successfull save
+		+ Ncore save reaction; toplevel
+		+ inherited Notes
+		+ Ncore save reaction; inherited
+		- Ncore WITH supplied Ndata
+-save:	saving rights is dedicated
++browse:	Added trap for bad robots (anti-robot.txt)
++save:	ASYNC_PLACE splitted;
+		define Save result indices by constants
++Data:	draw() made available to be called outside root Note
++tools:	Data/Notes drawed right at creation
+		- status is based on ANY of data's content is saved
++UI:	redraw board as bulk only, on dedicated actions (update, save, saveCB)
+		+ make Board.draw() timeouted to not double it calls
++ui:	make unified data ui for board/notes
+		- visual modifiers for leafs
++ui:	move place() function to container (Board/Note)
++update:	incrementals
+		+ send current Units snapshot in POST
+		+ Ndata returned includes root Note id;
+			Root id explicitely defines Ndata parent in JS 
+		+ server return incrementals only
+		+ return deleted units;
+		- delete units in client
+		- deprecate Units snapshot
++update:	dbase timestamp used to identify incrementals
++update:	prevent updating saved unit
+-sql:	define stamps for rights and contacts;
+-save:	indicate created noted within CB
++session:	commit changes immediatelly on document unload
++async:	handle flag to force synchronous call
+		+ error callback includes server state
++save:	added basic leaf DELETION functionality to JS
+		+ php: added leaf deletion support
++update:	handles deleted Ndata
++general:	handle sql connection error; t_dbError.php template added
++save:	creating new board cause immediate save
++NdataUi:	dedicate root UI leaf
+-tool:	make context-based dynamic tool collections
+-JS:	UnitLink introduced for all units placeholders;
+		-Replacing addressing by ID and .all storage.
++upload:	legacy, rewriten
+		+ tdyn_upload.php added
+		+ async used; handle db logging
+		- pre-restrict upload
++upload:	blobs, rewriten
+		+ async used; handle db logging
+		- pre-restrict upload
+		+ retries added on error
++upload:	public caller supports container leaf creation callback
++upload:	upload dir configured from www.privateCfg
++upload:	note's progress, finalize and error interface is unified
++file:	mime is read form db
+		-mime is stored in db
+		+download URI switch &dl=[0|1] added
+
+
+
+
+Minor:
++org:	Dictionary flattering to js compilation added: kiMinimize.php/kiMiniDictionary()
++org:	Css flattering added: kiMinimize.php/kiMiniCss()
++org:	JS flatterning added: kiMinimize.php/kiMiniJs()
++org:	update.php root request logic splitted to by- name/implicit/id
++org:	implicit generation is splitted by subst for messages or imp for boards
++org:	dictionary LIB global renamed to DIC
++string:	.decorateHTML() added
++org:	saveHttpPost() renamed to async()
++org:	UI wrappers added *W suffix
++widget:	overview region-of-interest remade with additional <span>
++widget:	overview atoms were oversized by border width. fixed.
++css:	unwanted overview/atoms border influence. fixed
++core:	NOTESA and USERSA global arrays are moved into Ncore.all and Ucore.all resp.
++ui:	log/pass hints moved to separate spans; 
++org:	lib.*.* renamed to dic.*.*
++org:	UI and UNITS js moved to specific folders;
+		+	bugfix
++profile:	unimportant timing omited
++profile:	NOPROFILE optimization added to JS;
++php:	DIC becomes object
++ui:	shadow corrections
++login:	registration template used without clone since it is alone
++bot:	timestamps printed
++org:	filterURL fills up POST values 
+		-	issue: change to function/class
++session:	reloading can use partial data
++login:	uses .reload() to reload at login, logout and register
++board:	changed hoover tool displaying behavior to more reliable
++board:	note mouseup call tools
++UI:	.mouseButtonCtx depricated
+		+	.inContext removed; instead mouseButtonCtx returned as .mouseButton
++UI:	added .inContext, set after mousemove and taken at mouseup
++org:	templates stored at class property and removed from DOM
++update:	added .active condition to suppress drawState()
++sql:	kiSQL class implements lastInsertId()
++seq:	logHttp adds 'referer'
+		-	no cross-site
++seq:	logHttp agent list moved to own table and make unique
++pop:	added tip value to tip() for display without setTip()
++js:	propCount(Object) added
++note:	leafs with restricted notes (NOTA_RIGHTS.INIT) dont display stamp
++board:	added leaf styling within ui style()
++note:	added leaf styling within ui style()
++note:	moving added with inner save cycle
+		-	remove moving tool [that way]
+-session:	check for unsaved notes at exit
++data:	activeHilite renamed and reused as lastHilite
++logo:	drawing logo moved to UI.logoW.draw(Color)
++profile:	ALERT definition changed to be completely thrown out for GCC +NOPROFILE
++ui:	mouse context works only for button1
++style:	.build(Color) added to compute palette; invalid in color replaces root color with system default
++color:	.build(r,g,b) added as constructor; .valid added;
++color:	.mix for invalid Color returns unmixed Color(color2)
++minimize:	CSS ${} notation added
++style:	collects remaining note colors
++minimize:	CSS variables supports '_'
++save:	.forSave flags changed to use SAVE_STATES constants
++async:	(saveData) argument requires object to pass var:val
++php:	.include renamed to .php and reorganized
++update:	async responce atom indices moved to constants
++note-ui:	make shadow distance be exponential of time
++note-ui:	added reference name displaying
++note-ui:	sign() switches sign's visibility
++tools:		styling is called as callback
++Note-ui:	doSaved(): save indicator respects Note, all Data and root Data saveState's
++nData php:	dataBDById() separated
++overview:	OVERVIEW_BASESIZE constant added
++Note-ui:	stamp forming changed
++Note-ui:	stamps updated individually with timeout. stampDiff() affected.
+			+stamps updated at db update
++style:		.bg{imgName:} added
++stamp:     switchReg() accepts template dictionary;
+            + '$' is substituted with _ctx
++dic:       timestamps altered
++board:     canvas: made repaint-friendly
+            + added test animation on background
++log:		added remote port logging in addition to ip
++pop:		accept DOM element with hierarchy as content
++palette:	.pick() renamed to .show()
++logon:		make adequate for use without cloning in pop.up();
+			cleanup entered confirmation before pass to pop.up()
++JS:		removed platform detection strings
++Note:		.dataContext() made dynamic;
+			.dataCtx removed
++php:		make constants export to wrap-c-auto.js at compacting
++php:		move compactHTML to compact.php/kiCompackHTML()
++js:		forEach avoided to use with Ncore and Ndata enum
+-update:	update boardlist as need
++save:		CB deals with Notes first;
+			Notes id remap array is supplied to NData.save()
+-UI:		review caching redraw
+-UI:		review stamps draw
++save:		depricated "immediate" flag for save.save()
++profile:	show SQL calls count
++units:		validation moved in .set();
+			+ .set() skipped for in-save units, not updating them
+			+ .set() returns state
+			- make .set() return state more specific
++update:	User timestamps read
++async:		error callback includes server
++ui:		initial mouse gap behavior changed; breaking gap IS actually a trigger;
+			+ gap is now parameter
++tool:		add Ndata toolset to TEXT data
+			+ dedicete Ndata toolset
++dic:		can have "\n"
++pop:		support [] as text argument: all '$' will be susbtituted with [] fields
+			+ String.prototype.subst([],startIdx) added
++pop:		support '\n'
++async:		binary mode sent within header
+			+ additional headers array supplied
++URI:		(ReqURI)$REQA global holds filtered URI
+			+(LogArgs)$args fold filtered arguments
+
+
+
+
+Refactor:
++Board ui:		cache clientHeight/Width()
++Unit ui:		.contexts unified with some bug-fixes 
++files:			names
++css:			notefast/slow removed; bg image disabled;
++js:			DOMWindow changed to DOMRoot
++js:			all bindings unified and moved to .bind()
++js:			bindings uses stored _this
++js:			objects definitions unified; ui: functinns embedded; non-ui: functions added
++update php:	update flow splitted to generation (updateMainflow) and output
+				+	to make futher direct HTML gen for RO and searchbots
++login:			join .login & .register
++dic:			'popStateStoALERT' corrected to 'popStateStopALERT'
++dic:			.log* renamed to .logErr*
++bot:			detection function
++org:			cookie references stored in constants
++org:			some for() changed to .forEach
++php:			init vars renamed to caps
++auth:			use of hash_pass() unified
++string:		base64 string minified, moved from constants to js
++note:			remove suddenly excess _this argumenting in mouseover/out
++ui:			cloned build() have to read DOM() and cleanup with NOID()
+				-	issue: except registration template
++ui:			unit's DOM* variables collection replaced to DOM{} object; build() returns DOM{}
++org:			all <?php replaced with short <?
++org:			php: all $user replaced with $USER
++board:			Styling moved completely into Board; Template reordered.
+				-	issue: POSSIBLE correctField errors.
++files:			wrap-string.js renamed to wrap-objects.js and now holds several wrappers
++org:			functions uses _xxx argument names
++org:			use constants widely for styles and timers
++org:			several renames
++helper:		stamp simplified
++org:			use constants for async arguments
++org:			STYLE constants for dynamic computing are split from CSS
++org:			new constants used, for style mainly
++org:			browser.js appended to SESSION
++org:			UPDATE moved to SESSION.update
++logon:			asyncLogon.php renamed to logon.php
++php:			join() replaced with implode()
++async:			error callback text decoration moved out
++js:			global known names aliased in wrap-in.js (document)
++js:			wut?: known names renamed;
++sql:			SQLTSave.php template separated
++sql:			table `data` renamed to `ndata`
++ui:			added transitions to UI, Board and Note's background
+-Data ui:		added transition to Data placement
++Note ui:		added gradient to Notes
++ui:			added performanceLevel switch; Note gradient and bgImage so far
++ui:			added BG sliding
++Data:			ownerId replaced with editorId completely
++wrap:			DOCUMENT.() functions clieaned abit
++js:			.bind() renamed to .bindEvt due to reserved names
++js:			.data renamed to .ndata; (.data).data renamed to .content
++session:		logon split to SESSION.logon
+				+ logon() renamed to login()
+				+ COOKIE content moved to SESSION; +.cookieSet/Get()
+				+ async() moved to SESSION
++session/async:	make httpRequest dedicated
+				+ .asyncStop() added
+				+ .asyncState() replaces update/save .httpRequest
+				+ .httpRequest becomes SESSION attribute
+				+obv: check and manage concurrensing async
+				- manage Cookies within request
++wrap:			WINDOW alias added
++js:            + wide fixes applied based on webStorm instection
++DOM:			.innerHTML usage replaced with .elementText(text)
+				- add html formatting
++logon:			using PDO
++log:			loghttp logs all modes except update an lovalidate
+				+ make chunked http logging for same ip+user+agent;
+					different mode and request starts new log record
+				+ logging all requests
++logon:			validation shortcut moved to SESSION.logon from UI.logonW
++update:		start update after others browser requests start (icon etc);
+				mainly to optimize logging
++files:			dynamic templates renamed
++wrap:			DOCUMENT.bodyEl fetched from id='body' element to simplify
++wrap:			DOCUMENT.body replaced with DOCUMENT.bodyEl everywhere
++note-ui:		bg separated
++ui:			performance variable moved to constant PERF.LEVEL
++Palette:		Colorpicker renamed to Palette 
++update:		var checkTime/Name renamed to prof*
++js:			all .DOM* rename to .DOM.* (collect into object)
++el-inline:		text Hilite/Shadow replaced with css text-shadow:
++template:		tdyn_pin.php dedicated out of t_barUser.php
+				+ tdyn_widPalette renamed to tdyn_palette
+				+ menu class mostly unused
+				+ youStayLab reorganized
+				+ barBoardOwner centered
++js:			+ .reqWho, .reqWhat, .reqFilter moved out of Ncore to SESSION.
++Unit:			+ .set() arguments reorganized;
+				object collections used
++wrap:			Object.props() removed
++constants:		SAVE_STATES renamed
++save:			SAVE_MODE depricated
+				+js: rights are sent as independent block
+				+ ASYGN.NRIGHTS introduced
+				+ ASYNC_PLACE.SVR_RIGHTS renamed to .SVR_RIGHTS
++constants:		USER_RELATION used widely
++Board:			.draw() calls referenced Note's .draw()
++Note:			.draw() flow affected
++Style:			NOTE_* colors replaced with MAIN_*
++update:		turning off Users .redraw flags moved to Board.redraw()
+				- move somewhere else
++templates:		elInline renamed to leafText
+				+ noteTmpl -> leafNoteTmpl
+				+ noteInlineTmpl -> plateNoteTmpl
+				+ boardTmpl -> plateBoardTmpl
+				+ implied css classes renamed
+				+ t*.php renamed reasonably
++Board ui:		.board renamed to .note
++units:			.complete unused
++php:			wrap-c-auto.js no more created
++php:			compact.php functions optimized
++update:		Notes are output bulk before Ndata
++general:		t_indexBot.php made nicer
++html:			template's NOPROFILE-controlled comment now wiped out with kiMiniHTML()
++Ncore:			.doKill() renamed to .removeCore()
+				+.removeCore() moved to Ncore.allNotes.uncache()
++DIC:			uses '\n' and '$'
++async:			_that argument depricated; .bind(this) used instead for CB
++php:			added reading source files by readDirFiles(dir,fileListFile)
++JS:			NoteDB object dedicated
++JS:			NdataDB object dedicated, Ndata.PUB used
++Unit:			done elseway: reorganize hierarchy to (Unit->DB; Unit->UI; UI->TypeUI)
+				+ NoteUI renamed to NUINote
+				+ BoardUI renamed to NUIBoard
+				+ BoardUIOverview renamed to BoardOverviewUI
+				+ Nroot renamed to NoteUI
++php:			more straight selection of Client and Mode
+				+ added default Client and Mode
+				+ added wrong Client and Mode branches
++php:			array_key_exists() replaced widely
++php:			site specific config moved to (SiteCfg)$SITECFG global
+				site specific key names made lowcase
++dic:			add checking of language provided
++php:			SiteCfg made smaller and loads all it can load
+
+
+Fix:
++class-color:	Short-tag constructor make dark colors. Fixed.
+-update:		Session files at server contain outdated cached userinfo. Seen at remote userinfo change.
++class-color:	hex() and gray() computation can result in 0-256; Fixed (round -> floor)
++login:			registering new user returns php error but succeed
++login:			loging in throw error but succeed
++UI:			.scrollHeight() fixed
++pop:			delayed tip update ocasionally updates popwindow
++overview:		.onmousedown() noBubbles() excess
++alert:			fixed some spoiled alert() caused by earlier PROFILE.pAlert subst passes
++pop:			register/missmatch pass alert replaced by pop; 
+-update:		wrong stamp for substitutions; relative 0 instead of absolute
++login:			fixed DIC.logErr selector
++login:			first access from ner browser results in wrong $_SESSION
++cookie:		profile window stores position in cookies
++pop:			tip mouseout acts within tip window
++org:			compacting dictionary now take in account the constants.php change time
++js:			cloneNode() uses argument
++ui:			scroll and resize bindings reassigned to window for compatibility
++pop:			added delay for tip to start reacting on mouseout
++ui:			clean board throw positioning errors, unimportant
++html:			w3vialidator fixes
++seq:			salt moved out from constants (lol)
++profile:		js use NOPROFILE
++dload:			downloading fixed
++dload:			removed hangout at downloading, stability upgraded
++dload:			large files ruined. incorrect filesize(); fastcgi ActivityTimeout issue
++dload:			progress not displayed; string ''.().'' issue
++note:			hiliteSet got dim on rapid mouse move
++unit:			fixed forRedraw assignment
++update:		update suppressed for active version greater than db
+-logo:			offscreen logo doesn't update; periodically reset doesnt fix
++pop:			poptip blinks removed
+				+ futher fixup
+				+ yet more fixup
++ui:			initial mouseXY set to null to avoid tool activity before any pointer movement
++class-color:	short hash parsing didnt reach values of 255;
++note:			shadow generation properly uses initial offset
++overview:		atom colors computed at drawing overview
++color:			mix() always return copy of color
++tools:			board and noteedit didnt animate in
++note-ui:		sign owner name displaying for referenced Note based on its ancestor owner
+				(not Board owner)
++note.php:		notesGetRights() fixed; cache used (more) properly
++ui:			mouseContextRelease() releases mouse events
++Note ui:		sign updating forced within optional drawCorrect(); Temporary
++Note ui:		replace drawCorrect() with auto-updated intervals
++update:		fixed non-updating Data
++Ndata:			editorId translated and displayed normally
++CC:			wide Warning removal
++CC:			fixed nasty async argument naming bug
++compat:		fixed DOCUMENT.scroll* uses
++ui:			selection fixed (avoid) for Chrome by e.preventDefault()
++dic:			ru 'days ago' corrected
++note:			(spike) delay mouseover assignment to remove visual interferation at note creation
++Board:			redraw at data redraw
++Note:			redraw at data redraw
++index:			bots got htmlentities(), removed
++index:			argument indices becomed ARGS_PLACE. constants
++async:			asyncStatusString() referencing fixed
++async:			removed public writing of .inAsync;
+				.asyncStop() dont destroy .httpRequest
+				+ depricated: check .httpRequest within concurence calls 
++board:			initial canvas painting made more reliable
++logon:			validation for blank username was calling server;
+				should not.
++php:			fixed for apache: correct filename cases;
+				correct absolute paths
++php:			added UTF8 to PDO
++css:			Nota BG overlay border radius
++logo:			didn't animate; DOM issue
++async:			concurrent call screwup fixed
++ndata ui:			opacity transition didnt work at creation
++nData:			create new blank-id nData uses global negative
+				id pool; elseway different Data's save is ruined
++Ncore:			same as nData, uses global negative ID for new
++web:			apache: 404 avoided; ModRewrite used
+-update:		php: Ndata db inconsistence (if ref unit not exist);
+				returne Ndata with dtype=0 and errormsg
+-Ndata:			reliable state/stamp update
++unit:			validation mistype removed
+-UX:			fails save (a)sync when reload with logon/off
+-update:		toggling implicit/normal should handle previous note/data removal
++update:		sql calls outnumbered for logged on user: right groups reading; Speed up.
+-tools:			deleting unsaved created cause error
++upload:		big legacy upload cause server heavy crash, it didnt.
+				index.php branch misroute.
++sql:			note.version defaults to 1;
+				ndata.isdeleted defaults to 0
++logon:			SQL template actually included from class-authorize.php
+
+
+
+
+Spike:
++ie:	window[''] moved to document;
++ie:	String.trim() added;
++ie:	Array.forEach() added;
++Ndata:	Ndata.all(); should be phased
+
+
+
+
+/Stable
+
+b1.8:	10.06.13, technical
++GLOB:	change structure to hierarhical notes+datalist. SQL, Note, Board involved.
++model:	accept new data object model v2, see .techdoc
++sql:	boards-notes-data restructured to notes-data-notes-data
++async:	update.php exports data in individual notes and contacts chunks
++model:	Javascript Note object is splitted to Ncore and Nroot with derivatives
++model:	Notedata renamed to Ndata
++async:	Basic implicits generation added. Stored at update.php
++org:	UPDATE is formed as standalone out of BOARD
++sql:	Dbased implicits are referenced within 'implicits' board
+
+Minor:
++org:	added code in index.htm to cache closure compiled js, temporary disabled (due to not debugged)
++org:	all "async" prefix removed from .php
++org:	updateBoard.php renamed to update.php
++org:	compiled JS and CSS moved to /.mini/ folder
++org:	js files 'class-1' prefix for globals renamed to 'object-'
++debug:	js profile window is reused
++debug:	js profile is appended at top, not at bottom
++debug:	js profile history is limited to 50 chunks
+
+Fix:
++session:	Logout fixed. All 'this' changed to 'thisNota'
++upload:	temporaryly disabled.
+		+ returned back
+
+
+
+!b1.7:	09.01.13
++org:	HTML widgets moved to templates: Overview, Contactlist, Colorpicker, Popup
++Note:	upload stuff removed
++tools:	upload stuff added
++upload:	splitted into form/blob by splitting entire class
++upload:	form becomes template and moved into BoardTools.php template from Note class
++upload:	forms are proccessed in queue: done
++upload:	blob files are proccessed in queue: done
+	-Limitation:	no condition for retry yet
++upload:	drag-n-drop
++Note:	setState() added to hold visual state change.
+	-Limitaion:	probably it shall be specific object
++org:	All HTML event handlers assignment moved to window.onload handler in wrapper.js
++org:	javascript loaded right after HTML instead of before.
++org:	js Prototypes overrides are placed at wrap-in.js and go first of all js
++org:	startup code is placed at wrap-out.js and go last of all js without onload() handler
+
+Fix:
+-Board:	update stop after uploading lot of files (300)
+-Note:	note drag behavior before first saved is invalid
+-Note:	at deletion, note is not grayed when default styles
+-Dictionary:	"1 min ago" is not translated in RU
+
+!b1.6: 03.01.13
++sql:	downloads log table added (not used yet)
++access:	downloads are counted in uploads table
++org:	NOTA renamed to SESSION
++org:	globals renamed to CAPS (LIB, SESSION, BOARD, UI, STYLES, DOM, UPLOAD)
++org:	classes renamed to Capitals (Board, User, Note, Noteref, Notedata, Color)
++org:	class-files renamed and splitted
++upload:	New global UPLOAD class inserted to hold all uploads
++upload:	file upload and progress CallBacks are moved to UPLOAD
++upload:	upload-by-form routine moved from Note to UPLOAD
++minor:	noteFieldCorrect replaced "rights" arg by inlined BOARD.rights
++sence:	added basic lazyRun, to be expanded
++Notedata:	.owner is now User. UpdateBoard.php output is affected to return <id=name> pair.
++Note:	._shadow moved to Notedata.shadow
+
++org:	initNota() and coreCycle() moved from core.js to SESSION. core.js removed.
++sql:	`first_name` and some others in `user` table may be null.
+
++class:	string encode/decode functions moved to String object. #encode.js renamed to #wrap-string.js
++class:	File.slice() subtituted with .webkitSlice() and .mozSlice() in #wrapper.js
++upload:	sliced blobs technique added to UPLOAD unlimited files. Its prefered to use.
++upload:	SQL record for Blob file is created before file upload starts and
++			updated with "enabled=1" after file upload completed
+	
+?upload:	no proper condition yet for blob .PHP bad sections reloading.
+-Note:	data is binded to DOM
+-Note:	comments are indexed by ndata id
+-engine:	corrected save of comments, using their ids
+
+!b1.5: 11.12.01
++Note:	data structure initially moved to object array
++Note:	style at least parsed and collected
++Note:	bugfix, c/im moved to name/style (finally)
+
++upload:	multi-file
++upload:	multi-progress
++format:	file grab moved to index.php with "/file[id]" form
+
++upload:	oldschool method, by one file. Limited by 1.5G
++upload:	progress engine
+
++org:	include paths corrected 
+
++org:	restructured files places
++org:	css and js inlined
+	+debug:	time profiling added
+
+
+/todo pool
+	-model:	maybe turn contacts into notes (only for dataflow+storage)
+	-model: address sibling notes by name/filter as well as by id. Make "inherit" to point to id_data
+
+	-upload:	check for duplicates
+	-upload:	download collections (torrents?)
+	-upload:	make Cancel
+	-upload:	think of uncomplete uploads at board reloading
+
+	--misc:	make sitemap work
+	--misc: make lite RO for incompatible browsers
+
+	--sec:	SQL: prevent injection
+
+
